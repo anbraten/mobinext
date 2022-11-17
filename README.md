@@ -6,7 +6,7 @@ This project was bootstrapped with [Create Expo App w/ Typescript](https://docs.
 
 ### `npm i --legacy-peer-deps`
 
-### `npx expo login` => Login with your Eexpo credentials (optional)
+### `npx expo login` => Login with your Expo credentials (optional)
 
 ### `npx expo whoami` => Check if Login worked (optional)
 
