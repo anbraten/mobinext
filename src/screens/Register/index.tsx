@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { Image } from "react-native";
 import { TextInput, Button, Text, HelperText } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { supabase } from "../../../supabase";
-import mobinext from "../../../assets/mobinext.png";
+import { supabase } from "~/supabase.ts";
+import mobinext from "~/../assets/mobinext.png";
 
 const Register = ({ navigation }: any) => {
   const [email, setEmail] = useState<string>("");

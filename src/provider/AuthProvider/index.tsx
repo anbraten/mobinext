@@ -1,11 +1,12 @@
 import "react-native-url-polyfill/auto";
 import React, { createContext, useState, useEffect } from "react";
-import { supabase } from "../../../supabase";
 import { Session } from "@supabase/supabase-js";
+import { supabase } from "~/supabase";
+import { Profile } from "~/types";
 
 type ContextProps = {
-  user: null | boolean;
-  session: Session | null;
+  user: Profile | null | undefined;
+  session: Session | null | undefined;
 };
 
 const AuthContext = createContext<Partial<ContextProps>>({});
@@ -15,28 +16,50 @@ interface Props {
 }
 
 const AuthProvider = (props: Props) => {
-  // user null = loading
-  const [user, setUser] = useState<null | boolean>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<Profile | null>();
+  const [session, setSession] = useState<Session | null>();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      setUser(session ? true : false);
     });
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log(`Supabase auth event: ${event}`);
+      (event, session) => {
         setSession(session);
-        setUser(session ? true : false);
       }
     );
 
     return () => {
       authListener?.subscription!.unsubscribe();
     };
-  }, [user]);
+  }, []);
+
+  async function loadUser() {
+    if (!session) {
+      setUser(null);
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", session?.user?.id)
+      .limit(1)
+      .single();
+
+    if (error) {
+      console.log(error);
+      setUser(null);
+      return;
+    }
+
+    setUser(data);
+  }
+
+  useEffect(() => {
+    loadUser();
+  }, [session]);
 
   return (
     <AuthContext.Provider

@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import { View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
+import { supabase } from "~/supabase.ts";
+import { Rentable } from "~/types";
 
 const Discover = () => {
   const [location, setLocation] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState<any>(null);
+  const [rentables, setRentables] = useState<Rentable[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -17,6 +20,17 @@ const Discover = () => {
 
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
+
+      const { error, data } = await supabase
+        .from("rentables")
+        .select("item, done, id");
+
+      if (error) {
+        setErrorMsg(error.message);
+      }
+      if (data) {
+        setRentables(data);
+      }
     })();
   }, []);
 
@@ -39,15 +53,17 @@ const Discover = () => {
         showsMyLocationButton
         provider={PROVIDER_GOOGLE}
       >
-        <Marker
-          key={"M-1"}
-          coordinate={{
-            latitude: 49.43449321045166,
-            longitude: 8.810689387125306,
-          }}
-          title={"Car_1"}
-          description={"This is Car_1"}
-        />
+        {rentables.map((rentable) => (
+          <Marker
+            key={"M-1"}
+            coordinate={{
+              latitude: rentable.latitude,
+              longitude: rentable.longitude,
+            }}
+            title={"Car_1"}
+            description={"This is Car_1"}
+          />
+        ))}
       </MapView>
     </View>
   );

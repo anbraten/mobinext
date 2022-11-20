@@ -11,9 +11,9 @@ const Navigation = () => {
 
   return (
     <NavigationContainer>
-      {user == null && <Loading />}
-      {user == false && <AuthStack />}
-      {user == true && <MainStack />}
+      {user === undefined && <Loading />}
+      {user === null && <AuthStack />}
+      {user && <MainStack />}
     </NavigationContainer>
   );
 };

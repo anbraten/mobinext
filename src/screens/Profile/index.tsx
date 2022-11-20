@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import {
   Avatar,
@@ -15,7 +15,8 @@ import {
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { supabase } from "../../../supabase";
+import { supabase } from "~/supabase.ts";
+import { AuthContext } from "~/provider/AuthProvider";
 
 const styles = StyleSheet.create({
   fab: {
@@ -27,6 +28,8 @@ const styles = StyleSheet.create({
 });
 
 const Profile = () => {
+  const { user } = useContext(AuthContext);
+
   const [value, setValue] = useState("trustedParties");
 
   const TrustedParties = () => {
@@ -195,7 +198,7 @@ const Profile = () => {
         <View style={{ flexDirection: "row" }}>
           <Avatar.Text size={72} label="PL" />
           <View style={{ paddingLeft: 25 }}>
-            <Headline>Peter Lustig</Headline>
+            <Headline>{user?.full_name}</Headline>
             <View style={{ display: "flex", flexDirection: "row" }}>
               <Ionicons name="star" color={"black"} size={24} />
               <Ionicons name="star" color={"black"} size={24} />
