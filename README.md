@@ -4,7 +4,7 @@ This project was bootstrapped with [Create Expo App w/ Typescript](https://docs.
 
 ## Setup
 
-### `npm i --legacy-peer-deps`
+### `npm i` => if this is not working try `npm i --legacy-peer-deps`
 
 ### `npx expo login` => Login with your Expo credentials (optional)
 

@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import {
   Avatar,
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
 });
 
 const Vehicles = ({ navigation }: any) => {
-  const [value, setValue] = React.useState("rented");
+  const [value, setValue] = useState("rented");
 
   const RentedVehicles = () => {
     return (

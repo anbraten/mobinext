@@ -1,13 +1,13 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import { View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 
 const Discover = () => {
-  const [location, setLocation] = React.useState<any>(null);
-  const [errorMsg, setErrorMsg] = React.useState<any>(null);
+  const [location, setLocation] = useState<any>(null);
+  const [errorMsg, setErrorMsg] = useState<any>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -20,7 +20,7 @@ const Discover = () => {
     })();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log("My location", location);
   }, [location]);
 

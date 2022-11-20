@@ -1,5 +1,5 @@
-import * as React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { useState } from "react";
+import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import {
   Avatar,
   Divider,
@@ -10,9 +10,12 @@ import {
   Title,
   Chip,
   SegmentedButtons,
+  Button,
+  MD3Colors,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { supabase } from "../../../supabase";
 
 const styles = StyleSheet.create({
   fab: {
@@ -24,7 +27,7 @@ const styles = StyleSheet.create({
 });
 
 const Profile = () => {
-  const [value, setValue] = React.useState("trustedParties");
+  const [value, setValue] = useState("trustedParties");
 
   const TrustedParties = () => {
     return (
@@ -181,23 +184,40 @@ const Profile = () => {
         style={{
           display: "flex",
           flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
           paddingLeft: 20,
           paddingRight: 20,
           paddingBottom: 15,
           paddingTop: 5,
         }}
       >
-        <Avatar.Text size={72} label="PL" />
-        <View style={{ paddingLeft: 25 }}>
-          <Headline>Peter Lustig</Headline>
-          <View style={{ display: "flex", flexDirection: "row" }}>
-            <Ionicons name="star" color={"black"} size={24} />
-            <Ionicons name="star" color={"black"} size={24} />
-            <Ionicons name="star" color={"black"} size={24} />
-            <Ionicons name="star" color={"black"} size={24} />
-            <Ionicons name="star-half-sharp" color={"black"} size={24} />
+        <View style={{ flexDirection: "row" }}>
+          <Avatar.Text size={72} label="PL" />
+          <View style={{ paddingLeft: 25 }}>
+            <Headline>Peter Lustig</Headline>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Ionicons name="star" color={"black"} size={24} />
+              <Ionicons name="star" color={"black"} size={24} />
+              <Ionicons name="star" color={"black"} size={24} />
+              <Ionicons name="star" color={"black"} size={24} />
+              <Ionicons name="star-half-sharp" color={"black"} size={24} />
+            </View>
           </View>
         </View>
+        <Button
+          mode="contained"
+          buttonColor={MD3Colors.error50}
+          compact
+          onPress={async () => {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+              Alert.alert(error.message);
+            }
+          }}
+        >
+          Logout
+        </Button>
       </View>
       <Divider style={{ height: 1.5 }} />
       <View
