@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
-import { supabase } from "~/supabase.ts";
+import { supabase } from "~/supabase";
 import { Rentable } from "~/types";
 
 const Discover = () => {
@@ -21,9 +21,7 @@ const Discover = () => {
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
 
-      const { error, data } = await supabase
-        .from("rentables")
-        .select("item, done, id");
+      const { error, data } = await supabase.from("rentables").select("*");
 
       if (error) {
         setErrorMsg(error.message);
