@@ -99,7 +99,7 @@ const Vehicles = ({ navigation }: any) => {
         <FAB
           style={styles.fab}
           icon="plus"
-          onPress={() => navigation.navigate("Details_1")}
+          onPress={() => navigation.navigate("categories")}
         />
       </View>
     );

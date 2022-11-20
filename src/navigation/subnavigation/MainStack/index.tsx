@@ -7,6 +7,8 @@ import Messages from "../../../screens/Messages";
 import Profile from "../../../screens/Profile";
 import Vehicles from "../../../screens/Vehicles";
 import Discover from "../../../screens/Discover";
+import { Categories } from "../../../screens/Vehicles/categories";
+import { Details } from "../../../screens/Vehicles/details";
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -25,28 +27,6 @@ const MessagesScreen = () => {
 
 const ProfileScreen = () => {
   return <Profile />;
-};
-
-const Details_1_Screen = ({ navigation }: any) => {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Details 1</Text>
-      <Button onPress={() => navigation.navigate("Details_2")} mode="contained">
-        To Details 2
-      </Button>
-    </View>
-  );
-};
-
-const Details_2_Screen = ({ navigation }: any) => {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Details 2</Text>
-      <Button onPress={() => navigation.navigate("Discover")} mode="contained">
-        To Discover
-      </Button>
-    </View>
-  );
 };
 
 const BottomNavigation = () => {
@@ -104,8 +84,8 @@ const MainStack = () => {
         component={BottomNavigation}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Details_1" component={Details_1_Screen} />
-      <Stack.Screen name="Details_2" component={Details_2_Screen} />
+      <Stack.Screen name="categories" component={Categories} options={({route}) => ({ title: "Kategorien"})} />
+      <Stack.Screen name="details" component={Details} options={({route}) => ({ title: "Fahrzeug Details"})}/>
     </Stack.Navigator>
   );
 };
