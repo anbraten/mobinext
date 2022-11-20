@@ -4,11 +4,16 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import { supabase } from "~/supabase";
 import { Rentable } from "~/types";
+import { Button, IconButton, MD3Colors, Text } from "react-native-paper";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const Discover = () => {
   const [location, setLocation] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState<any>(null);
   const [rentables, setRentables] = useState<Rentable[]>([]);
+  const [selectedRentable, setSelectedRentable] = useState<
+    Rentable | undefined
+  >(undefined);
 
   useEffect(() => {
     (async () => {
@@ -43,10 +48,81 @@ const Discover = () => {
     text = JSON.stringify(location);
   }
 
+  const SelectedRentable = () => {
+    return (
+      <View
+        style={{
+          height: "17%",
+          width: "100%",
+          borderColor: MD3Colors.neutral50,
+          borderStyle: "solid",
+          borderWidth: 1.5,
+          padding: 3,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <View>
+          <IconButton
+            mode="outlined"
+            icon="car"
+            iconColor={MD3Colors.neutral50}
+            size={25}
+          />
+        </View>
+        <View
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: 10,
+            marginBottom: 10,
+          }}
+        >
+          <Text variant="titleLarge">{selectedRentable?.model}</Text>
+          <View>
+            <Text variant="titleSmall">Fueltype: {selectedRentable?.fuel}</Text>
+            <Text variant="titleSmall">
+              Cost per km: {selectedRentable?.cost_per_km}
+            </Text>
+            <Text variant="titleSmall">
+              Cost per minute: {selectedRentable?.cost_per_minute}
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: 10,
+            marginBottom: 10,
+          }}
+        >
+          <Text variant="titleLarge">
+            Seats: {selectedRentable?.seat_count}
+          </Text>
+
+          <Button mode="contained" compact onPress={() => console.log("Rent")}>
+            Rent
+          </Button>
+        </View>
+        <View>
+          <IconButton
+            mode="outlined"
+            icon="close"
+            iconColor={MD3Colors.neutral50}
+            size={20}
+            onPress={() => setSelectedRentable(undefined)}
+          />
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <MapView
-        style={{ height: "100%", width: "100%" }}
+        style={{ height: selectedRentable ? "83%" : "100%", width: "100%" }}
         showsUserLocation
         showsMyLocationButton
         provider={PROVIDER_GOOGLE}
@@ -58,11 +134,13 @@ const Discover = () => {
               latitude: rentable.latitude,
               longitude: rentable.longitude,
             }}
-            title={"Car_1"}
-            description={"This is Car_1"}
+            onPress={(e) => {
+              setSelectedRentable(rentable);
+            }}
           />
         ))}
       </MapView>
+      {selectedRentable && <SelectedRentable />}
     </View>
   );
 };
