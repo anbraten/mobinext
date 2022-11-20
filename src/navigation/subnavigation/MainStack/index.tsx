@@ -77,12 +77,17 @@ const MainStack = () => {
         component={BottomNavigation}
         options={{ headerShown: false }}
       />
+<<<<<<< HEAD
       <Stack.Screen name="Chat" component={Chat} />
       <Stack.Screen
         name="Renting"
         component={Renting}
         options={{ title: "Rent a vehicle" }}
       />
+=======
+      <Stack.Screen name="categories" component={Categories} options={({route}) => ({ title: "Kategorien"})} />
+      <Stack.Screen name="details" component={Details} options={({route}) => ({ title: "Fahrzeug Details"})}/>
+>>>>>>> 1f30e67 (feat: category overview + routes)
     </Stack.Navigator>
   );
 };
