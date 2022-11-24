@@ -5,7 +5,7 @@ import * as Location from "expo-location";
 import { supabase } from "~/supabase";
 import { Rentable } from "~/types";
 import { Button, IconButton, MD3Colors, Text } from "react-native-paper";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Discover = () => {
   const [location, setLocation] = useState<any>(null);
@@ -120,7 +120,7 @@ const Discover = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
       <MapView
         style={{ height: selectedRentable ? "83%" : "100%", width: "100%" }}
         showsUserLocation
@@ -141,7 +141,7 @@ const Discover = () => {
         ))}
       </MapView>
       {selectedRentable && <SelectedRentable />}
-    </View>
+    </SafeAreaView>
   );
 };
 
