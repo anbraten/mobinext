@@ -14,6 +14,7 @@ const Discover = () => {
   const [selectedRentable, setSelectedRentable] = useState<
     Rentable | undefined
   >(undefined);
+  let map: MapView;
 
   useEffect(() => {
     (async () => {
@@ -39,14 +40,15 @@ const Discover = () => {
 
   useEffect(() => {
     console.log("My location", location);
+    if (location) {
+      map.animateToRegion({
+        latitude: location?.coords?.latitude,
+        longitude: location?.coords?.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    }
   }, [location]);
-
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
 
   const SelectedRentable = () => {
     return (
@@ -126,10 +128,15 @@ const Discover = () => {
         showsUserLocation
         showsMyLocationButton
         provider={PROVIDER_GOOGLE}
+        ref={(_map) => {
+          if (_map) {
+            map = _map;
+          }
+        }}
       >
         {rentables.map((rentable) => (
           <Marker
-            key={"M-1"}
+            key={rentable.id}
             coordinate={{
               latitude: rentable.latitude,
               longitude: rentable.longitude,
