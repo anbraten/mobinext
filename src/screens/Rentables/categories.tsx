@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ScrollView, FlatList } from "react-native";
+import { View, StyleSheet, ScrollView, FlatList, Pressable } from "react-native";
 import {
     Avatar,
     Text,
@@ -26,9 +26,9 @@ export const Categories = ({ navigation }: any) => {
             numColumns={2}
             data={btns}
             renderItem={({ item }) => (
-                <Button onPress={() => navigation.navigate(item.value)} mode="contained" style={{ width: "45%", aspectRatio: 1/1, marginHorizontal: "2.5%", marginVertical: "2.5%", flex:1 , justifyContent: "center", alignItems: "center"}}>
+                <Pressable onPress={() => navigation.navigate(item.value)} style={{ width: "45%", aspectRatio: 1/1, marginHorizontal: "2.5%", marginVertical: "2.5%", flex:1 , justifyContent: "center", alignItems: "center"}}>
                     <Text>{item.label}</Text>
-                </Button>
+                </Pressable>
             )}
         >
         </FlatList>
