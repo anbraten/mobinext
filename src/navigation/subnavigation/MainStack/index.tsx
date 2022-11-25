@@ -1,49 +1,23 @@
-import { View } from "react-native";
-import { Button, Text } from "react-native-paper";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Messages from "~/screens/Messages";
 import Profile from "~/screens/Profile";
-import Vehicles from "~/screens/Vehicles";
+import Rentables from "~/screens/Rentables";
 import Discover from "~/screens/Discover";
 import { Chat } from "~/screens/Messages/chat";
 
 export type RootStackParamList = {
   Home: undefined;
   Discover: undefined;
+  Rentables: undefined;
   Messages: undefined;
   Chat: { chatPartnerId: string };
+  Profile: undefined;
 };
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
-const ProfileScreen = () => {
-  return <Profile />;
-};
-
-const Details_1_Screen = ({ navigation }: any) => {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Details 1</Text>
-      <Button onPress={() => navigation.navigate("Details_2")} mode="contained">
-        To Details 2
-      </Button>
-    </View>
-  );
-};
-
-const Details_2_Screen = ({ navigation }: any) => {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Details 2</Text>
-      <Button onPress={() => navigation.navigate("Discover")} mode="contained">
-        To Discover
-      </Button>
-    </View>
-  );
-};
 
 const BottomNavigation = () => {
   return (
@@ -60,7 +34,7 @@ const BottomNavigation = () => {
       />
       <Tab.Screen
         name="Vehicles"
-        component={Vehicles}
+        component={Rentables}
         options={{
           tabBarLabel: "Vehicles",
           tabBarIcon: ({ color }) => (
@@ -80,7 +54,7 @@ const BottomNavigation = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={Profile}
         options={{
           tabBarLabel: "Profile",
           tabBarIcon: ({ color }) => (
