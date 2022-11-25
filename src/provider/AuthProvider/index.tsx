@@ -6,6 +6,7 @@ import { Profile } from "~/types";
 
 type ContextProps = {
   user: Profile | null | undefined;
+  setUser: (user: Profile | null) => void;
   session: Session | null | undefined;
 };
 
@@ -65,6 +66,7 @@ const AuthProvider = (props: Props) => {
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         session,
       }}
     >
