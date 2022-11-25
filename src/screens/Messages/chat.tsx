@@ -32,15 +32,19 @@ export const Chat = ({ route, navigation }: Props) => {
         setChatPartner(_profile);
       }
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("messages")
         .select("*")
-        // TODO: filter for messages between the two users
-        // .or(`author.eq.${user?.id},author.eq.${route.params.chatPartnerId},recipient.eq.${user?.id}`)
+        .or(
+          `and(author.eq.${user?.id},target.eq.${route.params.chatPartnerId}),and(target.eq.${user?.id},author.eq.${route.params.chatPartnerId})`
+        )
         .order("created_at", { ascending: true });
       if (data) {
         setMessages(data);
       }
+
+      // TODO: show error
+      error && console.error(error);
 
       messagesSubscription = supabase
         .channel("messages")
