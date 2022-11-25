@@ -1,76 +1,21 @@
-export interface Profile {
-  id: string /* primary key */;
-  updated_at?: string;
-  username?: string;
-  full_name?: string;
-  avatar_url?: string;
-}
+import { Database } from "./database.types";
 
-export interface Rentable {
-  id: number /* primary key */;
-  created_at?: string;
-  model?: any; // type unknown;
-  type?: any; // type unknown;
-  fuel?: any; // type unknown;
-  seat_count?: any; // type unknown;
-  cost_per_km?: any; // type unknown;
-  cost_per_minute?: any; // type unknown;
-  longitude?: any; // type unknown;
-  latitude?: any; // type unknown;
-  owner?: string /* foreign key to profiles.id */;
-  street?: any; // type unknown;
-  city?: any; // type unknown;
-  country?: any; // type unknown;
-  additional_infomation?: string;
-  picture?: string;
-  profiles?: Profile;
-}
+export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
-export interface Message {
-  id: number /* primary key */;
-  created_at?: string;
-  target?: string /* foreign key to profiles.id */;
-  author?: string /* foreign key to profiles.id */;
-  message?: string;
-  profiles?: Profile;
-}
+export type User = Profile;
 
-export interface Review {
-  id: number /* primary key */;
-  created_at?: string;
-  target?: string /* foreign key to profiles.id */;
-  author?: string /* foreign key to profiles.id */;
-  message?: string;
-  rating?: any; // type unknown;
-  profiles?: Profile;
-}
+export type Rentable = Database["public"]["Tables"]["rentables"]["Row"];
 
-export interface Trusted_parties {
-  id: number /* primary key */;
-  created_at?: string;
-  name?: any; // type unknown;
-  owner?: string /* foreign key to profiles.id */;
-  profiles?: Profile;
-}
+export type Message = Database["public"]["Tables"]["messages"]["Row"];
 
-export interface Reservations {
-  id: number /* primary key */;
-  created_at?: string;
-  rentable?: number /* foreign key to rentables.id */;
-  borrower?: string /* foreign key to profiles.id */;
-  start?: string;
-  end?: string;
-  rentables?: Rentable;
-  profiles?: Profile;
-}
+export type Review = Database["public"]["Tables"]["reviews"]["Row"];
 
-export interface Trusted_party_members {
-  id: number /* primary key */;
-  created_at?: string;
-  trusted_party_id?: number /* foreign key to trusted_parties.id */;
-  user_id?: string /* foreign key to profiles.id */;
-  trusted_parties?: Trusted_parties;
-  profiles?: Profile;
-}
+export type Trusted_parties =
+  Database["public"]["Tables"]["trusted_parties"]["Row"];
+
+export type Reservations = Database["public"]["Tables"]["reservations"]["Row"];
+
+export type Trusted_party_members =
+  Database["public"]["Tables"]["trusted_party_members"]["Row"];
 
 export * from "./database.types";

@@ -15,7 +15,7 @@ import {
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { supabase } from "~/supabase.ts";
+import { supabase } from "~/supabase";
 import { AuthContext } from "~/provider/AuthProvider";
 
 const styles = StyleSheet.create({

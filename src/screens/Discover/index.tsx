@@ -6,8 +6,12 @@ import { supabase } from "~/supabase";
 import { Rentable } from "~/types";
 import { Button, IconButton, MD3Colors, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-const Discover = () => {
+type Props = NativeStackScreenProps<RootStackParamList, "Discover">;
+
+const Discover = ({ navigation }: Props) => {
   const [location, setLocation] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState<any>(null);
   const [rentables, setRentables] = useState<Rentable[]>([]);
@@ -104,9 +108,19 @@ const Discover = () => {
             Seats: {selectedRentable?.seat_count}
           </Text>
 
-          <Button mode="contained" compact onPress={() => console.log("Rent")}>
-            Rent
-          </Button>
+          {selectedRentable?.owner && (
+            <Button
+              mode="contained"
+              compact
+              onPress={() => {
+                navigation.navigate("Chat", {
+                  chatPartnerId: selectedRentable?.owner!,
+                });
+              }}
+            >
+              Message
+            </Button>
+          )}
         </View>
         <View>
           <IconButton
@@ -134,18 +148,24 @@ const Discover = () => {
           }
         }}
       >
-        {rentables.map((rentable) => (
-          <Marker
-            key={rentable.id}
-            coordinate={{
-              latitude: rentable.latitude,
-              longitude: rentable.longitude,
-            }}
-            onPress={(e) => {
-              setSelectedRentable(rentable);
-            }}
-          />
-        ))}
+        {rentables.map((rentable) => {
+          if (!rentable.longitude || !rentable.latitude) {
+            return null;
+          }
+
+          return (
+            <Marker
+              key={rentable.id}
+              coordinate={{
+                latitude: rentable.latitude,
+                longitude: rentable.longitude,
+              }}
+              onPress={(e) => {
+                setSelectedRentable(rentable);
+              }}
+            />
+          );
+        })}
       </MapView>
       {selectedRentable && <SelectedRentable />}
     </SafeAreaView>

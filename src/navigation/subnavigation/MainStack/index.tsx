@@ -3,16 +3,23 @@ import { Button, Text } from "react-native-paper";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import Messages from "../../../screens/Messages";
-import Profile from "../../../screens/Profile";
-import Vehicles from "../../../screens/Vehicles";
-import Discover from "../../../screens/Discover";
+import Messages from "~/screens/Messages";
+import Profile from "~/screens/Profile";
+import Vehicles from "~/screens/Vehicles";
+import Discover from "~/screens/Discover";
+import { Chat } from "~/screens/Messages/chat";
+
+export type RootStackParamList = {
+  Home: undefined;
+  Discover: undefined;
+  Chat: { chatPartnerId: string };
+};
 
 const Tab = createMaterialBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const DiscoverScreen = () => {
-  return <Discover />;
+const DiscoverScreen = ({ navigation }: any) => {
+  return <Discover navigation={navigation} />;
 };
 
 const VehiclesScreen = ({ navigation }: any) => {
@@ -104,8 +111,7 @@ const MainStack = () => {
         component={BottomNavigation}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Details_1" component={Details_1_Screen} />
-      <Stack.Screen name="Details_2" component={Details_2_Screen} />
+      <Stack.Screen name="Chat" component={Chat} />
     </Stack.Navigator>
   );
 };
