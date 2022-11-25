@@ -12,23 +12,12 @@ import { Chat } from "~/screens/Messages/chat";
 export type RootStackParamList = {
   Home: undefined;
   Discover: undefined;
+  Messages: undefined;
   Chat: { chatPartnerId: string };
 };
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
-const DiscoverScreen = ({ navigation }: any) => {
-  return <Discover navigation={navigation} />;
-};
-
-const VehiclesScreen = ({ navigation }: any) => {
-  return <Vehicles navigation={navigation} />;
-};
-
-const MessagesScreen = () => {
-  return <Messages />;
-};
 
 const ProfileScreen = () => {
   return <Profile />;
@@ -61,7 +50,7 @@ const BottomNavigation = () => {
     <Tab.Navigator initialRouteName="Discover">
       <Tab.Screen
         name="Discover"
-        component={DiscoverScreen}
+        component={Discover}
         options={{
           tabBarLabel: "Discover",
           tabBarIcon: ({ color }) => (
@@ -71,7 +60,7 @@ const BottomNavigation = () => {
       />
       <Tab.Screen
         name="Vehicles"
-        component={VehiclesScreen}
+        component={Vehicles}
         options={{
           tabBarLabel: "Vehicles",
           tabBarIcon: ({ color }) => (
@@ -81,7 +70,7 @@ const BottomNavigation = () => {
       />
       <Tab.Screen
         name="Messages"
-        component={MessagesScreen}
+        component={Messages}
         options={{
           tabBarLabel: "Messages",
           tabBarIcon: ({ color }) => (
