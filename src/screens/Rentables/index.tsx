@@ -123,7 +123,7 @@ const Rentables = ({ navigation }: any) => {
         <FAB
           style={styles.fab}
           icon="plus"
-          onPress={() => navigation.navigate("categories")}
+          onPress={() => navigation.navigate("Loaning")}
         />
       </View>
     );

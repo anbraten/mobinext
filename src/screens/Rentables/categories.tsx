@@ -10,12 +10,12 @@ import {
   } from "react-native-paper";
 
 const btns = [
-    { label: "Auto", value: "details" },
-    { label: "Transporter", value: "details" },
-    { label: "Fahrrad", value: "details" },
-    { label: "Motorrad", value: "details" },
-    { label: "Landwirtschaft", value: "details" },
-    { label: "Andere", value: "details" },
+    { label: "Auto", value: "LoanDetails" },
+    { label: "Transporter", value: "LoanDetails" },
+    { label: "Fahrrad", value: "LoanDetails" },
+    { label: "Motorrad", value: "LoanDetails" },
+    { label: "Landwirtschaft", value: "LoanDetails" },
+    { label: "Andere", value: "LoanDetails" },
 ]
 
 export const Categories = ({ navigation }: any) => {
