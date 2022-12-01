@@ -108,7 +108,19 @@ const Discover = ({ navigation }: Props) => {
             Seats: {selectedRentable?.seat_count}
           </Text>
 
-          {selectedRentable?.owner && (
+          {selectedRentable?.owner && selectedRentable.id === 1 ? (
+            <Button
+              mode="contained"
+              compact
+              onPress={() => {
+                navigation.navigate("Renting", {
+                  selectedRentable: selectedRentable,
+                });
+              }}
+            >
+              Rent
+            </Button>
+          ) : (
             <Button
               mode="contained"
               compact

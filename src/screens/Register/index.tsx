@@ -48,6 +48,11 @@ const Register = ({ navigation }: any) => {
       <TextInput
         label="Email"
         mode="outlined"
+        autoCapitalize="none"
+        autoComplete="email"
+        textContentType="emailAddress"
+        keyboardType="email-address"
+        returnKeyType="next"
         value={email}
         onChangeText={(text) => setEmail(text)}
         style={{ marginBottom: 10 }}
@@ -55,6 +60,7 @@ const Register = ({ navigation }: any) => {
       <TextInput
         label="Password"
         mode="outlined"
+        returnKeyType="done"
         secureTextEntry
         value={password}
         onChangeText={(text) => setPassword(text)}

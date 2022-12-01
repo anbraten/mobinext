@@ -4,6 +4,7 @@ import { userInfo } from "os";
 import { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { AuthContext } from "~/provider/AuthProvider";
@@ -90,7 +91,10 @@ export const Chat = ({ route, navigation }: Props) => {
   }
 
   return (
-    <View style={{ flex: 1, margin: 10 }}>
+    <SafeAreaView
+      style={{ flex: 1, margin: 10 }}
+      edges={["bottom", "left", "right"]}
+    >
       <View style={{ flex: 1 }}>
         {messages.map((message) => (
           <>
@@ -122,6 +126,6 @@ export const Chat = ({ route, navigation }: Props) => {
           Send
         </Button>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };

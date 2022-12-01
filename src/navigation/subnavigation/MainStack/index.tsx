@@ -6,6 +6,8 @@ import Profile from "~/screens/Profile";
 import Rentables from "~/screens/Rentables";
 import Discover from "~/screens/Discover";
 import { Chat } from "~/screens/Messages/chat";
+import Renting from "~/screens/Discover/Renting";
+import { Rentable } from "~/types";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -13,6 +15,7 @@ export type RootStackParamList = {
   Rentables: undefined;
   Messages: undefined;
   Chat: { chatPartnerId: string };
+  Renting: { selectedRentable: Rentable };
   Profile: undefined;
 };
 
@@ -75,6 +78,11 @@ const MainStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="Chat" component={Chat} />
+      <Stack.Screen
+        name="Renting"
+        component={Renting}
+        options={{ title: "Rent a vehicle" }}
+      />
     </Stack.Navigator>
   );
 };
