@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RealtimeChannel } from "@supabase/realtime-js";
 import { useRef, useContext, useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, KeyboardAvoidingView, Platform } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -9,6 +9,7 @@ import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
 import { Message, User } from "~/types";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Chat">;
 
@@ -19,6 +20,7 @@ export const Chat = ({ route, navigation }: Props) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatPartner, setChatPartner] = useState<User>();
   const scrollViewRef = useRef<ScrollView>(null);
+  const headerHeight = useHeaderHeight();
 
   useEffect(() => {
     let messagesSubscription: RealtimeChannel;
@@ -94,65 +96,68 @@ export const Chat = ({ route, navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, margin: 10 }}
-      edges={["bottom", "left", "right"]}
-    >
-      <ScrollView
-        style={{ height: "90%" }}
-        ref={scrollViewRef}
-        onContentSizeChange={() => {
-          scrollViewRef.current?.scrollToEnd();
-        }}
+    <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "position" : undefined}
+        keyboardVerticalOffset={headerHeight}
+        style={{ margin: 10 }}
       >
-        {messages.map((message, i) => (
-          <View
-            key={i}
-            style={{
-              marginTop: 10,
-              display: "flex",
-              flexDirection: "row",
-              alignSelf:
-                message?.author === user?.id ? "flex-end" : "flex-start",
-            }}
-          >
-            <View
-              style={{
-                backgroundColor:
-                  message?.author === user?.id ? "#eadcf9" : "#dddddd",
-                padding: 10,
-                borderRadius: 5,
-              }}
-            >
-              <Text>{message?.message}</Text>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
-
-      <View
-        style={{ flexDirection: "row", alignItems: "center", height: "10%" }}
-      >
-        <TextInput
-          label="Message"
-          mode="outlined"
-          value={messageInput}
-          onChangeText={setMessageInput}
-          onSubmitEditing={() => messageInput && sendMessage()}
-          style={{ flex: 1 }}
-        />
-        <Button
-          onPress={sendMessage}
-          mode="contained"
-          style={{
-            justifyContent: "center",
-            marginLeft: 10,
-            marginVertical: 10,
+        <ScrollView
+          style={{ height: "90%" }}
+          ref={scrollViewRef}
+          onContentSizeChange={() => {
+            scrollViewRef.current?.scrollToEnd();
           }}
         >
-          Send
-        </Button>
-      </View>
+          {messages.map((message, i) => (
+            <View
+              key={i}
+              style={{
+                marginTop: 10,
+                display: "flex",
+                flexDirection: "row",
+                alignSelf:
+                  message?.author === user?.id ? "flex-end" : "flex-start",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor:
+                    message?.author === user?.id ? "#eadcf9" : "#dddddd",
+                  padding: 10,
+                  borderRadius: 5,
+                }}
+              >
+                <Text>{message?.message}</Text>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+
+        <View
+          style={{ flexDirection: "row", alignItems: "center", height: "10%" }}
+        >
+          <TextInput
+            label="Message"
+            mode="outlined"
+            value={messageInput}
+            onChangeText={setMessageInput}
+            onSubmitEditing={() => messageInput && sendMessage()}
+            style={{ flex: 1 }}
+          />
+          <Button
+            onPress={sendMessage}
+            mode="contained"
+            style={{
+              justifyContent: "center",
+              marginLeft: 10,
+              marginVertical: 10,
+            }}
+          >
+            Send
+          </Button>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
