@@ -151,7 +151,7 @@ export const Chat = ({ route, navigation }: Props) => {
             style={{
               justifyContent: "center",
               marginLeft: 10,
-              marginVertical: 10,
+              flexShrink: 0,
             }}
           >
             Send
