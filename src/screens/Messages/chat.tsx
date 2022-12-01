@@ -113,6 +113,7 @@ export const Chat = ({ route, navigation }: Props) => {
             <View
               key={i}
               style={{
+                maxWidth: "70%",
                 marginTop: 10,
                 display: "flex",
                 flexDirection: "row",
