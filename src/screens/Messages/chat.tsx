@@ -53,7 +53,10 @@ export const Chat = ({ route, navigation }: Props) => {
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "messages" },
           (payload) => {
-            setMessages([...messages, payload.new as Message]);
+            setMessages((oldMessages) => [
+              ...oldMessages,
+              payload.new as Message,
+            ]);
           }
         );
 
