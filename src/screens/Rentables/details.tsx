@@ -13,6 +13,7 @@ import { Rentable } from "~/types";
 import * as Location from "expo-location";
 import { LocationObject } from "expo-location";
 import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { manageRentable } from "./utils";
 
 const fuelTypes = [
   { label: "Benzin", value: "gas" },
@@ -33,46 +34,45 @@ const categories = [
 const defaultSeats = 4;
 
 export const Details = ({ route, navigation }: any) => {
-  const { category } = route.params;
+    const { category, currRentable } = route.params;
 
-  useEffect(() => {
-    navigation.setOptions({
-      title: categories.find((c) => c.value === category)?.label || "Details",
-    });
-  }, [navigation]);
+    // const edit = currRentable !== undefined;
+    const [rentable, setRentable] = React.useState<Partial <Rentable>>(currRentable || {}); 
+    const [visible, setVisible] = React.useState(false);
+    const [seats, setSeats] = React.useState<string>(defaultSeats.toString());
+    const [costMinute, setCostMinute] = React.useState<string>(rentable.cost_per_minute?.toString() || "0");
+    const [costKm, setCostKm] = React.useState<string>(rentable.cost_per_km?.toString() || "0");
+    const [locationAddress, setLocationAddress] = useState<Location.LocationGeocodedAddress[]>();
 
-  const [rentable, setRentable] = React.useState<Partial<Rentable>>({});
-  const [visible, setVisible] = React.useState(false);
-  const [seats, setSeats] = React.useState<string>(defaultSeats.toString());
-  const [costMinute, setCostMinute] = React.useState<string>("0");
-  const [costKilometer, setCostKilometer] = React.useState<string>("0");
-  const [locationAddress, setLocationAddress] =
-    useState<Location.LocationGeocodedAddress[]>();
+    rentable.type = rentable.type || category;
+    rentable.seat_count = rentable.seat_count || defaultSeats;
 
-  useEffect(() => {
-    if (rentable?.latitude && rentable?.longitude) {
-      const coords = {
-        latitude: rentable.latitude,
-        longitude: rentable.longitude,
-      };
-      const { latitude, longitude } = coords;
+    
+    useEffect(() => {
+      navigation.setOptions({ title: categories.find(c => c.value === rentable.type)?.label || "Details" });
+    }, [navigation]);
 
-      const getAdress = async () => {
-        const response = await Location.reverseGeocodeAsync({
-          latitude,
-          longitude,
-        });
-        if (response) {
-          setLocationAddress(response);
-        }
-      };
-
-      getAdress();
-    }
-  }, [rentable]);
-
-  rentable.type = category;
-  rentable.seat_count = rentable.seat_count || defaultSeats;
+    useEffect(() => {
+      if (rentable?.latitude && rentable?.longitude) {
+        const coords = {
+          latitude: rentable.latitude,
+          longitude: rentable.longitude,
+        };
+        const { latitude, longitude } = coords;
+  
+        const getAdress = async () => {
+          const response = await Location.reverseGeocodeAsync({
+            latitude,
+            longitude,
+          });
+          if (response) {
+            setLocationAddress(response);
+          }
+        };  
+        getAdress();
+      }
+    }, [rentable]);
+  
 
   return (
     <ScrollView style={{ margin: "5%" }}>
@@ -157,13 +157,13 @@ export const Details = ({ route, navigation }: any) => {
       <View style={{ width: "100%", marginBottom: 10 }}>
         <Text variant="titleMedium">Kosten pro Kilometer:</Text>
         <TextInput
-          onChangeText={(text) => setCostKilometer(text)}
-          value={costKilometer}
+          onChangeText={(text) => setCostKm(text)}
+          value={costKm}
           mode="outlined"
           keyboardType="numeric"
           returnKeyType="done"
           onEndEditing={() =>
-            setRentable({ ...rentable, cost_per_km: parseFloat(costKilometer) })
+            setRentable({ ...rentable, cost_per_km: parseFloat(costKm) })
           }
           dense={true}
         ></TextInput>
