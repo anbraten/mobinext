@@ -17,6 +17,9 @@ const btns = [
 export const Categories = ({ navigation }: any) => {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", height: "100%", width: "100%"}}>
+        <Text variant="titleMedium" style={{ marginTop: 10, marginBottom: 5 }}>
+          Wählen Sie eine Fahrzeugkategorie:
+        </Text>
         <FlatList
             // first one to center the 6 buttons
             // style={{ width: "100%", height: "auto", flexGrow: 0, flexShrink: 1, flexBasis: "auto" }}

@@ -42,6 +42,7 @@ export const Details = ({ route, navigation }: any) => {
     const [seats, setSeats] = React.useState<string>(defaultSeats.toString());
     const [costMinute, setCostMinute] = React.useState<string>(rentable.cost_per_minute?.toString() || "0");
     const [costKm, setCostKm] = React.useState<string>(rentable.cost_per_km?.toString() || "0");
+    const [locationAddress, setLocationAddress] = useState<Location.LocationGeocodedAddress[]>();
 
     rentable.type = rentable.type || category;
     rentable.seat_count = rentable.seat_count || defaultSeats;
@@ -50,6 +51,28 @@ export const Details = ({ route, navigation }: any) => {
     useEffect(() => {
       navigation.setOptions({ title: categories.find(c => c.value === rentable.type)?.label || "Details" });
     }, [navigation]);
+
+    useEffect(() => {
+      if (rentable?.latitude && rentable?.longitude) {
+        const coords = {
+          latitude: rentable.latitude,
+          longitude: rentable.longitude,
+        };
+        const { latitude, longitude } = coords;
+  
+        const getAdress = async () => {
+          const response = await Location.reverseGeocodeAsync({
+            latitude,
+            longitude,
+          });
+          if (response) {
+            setLocationAddress(response);
+          }
+        };
+  
+        getAdress();
+      }
+    }, [rentable]);
 
     return (
       <View style={{ margin: "5%" }}>
@@ -86,6 +109,15 @@ export const Details = ({ route, navigation }: any) => {
 
         <View style={{width: "100%", marginBottom: 10 }}>
           <Text variant="titleMedium">Fahrzeug Standort:</Text>
+          <Text variant="bodyMedium" style={{ marginBottom: 10 }}>
+            {locationAddress && locationAddress?.[0]
+              ? `${
+                  locationAddress[0]?.street || locationAddress[0]?.name || ""
+                } ${locationAddress[0]?.streetNumber || ""}, ${
+                  locationAddress[0]?.postalCode
+                } ${locationAddress[0]?.city}`
+              : "Aktuell ist noch kein Standort ausgewählt. Bitte wählen Sie einen aus."}
+          </Text>
           <Button mode="contained" onPress={() => setVisible(true)}>Pick Location</Button>
         </View>
         <MapDialog visible={visible} setVisible={setVisible} rentable={rentable} setRentable={setRentable} />

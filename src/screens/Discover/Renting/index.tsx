@@ -180,7 +180,7 @@ const Renting = ({ route, navigation }: Props) => {
               variant="titleSmall"
               style={{ marginLeft: 10, alignSelf: "center" }}
             >
-              {selectedRentable?.additional_infomation || "N/A"}
+              {selectedRentable?.additional_information || "N/A"}
             </Text>
           </View>
         </View>
