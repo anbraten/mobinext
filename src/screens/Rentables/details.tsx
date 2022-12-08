@@ -183,25 +183,12 @@ export const Details = ({ route, navigation }: any) => {
         ></TextInput>
       </View>
 
-      <Button onPress={() => createRentable(rentable)} mode="contained">
-        Fahrzeug erstellen
+      <Button onPress={() => manageRentable(rentable, navigation)} mode="contained">
+        {currRentable ? 'Fahrzeug aktualisieren' : 'Fahrzeug erstellen'}
       </Button>
     </ScrollView>
   );
 };
-
-async function createRentable(rentable: Partial<Rentable>) {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  rentable.owner = user?.id as string;
-  const { data, error, status } = await supabase
-    .from("rentables")
-    .insert([rentable]);
-
-  console.log(error, status);
-}
 
 const MapDialog = ({
   visible,
