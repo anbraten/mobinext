@@ -129,7 +129,7 @@ const Messages = ({ navigation }: Props) => {
                 ) : (
                   <Avatar.Text
                     size={65}
-                    label={chat.partner.full_name?.at(0) || `U${i}`}
+                    label={chat.partner.full_name?.[0] || `U${i}`}
                   />
                 )}
 
