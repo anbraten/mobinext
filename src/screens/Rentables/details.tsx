@@ -33,20 +33,22 @@ const categories = [
 const defaultSeats = 4;
 
 export const Details = ({ route, navigation }: any) => {
-    const { category } = route.params;
+    const { category, currRentable } = route.params;
 
-    useEffect(() => {
-      navigation.setOptions({ title: categories.find(c => c.value === category)?.label || "Details" });
-    }, [navigation]);
-
-    const [rentable, setRentable] = React.useState<Partial <Rentable>>({});
+    // const edit = currRentable !== undefined;
+    const [rentable, setRentable] = React.useState<Partial <Rentable>>(currRentable || {}); 
     const [visible, setVisible] = React.useState(false);
     const [seats, setSeats] = React.useState<string>(defaultSeats.toString());
-    const [costMinute, setCostMinute] = React.useState<string>("0");
-    const [costKilometer, setCostKilometer] = React.useState<string>("0");
+    const [costMinute, setCostMinute] = React.useState<string>(rentable.cost_per_minute?.toString() || "0");
+    const [costKm, setCostKm] = React.useState<string>(rentable.cost_per_km?.toString() || "0");
 
-    rentable.type = category;
+    rentable.type = rentable.type || category;
     rentable.seat_count = rentable.seat_count || defaultSeats;
+
+    
+    useEffect(() => {
+      navigation.setOptions({ title: categories.find(c => c.value === rentable.type)?.label || "Details" });
+    }, [navigation]);
 
     return (
       <View style={{ margin: "5%" }}>
@@ -101,10 +103,10 @@ export const Details = ({ route, navigation }: any) => {
         <View style={{width: "100%", marginBottom: 10 }}>
           <Text variant="titleMedium">Kosten pro Kilometer:</Text>
           <TextInput
-            onChangeText={(text) => setCostKilometer(text)}
-            value={costKilometer}
+            onChangeText={(text) => setCostKm(text)}
+            value={costKm}
             keyboardType="numeric"
-            onEndEditing={() => setRentable({...rentable, cost_per_km: parseFloat(costKilometer)})}
+            onEndEditing={() => setRentable({...rentable, cost_per_km: parseFloat(costKm)})}
             dense={true}
             ></TextInput>
         </View>
@@ -119,25 +121,26 @@ export const Details = ({ route, navigation }: any) => {
             dense={true}
             ></TextInput>
         </View>
-        
-        <Button onPress={() => createRentable(rentable)} mode="contained">
-          Fahrzeug erstellen
+
+        <Button onPress={() => manageRentable(rentable, navigation)} mode="contained">
+          {currRentable ? 'Fahrzeug aktualisieren' : 'Fahrzeug erstellen'}
         </Button>
       </View>
     );
   };
 
-async function createRentable(rentable: Partial <Rentable>) {
+async function manageRentable(rentable: Partial <Rentable>, navigation: any) {
   const { data: { user } } = await supabase.auth.getUser()
 
   rentable.owner = user?.id as string;
   const { data, error, status } = await supabase
   .from('rentables')
-  .insert([
+  .upsert([
     rentable
   ])
 
   console.log(error, status);
+  navigation.navigate("CreateResult", { rentable, success: status === 201 });
 }
 
 const MapDialog = ({ visible, setVisible, rentable, setRentable }: {rentable: Partial <Rentable>, setRentable: (rentable: Partial <Rentable>) => void, visible: boolean, setVisible: (visible: boolean) => void}) => {

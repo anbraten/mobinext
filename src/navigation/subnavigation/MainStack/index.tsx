@@ -10,6 +10,7 @@ import Renting from "~/screens/Discover/Renting";
 import { Rentable } from "~/types";
 import { Categories } from "~/screens/Rentables/categories";
 import { Details } from "~/screens/Rentables/details";
+import { Create } from "~/screens/Rentables/create";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -21,6 +22,7 @@ export type RootStackParamList = {
   Profile: undefined;
   Loaning: undefined;
   LoanDetails: undefined;
+  CreateResult: undefined;
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -96,6 +98,11 @@ const MainStack = () => {
         name="LoanDetails"
         component={Details}
         options={{ title: "Details" }}
+      />
+      <Stack.Screen
+        name="CreateResult"
+        component={Create}
+        options={{ headerShown: false, headerLeft: () => null }}
       />
     </Stack.Navigator>
   );
