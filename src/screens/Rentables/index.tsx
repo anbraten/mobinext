@@ -105,7 +105,13 @@ const Rentables = ({ navigation }: any) => {
       <View style={{ flex: 1 }}>
         <ScrollView style={{ padding: 15 }}>
           {rentables?.map((rentable, i) => (
-            <Card style={{ marginBottom: 10 }} key={i} onPress={() => navigation.navigate("LoanDetails", { currRentable: rentable }, )}  >
+            <Card
+              style={{ marginBottom: 10 }}
+              key={i}
+              onPress={() =>
+                navigation.navigate("LoanDetails", { currRentable: rentable })
+              }
+            >
               <Card.Content
                 style={{
                   display: "flex",
@@ -128,6 +134,7 @@ const Rentables = ({ navigation }: any) => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
+                    alignSelf: "center",
                   }}
                 >
                   <Button mode="contained" compact>
