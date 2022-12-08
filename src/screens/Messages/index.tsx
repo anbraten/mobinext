@@ -121,7 +121,18 @@ const Messages = ({ navigation }: Props) => {
                   alignItems: "center",
                 }}
               >
-                <Avatar.Text size={65} label="U1" />
+                {chat.partner?.avatar_url ? (
+                  <Avatar.Image
+                    size={65}
+                    source={{ uri: chat.partner.avatar_url }}
+                  />
+                ) : (
+                  <Avatar.Text
+                    size={65}
+                    label={chat.partner.full_name?.at(0) || `U${i}`}
+                  />
+                )}
+
                 <View style={{ marginLeft: 15 }}>
                   <Title>{chat.partner.full_name}</Title>
                   <Text
