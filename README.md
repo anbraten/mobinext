@@ -22,3 +22,21 @@ This project was bootstrapped with [Create Expo App w/ Typescript](https://docs.
 - Expo Go app:
   - [Android](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=de&gl=US)
   - [iOS](https://apps.apple.com/de/app/expo-go/id982107779)
+
+## Roadmap
+
+- [x] show rentables on map
+- [ ] update rentables on map (location)
+- [ ] reserve rentable
+- [ ] show my reserved rentables
+- [ ] show photos of rentables
+- [ ] cancel reservation
+- [ ] start reservation
+- [ ] end reservation
+- [ ] contact owner of rented rentable
+- [ ] show own rentables
+- [ ] add new rentable
+- [ ] edit own rentable
+- [ ] upload photos for rentables
+- [ ] get push notifications for new reservations (request)
+- [ ] show reservations of my rentables
