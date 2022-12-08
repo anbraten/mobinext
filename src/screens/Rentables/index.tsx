@@ -1,3 +1,4 @@
+import { RealtimeChannel } from "@supabase/realtime-js";
 import { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import {
@@ -68,26 +69,49 @@ const Rentables = ({ navigation }: any) => {
   const LoanedRentables = () => {
     const [rentables, setRentables] = useState<Rentable[]>();
 
+    let rentablesSubscription: RealtimeChannel;
+
+    
     useEffect(() => {
       (async () => {
         const { data, error } = await supabase
           .from("rentables")
           .select("*")
           .eq("owner", user?.id);
+
         if (data) {
           setRentables(data);
         }
 
-        // TODO: show error
-        error && console.error(error);
+        rentablesSubscription = supabase
+        .channel('rentables')
+        .on(
+          'postgres_changes',
+          { event: "*", schema: 'public', table: 'rentables', filter: `owner=eq.${user?.id}` },
+          (payload) => {
+            setRentables((oldRentables) => [...oldRentables as Rentable[], payload.new as Rentable]);
+          }
+        )
+        .subscribe();
       })();
+      
+      return () => {
+        rentablesSubscription.unsubscribe();
+      };
     }, []);
+    
 
     return (
       <View style={{ flex: 1 }}>
         <ScrollView style={{ padding: 15 }}>
           {rentables?.map((rentable, i) => (
-            <Card style={{ marginBottom: 10 }} key={i}>
+            <Card
+              style={{ marginBottom: 10 }}
+              key={i}
+              onPress={() =>
+                navigation.navigate("LoanDetails", { currRentable: rentable })
+              }
+            >
               <Card.Content
                 style={{
                   display: "flex",
@@ -110,6 +134,7 @@ const Rentables = ({ navigation }: any) => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
+                    alignSelf: "center",
                   }}
                 >
                   <Button mode="contained" compact>
@@ -123,7 +148,7 @@ const Rentables = ({ navigation }: any) => {
         <FAB
           style={styles.fab}
           icon="plus"
-          onPress={() => navigation.navigate("Details_1")}
+          onPress={() => navigation.navigate("Loaning")}
         />
       </View>
     );

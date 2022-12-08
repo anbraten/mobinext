@@ -9,6 +9,7 @@ import { AuthContext } from "~/provider/AuthProvider";
 import { Message, User } from "~/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
+import moment from "moment";
 
 type Chat = {
   partner: User;
@@ -120,7 +121,18 @@ const Messages = ({ navigation }: Props) => {
                   alignItems: "center",
                 }}
               >
-                <Avatar.Text size={65} label="U1" />
+                {chat.partner?.avatar_url ? (
+                  <Avatar.Image
+                    size={65}
+                    source={{ uri: chat.partner.avatar_url }}
+                  />
+                ) : (
+                  <Avatar.Text
+                    size={65}
+                    label={chat.partner.full_name?.at(0) || `U${i}`}
+                  />
+                )}
+
                 <View style={{ marginLeft: 15 }}>
                   <Title>{chat.partner.full_name}</Title>
                   <Text
@@ -134,7 +146,7 @@ const Messages = ({ navigation }: Props) => {
                 </View>
               </View>
               <Text variant="bodyLarge" style={{ flex: 1, textAlign: "right" }}>
-                10 minutes ago
+                {moment(chat.lastMessage.created_at).format("DD.MM.YY HH:mm")}
               </Text>
               <Ionicons
                 name="chevron-forward"

@@ -4,7 +4,13 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import { supabase } from "~/supabase";
 import { Rentable } from "~/types";
-import { Button, IconButton, MD3Colors, Text } from "react-native-paper";
+import {
+  Avatar,
+  Button,
+  IconButton,
+  MD3Colors,
+  Text,
+} from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -69,13 +75,8 @@ const Discover = ({ navigation }: Props) => {
           justifyContent: "space-between",
         }}
       >
-        <View>
-          <IconButton
-            mode="outlined"
-            icon="car"
-            iconColor={MD3Colors.neutral50}
-            size={25}
-          />
+        <View style={{ margin: 3 }}>
+          <Avatar.Icon size={50} icon="car" />
         </View>
         <View
           style={{

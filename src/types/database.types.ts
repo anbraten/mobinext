@@ -71,7 +71,7 @@ export interface Database {
           longitude: number | null;
           latitude: number | null;
           owner: string | null;
-          additional_infomation: string | null;
+          additional_information: string | null;
           picture: string | null;
         };
         Insert: {
