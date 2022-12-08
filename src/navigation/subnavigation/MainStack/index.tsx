@@ -90,12 +90,12 @@ const MainStack = () => {
       <Stack.Screen
         name="Loaning"
         component={Categories}
-        options={{ title: "Loan a vehicle" }}
+        options={{ title: "Fahrzeug erstellen" }}
       />
       <Stack.Screen
         name="LoanDetails"
         component={Details}
-        options={{ title: "Vehicle Details" }}
+        options={{ title: "Details" }}
       />
     </Stack.Navigator>
   );

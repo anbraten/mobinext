@@ -34,7 +34,10 @@ const defaultSeats = 4;
 
 export const Details = ({ route, navigation }: any) => {
     const { category } = route.params;
-    navigation.setOptions({ title: categories.find(c => c.value === category)?.label || "Details" });
+
+    useEffect(() => {
+      navigation.setOptions({ title: categories.find(c => c.value === category)?.label || "Details" });
+    }, [navigation]);
 
     const [rentable, setRentable] = React.useState<Partial <Rentable>>({});
     const [visible, setVisible] = React.useState(false);
@@ -117,14 +120,14 @@ export const Details = ({ route, navigation }: any) => {
             ></TextInput>
         </View>
         
-        <Button onPress={() => createCar(rentable)} mode="contained">
-          Create Rentable
+        <Button onPress={() => createRentable(rentable)} mode="contained">
+          Fahrzeug erstellen
         </Button>
       </View>
     );
   };
 
-async function createCar(rentable: Partial <Rentable>) {
+async function createRentable(rentable: Partial <Rentable>) {
   const { data: { user } } = await supabase.auth.getUser()
 
   rentable.owner = user?.id as string;
@@ -158,7 +161,6 @@ const MapDialog = ({ visible, setVisible, rentable, setRentable }: {rentable: Pa
   }, []);
 
   useEffect(() => {
-    console.log("My location", location);
     if (location) {
       // map.animateToRegion({
       //   latitude: location?.coords?.latitude,

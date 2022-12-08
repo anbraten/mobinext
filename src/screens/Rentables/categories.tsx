@@ -1,13 +1,8 @@
 import React from "react";
 import { View, StyleSheet, ScrollView, FlatList, Pressable } from "react-native";
 import {
-    Avatar,
     Text,
-    FAB,
-    Card,
     Button,
-    SegmentedButtons,
-    TouchableRipple,
   } from "react-native-paper";
 
 const btns = [
@@ -20,8 +15,6 @@ const btns = [
 ]
 
 export const Categories = ({ navigation }: any) => {
-    navigation.setOptions({ title: "Fahrzeug erstellen" });
-
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", height: "100%", width: "100%"}}>
         <FlatList
@@ -32,7 +25,8 @@ export const Categories = ({ navigation }: any) => {
             data={btns}
             renderItem={({ item }) => (
                 <View style={{ width: "45%", aspectRatio: 1/1, marginHorizontal: "2.5%", marginVertical: "2.5%", flex:1 , justifyContent: "center", alignItems: "center"}}>
-                  <Button mode="contained" onPress={() => navigation.navigate(item.route, {'category': item.value})} contentStyle={{ width: "100%", aspectRatio: 1/1 }}>
+                  <Button mode="contained" onPress={() => navigation.navigate(item.route, {'category': item.value }, )} 
+                  contentStyle={{ width: "100%", aspectRatio: 1/1 }}>
                         <Text style={{ color: "white" }}>{item.label}</Text>
                   </Button>
                 </View>
