@@ -9,6 +9,7 @@ import { AuthContext } from "~/provider/AuthProvider";
 import { Message, User } from "~/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
+import moment from "moment";
 
 type Chat = {
   partner: User;
@@ -134,7 +135,7 @@ const Messages = ({ navigation }: Props) => {
                 </View>
               </View>
               <Text variant="bodyLarge" style={{ flex: 1, textAlign: "right" }}>
-                10 minutes ago
+                {moment(chat.lastMessage.created_at).format("DD.MM.YY HH:mm")}
               </Text>
               <Ionicons
                 name="chevron-forward"
