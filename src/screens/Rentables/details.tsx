@@ -34,62 +34,54 @@ const categories = [
 const defaultSeats = 4;
 
 export const Details = ({ route, navigation }: any) => {
-  const { category, currRentable } = route.params;
+    const { category, currRentable } = route.params;
 
-  // const edit = currRentable !== undefined;
-  const [rentable, setRentable] = React.useState<Partial<Rentable>>(
-    currRentable || {}
-  );
-  const [visible, setVisible] = React.useState(false);
-  const [seats, setSeats] = React.useState<string>(defaultSeats.toString());
-  const [costMinute, setCostMinute] = React.useState<string>(
-    rentable.cost_per_minute?.toString() || "0"
-  );
-  const [costKm, setCostKm] = React.useState<string>(
-    rentable.cost_per_km?.toString() || "0"
-  );
-  const [locationAddress, setLocationAddress] =
-    useState<Location.LocationGeocodedAddress[]>();
+    // const edit = currRentable !== undefined;
+    const [rentable, setRentable] = React.useState<Partial <Rentable>>(currRentable || {}); 
+    const [visible, setVisible] = React.useState(false);
+    const [seats, setSeats] = React.useState<string>(defaultSeats.toString());
+    const [costMinute, setCostMinute] = React.useState<string>(rentable.cost_per_minute?.toString() || "0");
+    const [costKm, setCostKm] = React.useState<string>(rentable.cost_per_km?.toString() || "0");
+    const [locationAddress, setLocationAddress] = useState<Location.LocationGeocodedAddress[]>();
 
-  rentable.type = rentable.type || category;
-  rentable.seat_count = rentable.seat_count || defaultSeats;
+    rentable.type = rentable.type || category;
+    rentable.seat_count = rentable.seat_count || defaultSeats;
 
-  useEffect(() => {
-    navigation.setOptions({
-      title:
-        categories.find((c) => c.value === rentable.type)?.label || "Details",
-    });
-  }, [navigation]);
+    
+    useEffect(() => {
+      navigation.setOptions({ title: categories.find(c => c.value === rentable.type)?.label || "Details" });
+    }, [navigation]);
 
-  useEffect(() => {
-    if (rentable?.latitude && rentable?.longitude) {
-      const coords = {
-        latitude: rentable.latitude,
-        longitude: rentable.longitude,
-      };
-      const { latitude, longitude } = coords;
-
-      const getAdress = async () => {
-        const response = await Location.reverseGeocodeAsync({
-          latitude,
-          longitude,
-        });
-        if (response) {
-          setLocationAddress(response);
-        }
-      };
-
-      getAdress();
-    }
-  }, [rentable]);
+    useEffect(() => {
+      if (rentable?.latitude && rentable?.longitude) {
+        const coords = {
+          latitude: rentable.latitude,
+          longitude: rentable.longitude,
+        };
+        const { latitude, longitude } = coords;
+  
+        const getAdress = async () => {
+          const response = await Location.reverseGeocodeAsync({
+            latitude,
+            longitude,
+          });
+          if (response) {
+            setLocationAddress(response);
+          }
+        };  
+        getAdress();
+      }
+    }, [rentable]);
+  
 
   return (
-    <View style={{ margin: "5%" }}>
+    <ScrollView style={{ margin: "5%" }}>
       <View style={{ width: "100%", marginBottom: 10 }}>
         <Text variant="titleMedium">Modell:</Text>
         <TextInput
           onChangeText={(text) => setRentable({ ...rentable, model: text })}
           value={rentable.model || ""}
+          mode="outlined"
           dense={true}
         ></TextInput>
       </View>
@@ -99,7 +91,9 @@ export const Details = ({ route, navigation }: any) => {
         <TextInput
           onChangeText={(text) => setSeats(text)}
           value={seats}
+          mode="outlined"
           keyboardType="numeric"
+          returnKeyType="done"
           maxLength={2}
           onEndEditing={() =>
             setRentable({ ...rentable, seat_count: parseInt(seats) })
@@ -132,7 +126,7 @@ export const Details = ({ route, navigation }: any) => {
             : "Aktuell ist noch kein Standort ausgewählt. Bitte wählen Sie einen aus."}
         </Text>
         <Button mode="contained" onPress={() => setVisible(true)}>
-          Pick Location
+          Standort auswählen
         </Button>
       </View>
       <MapDialog
@@ -147,7 +141,9 @@ export const Details = ({ route, navigation }: any) => {
         <TextInput
           onChangeText={(text) => setCostMinute(text)}
           value={costMinute}
+          mode="outlined"
           keyboardType="numeric"
+          returnKeyType="done"
           onEndEditing={() =>
             setRentable({
               ...rentable,
@@ -163,7 +159,9 @@ export const Details = ({ route, navigation }: any) => {
         <TextInput
           onChangeText={(text) => setCostKm(text)}
           value={costKm}
+          mode="outlined"
           keyboardType="numeric"
+          returnKeyType="done"
           onEndEditing={() =>
             setRentable({ ...rentable, cost_per_km: parseFloat(costKm) })
           }
@@ -176,6 +174,7 @@ export const Details = ({ route, navigation }: any) => {
         <TextInput
           multiline
           numberOfLines={5}
+          mode="outlined"
           onChangeText={(text) =>
             setRentable({ ...rentable, additional_information: text })
           }
@@ -184,15 +183,25 @@ export const Details = ({ route, navigation }: any) => {
         ></TextInput>
       </View>
 
-      <Button
-        onPress={() => manageRentable(rentable, navigation)}
-        mode="contained"
-      >
-        {currRentable ? "Fahrzeug aktualisieren" : "Fahrzeug erstellen"}
+      <Button onPress={() => createRentable(rentable)} mode="contained">
+        Fahrzeug erstellen
       </Button>
-    </View>
+    </ScrollView>
   );
 };
+
+async function createRentable(rentable: Partial<Rentable>) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  rentable.owner = user?.id as string;
+  const { data, error, status } = await supabase
+    .from("rentables")
+    .insert([rentable]);
+
+  console.log(error, status);
+}
 
 const MapDialog = ({
   visible,
@@ -258,7 +267,7 @@ const MapDialog = ({
                 setMarker(e.nativeEvent.coordinate);
               }}
             >
-              {marker && <Marker coordinate={marker} title="Marker" />}
+              {marker && <Marker coordinate={marker} />}
             </MapView>
           )}
         </Dialog.Content>
