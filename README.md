@@ -34,9 +34,9 @@ This project was bootstrapped with [Create Expo App w/ Typescript](https://docs.
 - [ ] start reservation
 - [ ] end reservation
 - [ ] contact owner of rented rentable
-- [ ] show own rentables
-- [ ] add new rentable
-- [ ] edit own rentable
+- [x] show own rentables
+- [x] add new rentable
+- [x] edit own rentable
 - [ ] upload photos for rentables
 - [ ] get push notifications for new reservations (request)
 - [ ] show reservations of my rentables
