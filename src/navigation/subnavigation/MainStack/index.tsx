@@ -95,7 +95,7 @@ const MainStack = () => {
       <Stack.Screen
         name="LoanDetails"
         component={Details}
-        options={{ title: "Details" }}
+        options={{ title: "Details", headerBackTitle: "Back" }}
       />
     </Stack.Navigator>
   );
