@@ -13,6 +13,7 @@ import { Rentable } from "~/types";
 import * as Location from 'expo-location';
 import { LocationObject } from "expo-location";
 import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { manageRentable } from "./utils";
 
 const fuelTypes = [
     { label: "Benzin", value: "gas" },
@@ -128,20 +129,6 @@ export const Details = ({ route, navigation }: any) => {
       </View>
     );
   };
-
-async function manageRentable(rentable: Partial <Rentable>, navigation: any) {
-  const { data: { user } } = await supabase.auth.getUser()
-
-  rentable.owner = user?.id as string;
-  const { data, error, status } = await supabase
-  .from('rentables')
-  .upsert([
-    rentable
-  ])
-
-  console.log(error, status);
-  navigation.navigate("CreateResult", { rentable, success: status === 201 });
-}
 
 const MapDialog = ({ visible, setVisible, rentable, setRentable }: {rentable: Partial <Rentable>, setRentable: (rentable: Partial <Rentable>) => void, visible: boolean, setVisible: (visible: boolean) => void}) => {
   const [location, setLocation] = useState<LocationObject|null>(null);

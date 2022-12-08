@@ -1,12 +1,7 @@
 import React from "react";
-import { View, StyleSheet, ScrollView, FlatList, Pressable } from "react-native";
-import {
-    Text,
-    Button,
-  } from "react-native-paper";
-
-import { RouteProp, NavigationProp } from '@react-navigation/native';
-import { Rentable } from "~/types";
+import { View } from "react-native";
+import { Text, Button, } from "react-native-paper";
+import { manageRentable } from "./utils";
 
 export const Create = ({ route, navigation }: any) => {
     const { rentable, success } = route.params;
@@ -16,7 +11,8 @@ export const Create = ({ route, navigation }: any) => {
         <Text>
             {rentable.model}{success ? " wurde erfolgreich erstellt/aktualisiert" : " wurde nicht erfolgreich erstellt/aktualisiert"}
         </Text>
-        <Button mode="contained" onPress={() => navigation.navigate("Vehicles")}>Zurück zu den Fahrzeugen</Button>
+        {(!success && <Button mode="contained" onPress={() => manageRentable(rentable, navigation)} style={{marginTop: 10}}>Erneut erstellen</Button>)}
+        <Button mode="contained" onPress={() => navigation.navigate("Vehicles")} style={{marginTop: 10}}>Zurück zu den Fahrzeugen</Button>
       </View>
     );
   };
