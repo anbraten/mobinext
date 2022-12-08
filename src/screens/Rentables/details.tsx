@@ -32,9 +32,9 @@ const categories = [
 
 const defaultSeats = 4;
 
-export const Details = ({ navigation }: any) => {
-  const { category } = navigation.getState().routes[navigation.getState().index].params;
-  navigation.setOptions({ title: categories.find(c => c.value === category)?.label || "Details" });
+export const Details = ({ route, navigation }: any) => {
+    const { category } = route.params;
+    navigation.setOptions({ title: categories.find(c => c.value === category)?.label || "Details" });
 
     const [rentable, setRentable] = React.useState<Partial <Rentable>>({});
     const [visible, setVisible] = React.useState(false);
