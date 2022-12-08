@@ -9,8 +9,7 @@
             "request": "launch",
             "runtimeArgs": [
                 "expo",
-                "start",
-                "--localhost"
+                "start"
             ],
             "runtimeExecutable": "npx",
             "skipFiles": [

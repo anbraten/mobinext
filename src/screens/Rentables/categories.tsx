@@ -10,12 +10,12 @@ import {
   } from "react-native-paper";
 
 const btns = [
-    { label: "Auto", value: "LoanDetails" },
-    { label: "Transporter", value: "LoanDetails" },
-    { label: "Fahrrad", value: "LoanDetails" },
-    { label: "Motorrad", value: "LoanDetails" },
-    { label: "Landwirtschaft", value: "LoanDetails" },
-    { label: "Andere", value: "LoanDetails" },
+    { label: "Auto", route: "LoanDetails", value: "car" },
+    { label: "Transporter", route: "LoanDetails", value: "transporter" },
+    { label: "Fahrrad", route: "LoanDetails", value: "bicycle" },
+    { label: "Motorrad", route: "LoanDetails", value: "motorbike" },
+    { label: "Landwirtschaft", route: "LoanDetails", value: "agriculture" },
+    { label: "Andere", route: "LoanDetails", value: "other" },
 ]
 
 export const Categories = ({ navigation }: any) => {
@@ -26,7 +26,7 @@ export const Categories = ({ navigation }: any) => {
             numColumns={2}
             data={btns}
             renderItem={({ item }) => (
-                <Pressable onPress={() => navigation.navigate(item.value)} style={{ width: "45%", aspectRatio: 1/1, marginHorizontal: "2.5%", marginVertical: "2.5%", flex:1 , justifyContent: "center", alignItems: "center"}}>
+                <Pressable onPress={() => navigation.navigate(item.route, {'category': item.value})} style={{ width: "45%", aspectRatio: 1/1, marginHorizontal: "2.5%", marginVertical: "2.5%", flex:1 , justifyContent: "center", alignItems: "center"}}>
                     <Text>{item.label}</Text>
                 </Pressable>
             )}
