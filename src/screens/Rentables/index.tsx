@@ -1,3 +1,4 @@
+import { RealtimeChannel } from "@supabase/realtime-js";
 import { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import {
@@ -68,20 +69,37 @@ const Rentables = ({ navigation }: any) => {
   const LoanedRentables = () => {
     const [rentables, setRentables] = useState<Rentable[]>();
 
+    let rentablesSubscription: RealtimeChannel;
+
+    
     useEffect(() => {
       (async () => {
         const { data, error } = await supabase
           .from("rentables")
           .select("*")
           .eq("owner", user?.id);
+
         if (data) {
           setRentables(data);
         }
 
-        // TODO: show error
-        error && console.error(error);
+        rentablesSubscription = supabase
+        .channel('rentables')
+        .on(
+          'postgres_changes',
+          { event: "*", schema: 'public', table: 'rentables', filter: `owner=eq.${user?.id}` },
+          (payload) => {
+            setRentables((oldRentables) => [...oldRentables as Rentable[], payload.new as Rentable]);
+          }
+        )
+        .subscribe();
       })();
+      
+      return () => {
+        rentablesSubscription.unsubscribe();
+      };
     }, []);
+    
 
     return (
       <View style={{ flex: 1 }}>
