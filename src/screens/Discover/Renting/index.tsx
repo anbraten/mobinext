@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { Rentable } from "~/types";
+import { supabase } from "~/supabase";
 import { View, ScrollView } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -21,8 +22,13 @@ const Renting = ({ route, navigation }: Props) => {
   const [selectedRentable, setSelectedRentable] = useState<Rentable>(
     route.params.selectedRentable
   );
-  const [startDate, setStartDate] = useState(new Date());
-  const [startTime, setStartTime] = useState(new Date());
+
+  const [startDateTime, setStartDate] = useState(new Date());
+  const [endDateTime, setEndDate] = useState(new Date());
+  const [show, setShow] = useState(false);
+  const [startOrEndDate, setStartOrEnd] = useState('start');
+  const [mode, setMode] = useState('date');
+
   const [locationAddress, setLocationAddress] =
     useState<Location.LocationGeocodedAddress[]>();
   let map: MapView;
@@ -61,6 +67,30 @@ const Renting = ({ route, navigation }: Props) => {
       getAdress();
     }
   }, [selectedRentable]);
+
+  const rentACar = async() => {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const { data, error } = await supabase
+    .from('reservations')
+    .upsert({created_at: new Date().toLocaleString(), rentable: selectedRentable.id, borrower: user?.id, start: startDateTime.toLocaleString(), end: endDateTime.toLocaleString(), status: 'geliehen' });
+  }
+
+  const onChange = (event : any, selectedDate : any) => {
+    const currentDate = selectedDate || Date;
+    setShow(false);
+    if (startOrEndDate == 'start') {
+      setStartDate(selectedDate);
+    } else {
+      setEndDate(selectedDate);
+    }
+  }
+
+  const showDateTimePicker = (currentMode : any, startOrEnd : string) => {
+    setMode(currentMode);
+    setStartOrEnd(startOrEnd);
+    setShow(true);
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
@@ -194,11 +224,11 @@ const Renting = ({ route, navigation }: Props) => {
             }}
           >
             <Text variant="titleMedium">Startdate: </Text>
-            <DateTimePicker
-              mode="date"
-              value={startDate}
-              minimumDate={new Date()}
-            />
+            <Button 
+              onPress={() => showDateTimePicker('date', 'start')}
+            >
+              {startDateTime.toLocaleDateString()}
+            </Button>  
           </View>
           <View
             style={{
@@ -209,11 +239,11 @@ const Renting = ({ route, navigation }: Props) => {
             }}
           >
             <Text variant="titleMedium">Starttime: </Text>
-            <DateTimePicker
-              mode="time"
-              value={startDate}
-              minimumDate={new Date()}
-            />
+            <Button 
+              onPress={() => showDateTimePicker('time', 'start')}
+            >
+              {startDateTime.toLocaleTimeString()}
+            </Button>  
           </View>
           <View
             style={{
@@ -224,11 +254,11 @@ const Renting = ({ route, navigation }: Props) => {
             }}
           >
             <Text variant="titleMedium">Est. Enddate: </Text>
-            <DateTimePicker
-              mode="date"
-              value={startDate}
-              minimumDate={new Date()}
-            />
+            <Button 
+              onPress={() => showDateTimePicker('date', 'end')}
+            >
+              {endDateTime.toLocaleDateString()}
+            </Button>  
           </View>
           <View
             style={{
@@ -239,12 +269,21 @@ const Renting = ({ route, navigation }: Props) => {
             }}
           >
             <Text variant="titleMedium">Est. Endtime: </Text>
-            <DateTimePicker
-              mode="time"
-              value={startDate}
-              minimumDate={new Date()}
-            />
+            <Button 
+              onPress={() => showDateTimePicker('time', 'end')}
+            >
+              {endDateTime.toLocaleTimeString()}
+            </Button>  
           </View>
+          {show && (
+            <DateTimePicker
+              mode={mode === 'time'? 'time' : 'date'}
+              value={startOrEndDate === 'start'? startDateTime : endDateTime}
+              is24Hour={true}
+              onChange={onChange}
+            />
+          )}
+          
         </View>
       </ScrollView>
       <View
@@ -265,7 +304,8 @@ const Renting = ({ route, navigation }: Props) => {
         </View>
         <Button
           mode="contained"
-          onPress={() => {
+          onPress={async() => {
+            await rentACar();
             navigation.navigate("Discover");
           }}
         >
