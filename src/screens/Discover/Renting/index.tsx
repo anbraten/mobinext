@@ -73,19 +73,27 @@ const Renting = ({ route, navigation }: Props) => {
   const rentACar = async () => {
     const { data: { user } } = await supabase.auth.getUser();
 
-    const { data, error } = await supabase
+    const reservation = {created_at: new Date().toLocaleString(), rentable: selectedRentable.id, borrower: user?.id, start: startDateTime.toLocaleString(), end: endDateTime.toLocaleString(), status: 'geliehen' };
+
+    const { data, error, status } = await supabase
       .from('reservations')
-      .upsert({ created_at: new Date().toLocaleString(), rentable: selectedRentable.id, borrower: user?.id, start: startDateTime.toLocaleString(), end: endDateTime.toLocaleString(), status: 'geliehen' });
+      .insert([reservation]);
+    
+    console.log(error);
+    console.log(data);
+    console.log(status);
   }
 
-  const onChange = (event: any, selectedDate: any) => {
+  const onChangeStart = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || Date;
     setShow(false);
-    if (startOrEndDate == 'start') {
-      setStartDate(selectedDate);
-    } else {
-      setEndDate(selectedDate);
-    }
+    setStartDate(currentDate);
+  }
+
+  const onChangeEnd = (event: any, selectedDate: any) => {
+    const currentDate = selectedDate || Date;
+    setShow(false);
+    setEndDate(currentDate);
   }
 
   const showDateTimePicker = (currentMode: any, startOrEnd: string) => {
@@ -231,7 +239,7 @@ const Renting = ({ route, navigation }: Props) => {
                 mode='date'
                 value={startDateTime}
                 is24Hour={true}
-                onChange={onChange}
+                onChange={onChangeStart}
               />
             ) : (
               <Button onPress={() => showDateTimePicker('date', 'start')} >
@@ -253,7 +261,7 @@ const Renting = ({ route, navigation }: Props) => {
                 mode='time'
                 value={startDateTime}
                 is24Hour={true}
-                onChange={onChange}
+                onChange={onChangeStart}
               />
             ) : (
               <Button onPress={() => showDateTimePicker('time', 'start')} >
@@ -276,7 +284,7 @@ const Renting = ({ route, navigation }: Props) => {
                 mode='date'
                 value={endDateTime}
                 is24Hour={true}
-                onChange={onChange}
+                onChange={onChangeEnd}
               />
             ) : (
               <Button onPress={() => showDateTimePicker('date', 'end')}>
@@ -299,7 +307,7 @@ const Renting = ({ route, navigation }: Props) => {
                 mode='time'
                 value={endDateTime}
                 is24Hour={true}
-                onChange={onChange}
+                onChange={onChangeEnd}
               />
             ) : (
               <Button onPress={() => showDateTimePicker('time', 'end')} >
@@ -312,7 +320,7 @@ const Renting = ({ route, navigation }: Props) => {
               mode={mode === 'time' ? 'time' : 'date'}
               value={startOrEndDate === 'start' ? startDateTime : endDateTime}
               is24Hour={true}
-              onChange={onChange}
+              onChange={startOrEndDate === 'start'? onChangeStart : onChangeEnd}
             />
           )}
 
