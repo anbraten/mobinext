@@ -228,8 +228,8 @@ const Renting = ({ route, navigation }: Props) => {
             <Text variant="titleMedium">Startdate: </Text>
             {isIOS ? (
               <DateTimePicker
-                mode={mode === 'time' ? 'time' : 'date'}
-                value={startOrEndDate === 'start' ? startDateTime : endDateTime}
+                mode='date'
+                value={startDateTime}
                 is24Hour={true}
                 onChange={onChange}
               />
@@ -250,8 +250,8 @@ const Renting = ({ route, navigation }: Props) => {
             <Text variant="titleMedium">Starttime: </Text>
             {isIOS ? (
               <DateTimePicker
-                mode={mode === 'time' ? 'time' : 'date'}
-                value={startOrEndDate === 'start' ? startDateTime : endDateTime}
+                mode='time'
+                value={startDateTime}
                 is24Hour={true}
                 onChange={onChange}
               />
@@ -273,8 +273,8 @@ const Renting = ({ route, navigation }: Props) => {
             <Text variant="titleMedium">Est. Enddate: </Text>
             {isIOS ? (
               <DateTimePicker
-                mode={mode === 'time' ? 'time' : 'date'}
-                value={startOrEndDate === 'start' ? startDateTime : endDateTime}
+                mode='date'
+                value={endDateTime}
                 is24Hour={true}
                 onChange={onChange}
               />
@@ -296,8 +296,8 @@ const Renting = ({ route, navigation }: Props) => {
             <Text variant="titleMedium">Est. Endtime: </Text>
             {isIOS ? (
               <DateTimePicker
-                mode={mode === 'time' ? 'time' : 'date'}
-                value={startOrEndDate === 'start' ? startDateTime : endDateTime}
+                mode='time'
+                value={endDateTime}
                 is24Hour={true}
                 onChange={onChange}
               />
