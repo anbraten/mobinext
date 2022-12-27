@@ -25,6 +25,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { supabase } from "~/supabase";
 import { AuthContext } from "~/provider/AuthProvider";
 import * as ImagePicker from "expo-image-picker";
+import { TrustedPartiesCard } from "./trusted-parties-card";
+import { ReviewCard } from "./review-card";
 
 const styles = StyleSheet.create({
   fab: {
@@ -44,59 +46,7 @@ const Profile = () => {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView style={{ padding: 15 }}>
-          <Card style={{ marginBottom: 10 }}>
-            <Card.Content
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <Avatar.Text size={65} label="F" />
-                <View style={{ marginLeft: 15 }}>
-                  <Title>Family</Title>
-                  <Chip>Owner</Chip>
-                </View>
-              </View>
-
-              <Ionicons name="chevron-forward" color={"black"} size={24} />
-            </Card.Content>
-          </Card>
-
-          <Card>
-            <Card.Content
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <Avatar.Text size={65} label="N" />
-                <View style={{ marginLeft: 15 }}>
-                  <Title>Neighbours</Title>
-                  <Chip>Member</Chip>
-                </View>
-              </View>
-
-              <Ionicons name="chevron-forward" color={"black"} size={24} />
-            </Card.Content>
-          </Card>
+          <TrustedPartiesCard title="Family" role="Member" />
         </ScrollView>
         <FAB
           style={styles.fab}
@@ -110,39 +60,7 @@ const Profile = () => {
   const Reviews = () => {
     return (
       <ScrollView style={{ flex: 1, padding: 15 }}>
-        <Card style={{ marginBottom: 10 }}>
-          <Card.Content
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Avatar.Text size={65} label="U7" />
-              <View style={{ marginLeft: 15 }}>
-                <Title>User_7</Title>
-                <View style={{ display: "flex", flexDirection: "row" }}>
-                  <Ionicons name="star" color={"black"} size={24} />
-                  <Ionicons name="star" color={"black"} size={24} />
-                  <Ionicons name="star" color={"black"} size={24} />
-                  <Ionicons name="star" color={"black"} size={24} />
-                  <Ionicons name="star-half-sharp" color={"black"} size={24} />
-                </View>
-                <Text variant="bodyLarge" style={{ marginTop: 5 }}>
-                  All good. Thanks!
-                </Text>
-              </View>
-            </View>
-            <Text variant="bodyLarge">2 months ago</Text>
-          </Card.Content>
-        </Card>
+        <ReviewCard username="User_7" rating={4.5} text={'This worked really good! Thank you!'} date={'2 months ago'} />
       </ScrollView>
     );
   };
@@ -308,10 +226,8 @@ const Profile = () => {
       <Divider style={{ height: 1.5 }} />
       <View
         style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
           paddingTop: 15,
+          paddingHorizontal: 20,
         }}
       >
         <SegmentedButtons
