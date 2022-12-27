@@ -11,6 +11,8 @@ import { Rentable } from "~/types";
 import { Categories } from "~/screens/Rentables/categories";
 import { Details } from "~/screens/Rentables/details";
 import { Create } from "~/screens/Rentables/create";
+import { NewTrustedParty } from "~/screens/Profile/new-party";
+import { CreateTrustedPartyResult } from "~/screens/Profile/create";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -23,6 +25,8 @@ export type RootStackParamList = {
   Loaning: undefined;
   LoanDetails: undefined;
   CreateResult: undefined;
+  NewTrustedParty: undefined;
+  CreateTrustedPartyResult: undefined;
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -102,6 +106,16 @@ const MainStack = () => {
       <Stack.Screen
         name="CreateResult"
         component={Create}
+        options={{ headerShown: false, headerLeft: () => null }}
+      />
+      <Stack.Screen
+        name="NewTrustedParty"
+        component={NewTrustedParty}
+        options={{ title: "Trusted Party erstellen" }}
+      />
+      <Stack.Screen
+        name="CreateTrustedPartyResult"
+        component={CreateTrustedPartyResult}
         options={{ headerShown: false, headerLeft: () => null }}
       />
     </Stack.Navigator>

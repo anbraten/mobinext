@@ -2,9 +2,9 @@ import { View } from "react-native"
 import { Avatar, Card, Chip, Title } from "react-native-paper"
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-export const TrustedPartiesCard = ({title, role}: {title: string, role: string}) => {
+export const TrustedPartiesCard = ({title, role, callback}: {title: string, role: string, callback: () => void}) => {
     return (
-        <Card style={{ margin: 10 }}>
+        <Card style={{ margin: 10 }} onPress={callback}>
             <Card.Content
               style={{
                 display: "flex",

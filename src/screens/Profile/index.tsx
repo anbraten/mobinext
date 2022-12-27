@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -25,8 +25,10 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { supabase } from "~/supabase";
 import { AuthContext } from "~/provider/AuthProvider";
 import * as ImagePicker from "expo-image-picker";
-import { TrustedPartiesCard } from "./trusted-parties-card";
-import { ReviewCard } from "./review-card";
+import { TrustedPartiesCard } from "../../components/trusted-parties-card";
+import { ReviewCard } from "../../components/review-card";
+import { Trusted_parties } from "~/types";
+import { RealtimeChannel } from "@supabase/supabase-js";
 
 const styles = StyleSheet.create({
   fab: {
@@ -37,21 +39,88 @@ const styles = StyleSheet.create({
   },
 });
 
-const Profile = () => {
-  const { user, setUser } = useContext(AuthContext);
+type Trusted_Party_With_Members = Trusted_parties & {
+  trusted_party_members: { user_id: string }[];
+};
 
+const Profile = ({navigation}: any) => {
+  const { user, setUser } = useContext(AuthContext);
   const [value, setValue] = useState("trustedParties");
 
   const TrustedParties = () => {
+    const [trustedParties, setTrustedParties] = useState<Trusted_parties[]>([]);
+
+    let trustedPartiesSubsription: RealtimeChannel;
+
+    const fetchTrustedParties = async () => {
+      const { data, error } = await supabase
+        .from('trusted_parties')
+        .select('*, trusted_party_members(user_id)') as any;
+
+      const filteredData = data?.filter((trustedParty: Trusted_Party_With_Members) => {
+        return trustedParty.trusted_party_members.some((member) => {
+          return member.user_id === user?.id;
+        }) ||
+        trustedParty.owner === user?.id
+        ;
+      });
+
+      if (filteredData) {
+        setTrustedParties(filteredData);
+      }
+
+      trustedPartiesSubsription = supabase
+      .channel('trusted_parties:*')
+      .on('postgres_changes',
+        { event: "*", schema: 'public', table: 'trusted_parties'},
+        (payload) => {
+          fetchTrustedParties();
+        }
+      )
+      .subscribe();
+    };
+    
+    useEffect(() => {
+      fetchTrustedParties();
+    }, []);
+
+    useEffect(() => {
+      generateTrustedPartyElements();
+    }, [trustedParties]);
+
+    const generateTrustedPartyElements = () => {
+      trustedPartyElements = [];
+      trustedPartyElements = trustedParties.map((trustedParty) => (
+          <TrustedPartiesCard
+            title={trustedParty.name as string}
+            role={trustedParty.owner === user?.id ? "Owner" : "Member"}
+            key={trustedParty.id}
+            callback={() => {
+              navigation.navigate("NewTrustedParty", {
+                trustedPartyId: trustedParty.id,
+                update: true,
+              });
+            }}
+          />
+        ));
+    };
+
+    let trustedPartyElements: JSX.Element[] = [];
+    generateTrustedPartyElements();
+
     return (
       <View style={{ flex: 1 }}>
         <ScrollView style={{ padding: 15 }}>
-          <TrustedPartiesCard title="Family" role="Member" />
+          {trustedPartyElements}
         </ScrollView>
         <FAB
           style={styles.fab}
           icon="plus"
-          onPress={() => console.log("Pressed")}
+          onPress={() =>
+            navigation.navigate("NewTrustedParty", {
+              trustedParties: trustedParties,
+            })
+          }
         />
       </View>
     );
