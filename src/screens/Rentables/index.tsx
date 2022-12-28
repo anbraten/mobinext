@@ -136,9 +136,11 @@ const Rentables = ({ navigation }: any) => {
               filter: `owner=eq.${user?.id}`,
             },
             (payload) => {
+              const newRentable = payload.new as Rentable;
+
               setRentables((oldRentables) => [
-                ...(oldRentables as Rentable[]),
-                payload.new as Rentable,
+                ...(oldRentables?.filter(rentable => rentable.id !== newRentable.id) as Rentable[]),
+                newRentable,
               ]);
             }
           )
