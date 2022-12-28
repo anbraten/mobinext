@@ -27,8 +27,8 @@ const Register = ({ navigation }: any) => {
     } else {
       Toast.show({
         type: "success",
-        text1: "Du hast dich erfolgreich registriert.",
-        text2: "Schaue in deine E-Mails und bestätige die Verfikation!",
+        text1: "Du hast dich erfolgreich registriert",
+        text2: "Schau in dein E-Mail Postfach und bestätige die Verfikation",
       });
       navigation.navigate("Login");
     }
@@ -61,10 +61,10 @@ const Register = ({ navigation }: any) => {
         variant="displaySmall"
         style={{ textAlign: "center", marginBottom: 10 }}
       >
-        Register
+        Registrieren
       </Text>
       <TextInput
-        label="Email"
+        label="E-Mail"
         mode="outlined"
         autoCapitalize="none"
         autoComplete="email"
@@ -116,14 +116,14 @@ const Register = ({ navigation }: any) => {
         onPress={() => signUpWithEmail()}
         style={{ marginBottom: 10 }}
       >
-        Register
+        Registrieren
       </Button>
       <Button
         mode="text"
         disabled={loading}
         onPress={() => navigation.navigate("Login")}
       >
-        Already have an account? Login here
+        Du hast bereits ein Konto? Hier anmelden
       </Button>
     </SafeAreaView>
   );
