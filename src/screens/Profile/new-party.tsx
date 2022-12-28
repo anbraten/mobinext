@@ -1,10 +1,10 @@
 import { useEffect, useReducer, useState, useContext } from "react";
 import { View, Text, FlatList } from "react-native";
-import { Button, Card, Chip, Searchbar, TextInput, Title } from "react-native-paper";
+import { Button, Card, Chip, IconButton, Searchbar, TextInput, Title } from "react-native-paper";
 import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
 import { Trusted_parties, Trusted_party_members } from "~/types";
-import { manageTrustedParty } from "./utils";
+import { deleteTrustedParty, manageTrustedParty } from "./utils";
 
 export const NewTrustedParty = ({ route, navigation }: any) => {
     const { update = false, trustedPartyId } = route.params;
@@ -22,8 +22,7 @@ export const NewTrustedParty = ({ route, navigation }: any) => {
 
     useEffect(() => {
         let title = update ? "Trusted Party bearbeiten" : "Trusted Party erstellen";
-
-        navigation.setOptions({ title });
+        navigation.setOptions({ title, headerRight: () => null });
 
 
         (async () => {          
@@ -41,10 +40,6 @@ export const NewTrustedParty = ({ route, navigation }: any) => {
                 setMembers(memberData.map((member: any) => {
                     return {full_name: member.profiles.full_name, id: member.user_id};
                 }));
-                
-                if (trustedParty.owner !== user?.id)
-                    title = trustedParty.name?.toString() || "Trusted Party";
-                    navigation.setOptions({ title });
             }
         })();
     }, [navigation]);
@@ -67,6 +62,27 @@ export const NewTrustedParty = ({ route, navigation }: any) => {
             }) || []);
         })();
     }, [searchQuery]);
+
+    useEffect(() => {     
+        if (trustedParty.owner !== user?.id) {
+            navigation.setOptions({
+                title: trustedParty.name,
+                headerRight: () => null,
+            });
+        }
+        else if (trustedParty.owner === user?.id && update) {
+            navigation.setOptions({
+                headerRight: () => (
+                    <IconButton
+                        onPress={() => deleteTrustedParty(trustedParty, navigation) }
+                        style={{marginRight: 10}}
+                        icon="trash-can"
+                        mode="contained"
+                    />
+                ),
+            });
+        }
+    }, [trustedParty]);
 
     return (
         <View style={{ margin: 20, zIndex: 0}}>

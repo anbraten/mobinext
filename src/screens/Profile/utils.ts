@@ -39,3 +39,19 @@ export async function manageTrustedParty(trustedParty: any, members: any, naviga
     }
 
 }
+
+export async function deleteTrustedParty(trustedParty: any, navigation: any) {
+    // delete all members
+    const { data: deleteMembersData, error: deleteMembersError } = await supabase
+        .from("trusted_party_members")
+        .delete()
+        .eq("trusted_party_id", trustedParty.id);
+
+    // delete trusted party
+    const { data, error } = await supabase
+        .from("trusted_parties")
+        .delete()
+        .eq("id", trustedParty.id);
+
+    navigation.navigate("Profile");
+}
