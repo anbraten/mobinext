@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
-import { Rentable } from "~/types";
+import { Rentable, Reservations } from "~/types";
 
 const styles = StyleSheet.create({
   fab: {
@@ -29,39 +29,82 @@ const Rentables = ({ navigation }: any) => {
   const [value, setValue] = useState("rented");
 
   const RentedRentables = () => {
+    type Reservation = Reservations & {
+      _rentable: Rentable;
+    };
+
+    const [reservations, setReservations] = useState<Reservation[]>([]);
+
+    useEffect(() => {
+      (async () => {
+        const { data, error } = await supabase
+          .from("reservations")
+          .select("*")
+          .or(`borrower.eq.${user?.id}`)
+          .order("created_at", { ascending: false });
+        if (data) {
+          for await (const reservation of data) {
+            const rentable = await supabase
+              .from("rentables")
+              .select("*")
+              .or(`id.eq.${reservation.rentable}`);
+            if (rentable.data) {
+              setReservations([
+                ...reservations,
+                { ...reservation, _rentable: rentable.data[0] },
+              ]);
+            }
+          }
+        }
+
+        // TODO: show error
+        error && console.error(error);
+      })();
+    }, []);
+
     return (
       <ScrollView style={{ flex: 1, padding: 15 }}>
-        <Card style={{ marginBottom: 10 }}>
-          <Card.Content
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <View style={{ display: "flex", flexDirection: "column" }}>
-              <Avatar.Icon size={50} icon="car" />
-            </View>
-            <View style={{ display: "flex", flexDirection: "column" }}>
-              <Text variant="titleLarge">Car Model</Text>
-              <Text variant="bodyMedium">Fueltype: Gasoline</Text>
-              <Text variant="bodyMedium">Cost per mile: 1€</Text>
-              <Text variant="bodyMedium">Cost per minute: 0.10€</Text>
-            </View>
-            <View
+        {reservations.map((reservation) => (
+          <Card style={{ marginBottom: 10 }}>
+            <Card.Content
               style={{
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: "row",
                 justifyContent: "space-between",
               }}
             >
-              <Text variant="titleLarge">Seats: 4</Text>
-              <Button mode="contained" compact>
-                Hand over
-              </Button>
-            </View>
-          </Card.Content>
-        </Card>
+              <View style={{ display: "flex", flexDirection: "column" }}>
+                <Avatar.Icon size={50} icon="car" />
+              </View>
+              <View style={{ display: "flex", flexDirection: "column" }}>
+                <Text variant="titleLarge">{reservation._rentable.model}</Text>
+                <Text variant="bodyMedium">
+                  Fueltype: {reservation._rentable.fuel}
+                </Text>
+                <Text variant="bodyMedium">
+                  Cost per mile: {reservation._rentable.cost_per_km}€
+                </Text>
+                <Text variant="bodyMedium">
+                  Cost per minute: {reservation._rentable.cost_per_minute}€
+                </Text>
+              </View>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text variant="titleLarge">
+                  Seats: {reservation._rentable.seat_count}
+                </Text>
+                <Button mode="contained" compact>
+                  Hand over
+                </Button>
+              </View>
+            </Card.Content>
+          </Card>
+        ))}
       </ScrollView>
     );
   };
