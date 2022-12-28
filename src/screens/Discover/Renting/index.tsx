@@ -147,7 +147,7 @@ const Renting = ({ route, navigation }: Props) => {
             <Text variant="titleLarge">{selectedRentable?.model}</Text>
             <View>
               <Text variant="titleSmall">
-                Fueltype: {selectedRentable?.fuel}
+                Kraftstoff: {selectedRentable?.fuel}
               </Text>
               <Text variant="titleSmall">
                 Kosten per km: {selectedRentable?.cost_per_km}
