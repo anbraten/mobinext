@@ -121,9 +121,9 @@ export const NewTrustedParty = ({ route, navigation }: any) => {
             />
         <Button
             mode="contained"
-            onPress={() => manageTrustedParty(trustedParty, members, navigation)}
+            onPress={() => manageTrustedParty(trustedParty, members, navigation, update)}
         >
-            Erstellen
+            {update? 'Aktualisieren' : 'Erstellen'}
         </Button>
 
     </View>

@@ -1,7 +1,7 @@
 import { supabase } from "~/supabase";
 import { Rentable } from "~/types";
 
-export async function manageTrustedParty(trustedParty: any, members: any, navigation: any) {
+export async function manageTrustedParty(trustedParty: any, members: any, navigation: any, update: boolean = false) {
     const newTrustedParty = {
         name: trustedParty.name,
         description: trustedParty.description,
@@ -35,7 +35,7 @@ export async function manageTrustedParty(trustedParty: any, members: any, naviga
                 };
         }));
 
-        navigation.navigate("CreateTrustedPartyResult", { trustedParty, members, success: status === 201 });
+        navigation.navigate("CreateTrustedPartyResult", { trustedParty, members, success: status === 201, update });
     }
 
 }
