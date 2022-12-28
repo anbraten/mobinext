@@ -191,7 +191,7 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
       </View>
 
       <Button
-        onPress={() => manageRentable(rentable, navigation)}
+        onPress={() => manageRentable(rentable, navigation, currRentable ? true : false)}
         mode="contained"
       >
         {currRentable ? "Fahrzeug aktualisieren" : "Fahrzeug erstellen"}
