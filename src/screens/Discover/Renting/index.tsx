@@ -16,6 +16,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as Location from "expo-location";
 import { Platform, StyleSheet } from 'react-native';
+import dayjs from 'dayjs';
 
 type Props = NativeStackScreenProps<RootStackParamList, "Renting">;
 
@@ -34,6 +35,10 @@ const Renting = ({ route, navigation }: Props) => {
   const [locationAddress, setLocationAddress] =
     useState<Location.LocationGeocodedAddress[]>();
   let map: MapView;
+
+  useEffect(() => {
+    endDateTime.setHours(startDateTime.getHours() + 1);
+  }, [startDateTime]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -243,7 +248,7 @@ const Renting = ({ route, navigation }: Props) => {
               />
             ) : (
               <Button onPress={() => showDateTimePicker('date', 'start')} >
-                {startDateTime.toLocaleDateString()}
+                {dayjs(startDateTime).format('DD. MMMM YYYY')}
               </Button>
             )}
           </View>
@@ -265,7 +270,7 @@ const Renting = ({ route, navigation }: Props) => {
               />
             ) : (
               <Button onPress={() => showDateTimePicker('time', 'start')} >
-                {startDateTime.toLocaleTimeString()}
+                {dayjs(startDateTime).format('HH:mm') + " Uhr"}
               </Button>
             )}
 
@@ -288,7 +293,7 @@ const Renting = ({ route, navigation }: Props) => {
               />
             ) : (
               <Button onPress={() => showDateTimePicker('date', 'end')}>
-                {endDateTime.toLocaleDateString()}
+                {dayjs(endDateTime).format('DD. MMMM YYYY')}
               </Button>
             )}
 
@@ -311,7 +316,7 @@ const Renting = ({ route, navigation }: Props) => {
               />
             ) : (
               <Button onPress={() => showDateTimePicker('time', 'end')} >
-                {endDateTime.toLocaleTimeString()}
+                {dayjs(endDateTime).format('HH:mm') + " Uhr"}
               </Button>
             )}
           </View>
