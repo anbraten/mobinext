@@ -8,13 +8,15 @@ import mobinext from "~/../assets/mobinext.png";
 const Register = ({ navigation }: any) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [passwordConfirm, setPasswordConfirm] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [passwordsMatching, setPasswordsMatching] = useState<boolean>(true);
 
   const signUpWithEmail = async () => {
     setLoading(true);
 
-    const { error } = await supabase.auth.signUp({
+    const { response, error } = await supabase.auth.signUp({
       email: email,
       password: password,
     });
@@ -29,6 +31,14 @@ const Register = ({ navigation }: any) => {
   useEffect(() => {
     setError("");
   }, [email, password]);
+
+  useEffect(() => {
+    if (password && passwordConfirm && password !== passwordConfirm) {
+      setPasswordsMatching(false);
+    } else {
+      setPasswordsMatching(true);
+    }
+  }, [password, passwordConfirm]);
 
   return (
     <SafeAreaView style={{ margin: 10 }}>
@@ -58,7 +68,7 @@ const Register = ({ navigation }: any) => {
         style={{ marginBottom: 10 }}
       />
       <TextInput
-        label="Password"
+        label="Passwort"
         mode="outlined"
         returnKeyType="done"
         secureTextEntry
@@ -66,6 +76,21 @@ const Register = ({ navigation }: any) => {
         onChangeText={(text) => setPassword(text)}
         style={{ marginBottom: 10 }}
       />
+      <TextInput
+        label="Passwort bestätigen"
+        mode="outlined"
+        returnKeyType="done"
+        secureTextEntry
+        value={passwordConfirm}
+        error={!passwordsMatching}
+        onChangeText={(text) => setPasswordConfirm(text)}
+        style={{ marginBottom: 10 }}
+      />
+      {!passwordsMatching && (
+        <HelperText type="error" style={{ marginBottom: 10 }}>
+          {"Die Passwörter stimmen nicht überein!"}
+        </HelperText>
+      )}
       {error && (
         <HelperText type="error" style={{ marginBottom: 10 }}>
           {error}
@@ -73,7 +98,13 @@ const Register = ({ navigation }: any) => {
       )}
       <Button
         mode="contained"
-        disabled={loading}
+        disabled={
+          loading ||
+          !passwordsMatching ||
+          !password ||
+          !passwordConfirm ||
+          !email
+        }
         onPress={() => signUpWithEmail()}
         style={{ marginBottom: 10 }}
       >
