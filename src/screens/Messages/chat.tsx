@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RealtimeChannel } from "@supabase/realtime-js";
 import { useRef, useContext, useEffect, useState } from "react";
 import { ScrollView, View, KeyboardAvoidingView, Platform } from "react-native";
-import { Button, Text, TextInput } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
@@ -10,6 +10,8 @@ import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
 import { Message, User } from "~/types";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { TextMessage } from "./messages/text";
+import { RentableRequestMessage } from "./messages/rentable_request";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Chat">;
 
@@ -121,16 +123,11 @@ export const Chat = ({ route, navigation }: Props) => {
                   message?.author === user?.id ? "flex-end" : "flex-start",
               }}
             >
-              <View
-                style={{
-                  backgroundColor:
-                    message?.author === user?.id ? "#eadcf9" : "#dddddd",
-                  padding: 10,
-                  borderRadius: 5,
-                }}
-              >
-                <Text>{message?.message}</Text>
-              </View>
+              {message.type === "text" ? (
+                <TextMessage message={message} />
+              ) : (
+                <RentableRequestMessage message={message} />
+              )}
             </View>
           ))}
         </ScrollView>

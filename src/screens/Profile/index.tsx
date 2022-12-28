@@ -15,12 +15,12 @@ import { AuthContext } from "~/provider/AuthProvider";
 import * as ImagePicker from "expo-image-picker";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
+import Toast from "react-native-toast-message";
 
-const Profile = ({
+export const Profile = ({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, "Profile">) => {
   const { user, setUser } = useContext(AuthContext);
-  const [value, setValue] = useState("trustedParties");
 
   async function uploadProfileImage() {
     if (Platform.OS !== "web") {
@@ -140,6 +140,12 @@ const Profile = ({
           title="Profil"
           left={(props) => <List.Icon {...props} icon="account" />}
           right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => {
+            Toast.show({
+              type: "success",
+              text1: "Nice hello",
+            });
+          }}
         />
         <List.Item
           title="Deine Fahrzeuge"
@@ -169,5 +175,3 @@ const Profile = ({
     </SafeAreaView>
   );
 };
-
-export default Profile;

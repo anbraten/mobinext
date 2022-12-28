@@ -18,7 +18,7 @@ type Chat = {
 
 type Props = NativeStackScreenProps<RootStackParamList, "Messages">;
 
-const Messages = ({ navigation }: Props) => {
+export const Messages = ({ navigation }: Props) => {
   const { user } = useContext(AuthContext);
   const [chats, setChats] = useState<Map<string, Chat>>(new Map());
 
@@ -165,5 +165,3 @@ const Messages = ({ navigation }: Props) => {
     </SafeAreaView>
   );
 };
-
-export default Messages;

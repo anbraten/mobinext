@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
@@ -14,12 +14,14 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { ErrorToast } from "react-native-toast-message";
+import { AuthContext } from "~/provider/AuthProvider";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Discover">;
 
-const Discover = ({ navigation }: Props) => {
+export const Discover = ({ navigation }: Props) => {
+  const { user } = useContext(AuthContext);
   const [location, setLocation] = useState<any>(null);
-  const [errorMsg, setErrorMsg] = useState<any>(null);
   const [rentables, setRentables] = useState<Rentable[]>([]);
   const [selectedRentable, setSelectedRentable] = useState<
     Rentable | undefined
@@ -30,7 +32,7 @@ const Discover = ({ navigation }: Props) => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
+        ErrorToast({ text1: "Permission to access location was denied" });
         return;
       }
 
@@ -40,13 +42,34 @@ const Discover = ({ navigation }: Props) => {
       const { error, data } = await supabase.from("rentables").select("*");
 
       if (error) {
-        setErrorMsg(error.message);
+        ErrorToast({ text1: error.message });
       }
       if (data) {
         setRentables(data);
       }
     })();
   }, []);
+
+  async function requestRentableAccess() {
+    const res = await supabase.from("messages").insert({
+      message: `${user?.full_name} möchte Zugriff auf dein Fahrzeug haben.`,
+      type: "rentable_request",
+      context: {
+        rentable: selectedRentable?.id!,
+      },
+      author: user?.id!,
+      target: selectedRentable?.owner!,
+    });
+
+    if (res.error) {
+      ErrorToast({ text1: res.error.message });
+      return;
+    }
+
+    navigation.push("Chat", {
+      chatPartnerId: selectedRentable?.owner!,
+    });
+  }
 
   useEffect(() => {
     console.log("My location", location);
@@ -88,7 +111,9 @@ const Discover = ({ navigation }: Props) => {
         >
           <Text variant="titleLarge">{selectedRentable?.model}</Text>
           <View>
-            <Text variant="titleSmall">Kraftstoff: {selectedRentable?.fuel}</Text>
+            <Text variant="titleSmall">
+              Kraftstoff: {selectedRentable?.fuel}
+            </Text>
             <Text variant="titleSmall">
               Kosten per km: {selectedRentable?.cost_per_km}
             </Text>
@@ -122,15 +147,7 @@ const Discover = ({ navigation }: Props) => {
               Leihen
             </Button>
           ) : (
-            <Button
-              mode="contained"
-              compact
-              onPress={() => {
-                navigation.navigate("Chat", {
-                  chatPartnerId: selectedRentable?.owner!,
-                });
-              }}
-            >
+            <Button mode="contained" compact onPress={requestRentableAccess}>
               Anfragen
             </Button>
           )}
@@ -184,5 +201,3 @@ const Discover = ({ navigation }: Props) => {
     </SafeAreaView>
   );
 };
-
-export default Discover;

@@ -1,12 +1,12 @@
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import Messages from "~/screens/Messages";
-import Profile from "~/screens/Profile";
+import { Messages } from "~/screens/Messages";
+import { Profile } from "~/screens/Profile";
 import { Reservations } from "~/screens/Reservations";
-import Discover from "~/screens/Discover";
+import { Discover } from "~/screens/Discover";
 import { Chat } from "~/screens/Messages/chat";
-import Renting from "~/screens/Discover/Renting";
+import { Renting } from "~/screens/Discover/Renting";
 import { Rentable } from "~/types";
 import { OwnRentablesCategories } from "~/screens/OwnRentables/categories";
 import { OwnRentablesDetails } from "~/screens/OwnRentables/details";

@@ -16,6 +16,8 @@ export interface Database {
           target: string | null;
           author: string | null;
           message: string | null;
+          type: string;
+          context: Json | null;
         };
         Insert: {
           id?: number;
@@ -23,6 +25,8 @@ export interface Database {
           target?: string | null;
           author?: string | null;
           message?: string | null;
+          type?: string;
+          context?: Json | null;
         };
         Update: {
           id?: number;
@@ -30,6 +34,8 @@ export interface Database {
           target?: string | null;
           author?: string | null;
           message?: string | null;
+          type?: string;
+          context?: Json | null;
         };
       };
       profiles: {
@@ -86,7 +92,7 @@ export interface Database {
           longitude?: number | null;
           latitude?: number | null;
           owner?: string | null;
-          additional_infomation?: string | null;
+          additional_information?: string | null;
           picture?: string | null;
         };
         Update: {
@@ -101,7 +107,7 @@ export interface Database {
           longitude?: number | null;
           latitude?: number | null;
           owner?: string | null;
-          additional_infomation?: string | null;
+          additional_information?: string | null;
           picture?: string | null;
         };
       };
@@ -208,9 +214,53 @@ export interface Database {
       [_ in never]: never;
     };
     Functions: {
+      http: {
+        Args: { request: unknown };
+        Returns: unknown;
+      };
+      http_delete: {
+        Args: { uri: string };
+        Returns: unknown;
+      };
+      http_get: {
+        Args: { uri: string };
+        Returns: unknown;
+      };
+      http_head: {
+        Args: { uri: string };
+        Returns: unknown;
+      };
+      http_header: {
+        Args: { field: string; value: string };
+        Returns: unknown;
+      };
+      http_patch: {
+        Args: { uri: string; content: string; content_type: string };
+        Returns: unknown;
+      };
+      http_post: {
+        Args: { uri: string; content: string; content_type: string };
+        Returns: unknown;
+      };
+      http_put: {
+        Args: { uri: string; content: string; content_type: string };
+        Returns: unknown;
+      };
+      http_reset_curlopt: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
+      http_set_curlopt: {
+        Args: { curlopt: string; value: string };
+        Returns: boolean;
+      };
       install_available_extensions_and_test: {
         Args: Record<PropertyKey, never>;
         Returns: boolean;
+      };
+      urlencode: {
+        Args: { string: string };
+        Returns: string;
       };
     };
     Enums: {

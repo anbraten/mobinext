@@ -20,7 +20,7 @@ import dayjs from "dayjs";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Renting">;
 
-const Renting = ({ route, navigation }: Props) => {
+export const Renting = ({ route, navigation }: Props) => {
   const [selectedRentable, setSelectedRentable] = useState<Rentable>(
     route.params.selectedRentable
   );
@@ -370,5 +370,3 @@ const Renting = ({ route, navigation }: Props) => {
     </SafeAreaView>
   );
 };
-
-export default Renting;
