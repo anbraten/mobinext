@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { View, ScrollView } from "react-native";
 import {
   Text,
@@ -7,12 +7,15 @@ import {
   TextInput,
   Portal,
   Dialog,
+  Chip,
 } from "react-native-paper";
-import { Rentable } from "~/types";
+import { Rentable, Trusted_party_members } from "~/types";
 import * as Location from "expo-location";
 import { LocationObject } from "expo-location";
 import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { manageRentable } from "./utils";
+import { supabase } from "~/supabase";
+import { AuthContext } from "~/provider/AuthProvider";
 
 const fuelTypes = [
   { label: "Benzin", value: "gas" },
@@ -33,6 +36,7 @@ const categories = [
 const defaultSeats = 4;
 
 export const OwnRentablesDetails = ({ route, navigation }: any) => {
+  const { user } = useContext(AuthContext);
   const { category, currRentable } = route.params;
 
   // const edit = currRentable !== undefined;
@@ -52,6 +56,20 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
 
   rentable.type = rentable.type || category;
   rentable.seat_count = rentable.seat_count || defaultSeats;
+
+  // let trustedParties = rentable.trusted_parties || []
+  let [trustedParties, setTrustedParties] = useState<any[] | undefined>([]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("trusted_parties")
+        .select("*, trusted_party_members ( * )")
+      
+      setTrustedParties(data?.filter(tp => tp.owner === user?.id || (tp.trusted_party_members as Trusted_party_members[]).some(member => member.user_id === user?.id)));
+    })();
+  }, []);
+
 
   useEffect(() => {
     navigation.setOptions({
@@ -189,6 +207,22 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
           dense={true}
         ></TextInput>
       </View>
+
+      <View style={{ marginBottom: 10 }}>
+        <Text variant="titleMedium">Trusted Parties:</Text>
+        {trustedParties?.map((party) => (
+          <Chip
+            key={party.id}
+            style={{ marginVertical: 5 }}
+            onPress={() => {}}
+            mode="outlined"
+          >
+            <Text>{party.name}</Text>
+          </Chip>
+        ))}
+        <Text>{trustedParties?.length}</Text>
+      </View>
+
 
       <Button
         onPress={() => manageRentable(rentable, navigation, currRentable ? true : false)}
