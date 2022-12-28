@@ -43,10 +43,10 @@ const Login = ({ navigation }: any) => {
         variant="displaySmall"
         style={{ textAlign: "center", marginBottom: 10 }}
       >
-        Login
+        Anmelden
       </Text>
       <TextInput
-        label="Email"
+        label="E-Mail"
         mode="outlined"
         autoCapitalize="none"
         autoComplete="email"
@@ -58,7 +58,7 @@ const Login = ({ navigation }: any) => {
         style={{ marginBottom: 10 }}
       />
       <TextInput
-        label="Password"
+        label="Passwort"
         mode="outlined"
         returnKeyType="done"
         secureTextEntry
@@ -77,14 +77,14 @@ const Login = ({ navigation }: any) => {
         onPress={() => signInWithEmail()}
         style={{ marginBottom: 10 }}
       >
-        Login
+        Anmelden
       </Button>
       <Button
         mode="text"
         disabled={loading}
         onPress={() => navigation.navigate("Register")}
       >
-        Don't have an account? Register here
+        Du hast noch kein Konto? Hier registrieren
       </Button>
     </SafeAreaView>
   );

@@ -8,6 +8,13 @@ import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
 import { Rentable } from "~/types";
 
+const fuelTypes: { [key: string]: string } = {
+  gas: "Benzin",
+  diesel: "Diesel",
+  electric: "Elektro",
+  other: "Andere",
+};
+
 export const OwnRentables = ({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, "OwnRentables">) => {
@@ -87,7 +94,10 @@ export const OwnRentables = ({
               <View style={{ display: "flex", flexDirection: "column" }}>
                 <Text variant="titleLarge">{rentable.model}</Text>
                 <Text>Sitze: {rentable.seat_count}</Text>
-                <Text>Kraftstoff: {rentable.fuel}</Text>
+                <Text>
+                  Kraftstoff:{" "}
+                  {rentable?.fuel ? fuelTypes[rentable.fuel] : "N/A"}
+                </Text>
                 <Text>Kosten per km: {rentable.cost_per_km}€</Text>
                 <Text>Kosten per Minute: {rentable.cost_per_minute}€</Text>
               </View>
