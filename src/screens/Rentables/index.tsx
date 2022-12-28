@@ -63,9 +63,16 @@ const Rentables = ({ navigation }: any) => {
     }, []);
 
     return (
-      <ScrollView style={{ flex: 1, padding: 15 }}>
-        {reservations.map((reservation) => (
-          <Card style={{ marginBottom: 10 }}>
+      <ScrollView style={{ flex: 1 }}>
+        {reservations.map((reservation, i) => (
+          <Card
+            style={{
+              margin: 15,
+              marginBottom: 10,
+              marginTop: i === 0 ? 15 : 0,
+            }}
+            key={i}
+          >
             <Card.Content
               style={{
                 display: "flex",
@@ -152,10 +159,14 @@ const Rentables = ({ navigation }: any) => {
 
     return (
       <View style={{ flex: 1 }}>
-        <ScrollView style={{ padding: 15 }}>
+        <ScrollView>
           {rentables?.map((rentable, i) => (
             <Card
-              style={{ marginBottom: 10 }}
+              style={{
+                margin: 15,
+                marginBottom: 10,
+                marginTop: i === 0 ? 15 : 0,
+              }}
               key={i}
               onPress={() =>
                 navigation.navigate("LoanDetails", { currRentable: rentable })
