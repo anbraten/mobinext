@@ -43,7 +43,7 @@ type Trusted_Party_With_Members = Trusted_parties & {
   trusted_party_members: { user_id: string }[];
 };
 
-const Profile = ({navigation}: any) => {
+const Profile = ({ navigation }: any) => {
   const { user, setUser } = useContext(AuthContext);
   const [value, setValue] = useState("trustedParties");
 
@@ -53,33 +53,36 @@ const Profile = ({navigation}: any) => {
     let trustedPartiesSubsription: RealtimeChannel;
 
     const fetchTrustedParties = async () => {
-      const { data, error } = await supabase
-        .from('trusted_parties')
-        .select('*, trusted_party_members(user_id)') as any;
+      const { data, error } = (await supabase
+        .from("trusted_parties")
+        .select("*, trusted_party_members(user_id)")) as any;
 
-      const filteredData = data?.filter((trustedParty: Trusted_Party_With_Members) => {
-        return trustedParty.trusted_party_members.some((member) => {
-          return member.user_id === user?.id;
-        }) ||
-        trustedParty.owner === user?.id
-        ;
-      });
+      const filteredData = data?.filter(
+        (trustedParty: Trusted_Party_With_Members) => {
+          return (
+            trustedParty.trusted_party_members.some((member) => {
+              return member.user_id === user?.id;
+            }) || trustedParty.owner === user?.id
+          );
+        }
+      );
 
       if (filteredData) {
         setTrustedParties(filteredData);
       }
 
       trustedPartiesSubsription = supabase
-      .channel('trusted_parties:*')
-      .on('postgres_changes',
-        { event: "*", schema: 'public', table: 'trusted_parties'},
-        (payload) => {
-          fetchTrustedParties();
-        }
-      )
-      .subscribe();
+        .channel("trusted_parties:*")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "trusted_parties" },
+          (payload) => {
+            fetchTrustedParties();
+          }
+        )
+        .subscribe();
     };
-    
+
     useEffect(() => {
       fetchTrustedParties();
     }, []);
@@ -91,18 +94,18 @@ const Profile = ({navigation}: any) => {
     const generateTrustedPartyElements = () => {
       trustedPartyElements = [];
       trustedPartyElements = trustedParties.map((trustedParty) => (
-          <TrustedPartiesCard
-            title={trustedParty.name as string}
-            role={trustedParty.owner === user?.id ? "Owner" : "Member"}
-            key={trustedParty.id}
-            callback={() => {
-              navigation.navigate("NewTrustedParty", {
-                trustedPartyId: trustedParty.id,
-                update: true,
-              });
-            }}
-          />
-        ));
+        <TrustedPartiesCard
+          title={trustedParty.name as string}
+          role={trustedParty.owner === user?.id ? "Owner" : "Member"}
+          key={trustedParty.id}
+          callback={() => {
+            navigation.navigate("NewTrustedParty", {
+              trustedPartyId: trustedParty.id,
+              update: true,
+            });
+          }}
+        />
+      ));
     };
 
     let trustedPartyElements: JSX.Element[] = [];
@@ -110,9 +113,7 @@ const Profile = ({navigation}: any) => {
 
     return (
       <View style={{ flex: 1 }}>
-        <ScrollView style={{ padding: 15 }}>
-          {trustedPartyElements}
-        </ScrollView>
+        <ScrollView style={{ padding: 15 }}>{trustedPartyElements}</ScrollView>
         <FAB
           style={styles.fab}
           icon="plus"
@@ -129,7 +130,12 @@ const Profile = ({navigation}: any) => {
   const Reviews = () => {
     return (
       <ScrollView style={{ flex: 1, padding: 15 }}>
-        <ReviewCard username="User_7" rating={4.5} text={'This worked really good! Thank you!'} date={'2 months ago'} />
+        <ReviewCard
+          username="User_7"
+          rating={4.5}
+          text={"This worked really good! Thank you!"}
+          date={"2 months ago"}
+        />
       </ScrollView>
     );
   };
@@ -264,7 +270,7 @@ const Profile = ({navigation}: any) => {
             {user?.avatar_url ? (
               <Avatar.Image size={65} source={{ uri: user?.avatar_url }} />
             ) : (
-              <Avatar.Text size={72} label="PL" />
+              <Avatar.Text size={65} label={user?.full_name?.[0] || "A"} />
             )}
           </Pressable>
           <View style={{ paddingLeft: 25 }}>
