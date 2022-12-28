@@ -71,7 +71,6 @@ const Rentables = ({ navigation }: any) => {
 
     let rentablesSubscription: RealtimeChannel;
 
-    
     useEffect(() => {
       (async () => {
         const { data, error } = await supabase
@@ -84,22 +83,29 @@ const Rentables = ({ navigation }: any) => {
         }
 
         rentablesSubscription = supabase
-        .channel('rentables')
-        .on(
-          'postgres_changes',
-          { event: "*", schema: 'public', table: 'rentables', filter: `owner=eq.${user?.id}` },
-          (payload) => {
-            setRentables((oldRentables) => [...oldRentables as Rentable[], payload.new as Rentable]);
-          }
-        )
-        .subscribe();
+          .channel("rentables")
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "rentables",
+              filter: `owner=eq.${user?.id}`,
+            },
+            (payload) => {
+              setRentables((oldRentables) => [
+                ...(oldRentables as Rentable[]),
+                payload.new as Rentable,
+              ]);
+            }
+          )
+          .subscribe();
       })();
-      
+
       return () => {
         rentablesSubscription.unsubscribe();
       };
     }, []);
-    
 
     return (
       <View style={{ flex: 1 }}>
@@ -176,6 +182,7 @@ const Rentables = ({ navigation }: any) => {
         <SegmentedButtons
           value={value}
           onValueChange={setValue}
+          style={{ alignSelf: "center", marginHorizontal: 20 }}
           buttons={[
             {
               value: "rented",
