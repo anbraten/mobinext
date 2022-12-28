@@ -1,21 +1,9 @@
-import { useContext, useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Alert,
-  Pressable,
-  Platform,
-} from "react-native";
+import { useContext, useState } from "react";
+import { View, Alert, Pressable, Platform } from "react-native";
 import {
   Avatar,
   Divider,
   Headline,
-  Text,
-  FAB,
-  Card,
-  Title,
-  Chip,
   SegmentedButtons,
   Button,
   MD3Colors,
@@ -25,151 +13,13 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { supabase } from "~/supabase";
 import { AuthContext } from "~/provider/AuthProvider";
 import * as ImagePicker from "expo-image-picker";
-import { TrustedPartiesCard } from "../../components/trusted-parties-card";
-import { ReviewCard } from "../../components/review-card";
-import { Trusted_parties } from "~/types";
-import { RealtimeChannel } from "@supabase/supabase-js";
-
-const styles = StyleSheet.create({
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  },
-});
-
-type Trusted_Party_With_Members = Trusted_parties & {
-  trusted_party_members: { user_id: string }[];
-};
+import { TrustedParties } from "./trusted-parties";
+import { Reviews } from "./reviews";
+import { Statistics } from "./statistics";
 
 const Profile = ({ navigation }: any) => {
   const { user, setUser } = useContext(AuthContext);
   const [value, setValue] = useState("trustedParties");
-
-  const TrustedParties = () => {
-    const [trustedParties, setTrustedParties] = useState<Trusted_parties[]>([]);
-
-    let trustedPartiesSubsription: RealtimeChannel;
-
-    const fetchTrustedParties = async () => {
-      const { data, error } = (await supabase
-        .from("trusted_parties")
-        .select("*, trusted_party_members(user_id)")) as any;
-
-      const filteredData = data?.filter(
-        (trustedParty: Trusted_Party_With_Members) => {
-          return (
-            trustedParty.trusted_party_members.some((member) => {
-              return member.user_id === user?.id;
-            }) || trustedParty.owner === user?.id
-          );
-        }
-      );
-
-      if (filteredData) {
-        setTrustedParties(filteredData);
-      }
-
-      trustedPartiesSubsription = supabase
-        .channel("trusted_parties:*")
-        .on(
-          "postgres_changes",
-          { event: "*", schema: "public", table: "trusted_parties" },
-          (payload) => {
-            fetchTrustedParties();
-          }
-        )
-        .subscribe();
-    };
-
-    useEffect(() => {
-      fetchTrustedParties();
-    }, []);
-
-    useEffect(() => {
-      generateTrustedPartyElements();
-    }, [trustedParties]);
-
-    const generateTrustedPartyElements = () => {
-      trustedPartyElements = [];
-      trustedPartyElements = trustedParties.map((trustedParty) => (
-        <TrustedPartiesCard
-          title={trustedParty.name as string}
-          role={trustedParty.owner === user?.id ? "Owner" : "Member"}
-          key={trustedParty.id}
-          callback={() => {
-            navigation.navigate("NewTrustedParty", {
-              trustedPartyId: trustedParty.id,
-              update: true,
-            });
-          }}
-        />
-      ));
-    };
-
-    let trustedPartyElements: JSX.Element[] = [];
-    generateTrustedPartyElements();
-
-    return (
-      <View style={{ flex: 1 }}>
-        <ScrollView style={{ padding: 15 }}>{trustedPartyElements}</ScrollView>
-        <FAB
-          style={styles.fab}
-          icon="plus"
-          onPress={() =>
-            navigation.navigate("NewTrustedParty", {
-              trustedParties: trustedParties,
-            })
-          }
-        />
-      </View>
-    );
-  };
-
-  const Reviews = () => {
-    return (
-      <ScrollView style={{ flex: 1, padding: 15 }}>
-        <ReviewCard
-          username="User_7"
-          rating={4.5}
-          text={"This worked really good! Thank you!"}
-          date={"2 months ago"}
-        />
-      </ScrollView>
-    );
-  };
-
-  const Statistics = () => {
-    return (
-      <View style={{ flex: 1, padding: 15 }}>
-        <Card style={{ marginBottom: 10 }}>
-          <Card.Content
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text variant="displayLarge">2</Text>
-            <Text variant="headlineLarge">Eigene Fahrzeuge</Text>
-          </Card.Content>
-        </Card>
-        <Card>
-          <Card.Content
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text variant="displayLarge">17</Text>
-            <Text variant="headlineLarge">Geliehen Fahrzeuge</Text>
-          </Card.Content>
-        </Card>
-      </View>
-    );
-  };
 
   const renderContent = () => {
     switch (value) {
@@ -191,8 +41,6 @@ const Profile = ({ navigation }: any) => {
       }
     }
 
-    console.log("pick");
-
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -201,8 +49,6 @@ const Profile = ({ navigation }: any) => {
         quality: 1,
         allowsMultipleSelection: false,
       });
-
-      console.log(result);
 
       if (result.canceled) {
         return;
