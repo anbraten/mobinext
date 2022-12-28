@@ -115,18 +115,16 @@ export const Chat = ({ route, navigation }: Props) => {
             <View
               key={i}
               style={{
-                maxWidth: "70%",
                 marginTop: 10,
-                display: "flex",
-                flexDirection: "row",
-                alignSelf:
-                  message?.author === user?.id ? "flex-end" : "flex-start",
               }}
             >
-              {message.type === "text" ? (
-                <TextMessage message={message} />
+              {message.type === "rentable_request" ? (
+                <RentableRequestMessage
+                  message={message}
+                  chatPartner={chatPartner!}
+                />
               ) : (
-                <RentableRequestMessage message={message} />
+                <TextMessage message={message} chatPartner={chatPartner!} />
               )}
             </View>
           ))}
