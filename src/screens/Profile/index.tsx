@@ -319,7 +319,7 @@ const Profile = ({ navigation }: any) => {
             },
             {
               value: "statistics",
-              label: "Statistics",
+              label: "Statistik",
             },
           ]}
         />
