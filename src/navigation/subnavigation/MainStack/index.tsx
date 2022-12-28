@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Messages from "~/screens/Messages";
 import Profile from "~/screens/Profile";
-import Rentables from "~/screens/Rentables";
+import { Reservations } from "~/screens/Reservations";
 import Discover from "~/screens/Discover";
 import { Chat } from "~/screens/Messages/chat";
 import Renting from "~/screens/Discover/Renting";
@@ -20,7 +20,7 @@ import { OwnRentables } from "~/screens/OwnRentables/list";
 export type RootStackParamList = {
   Home: undefined;
   Discover: undefined;
-  Rentables: undefined;
+  Reservations: undefined;
   RentablesCreate: undefined;
   Messages: undefined;
   Chat: { chatPartnerId: string };
@@ -56,8 +56,8 @@ const BottomNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="Vehicles"
-        component={Rentables}
+        name="Reservations"
+        component={Reservations}
         options={{
           tabBarLabel: "Buchungen",
           tabBarIcon: ({ color }) => (

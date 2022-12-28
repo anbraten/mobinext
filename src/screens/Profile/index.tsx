@@ -53,7 +53,7 @@ const Profile = ({
         uri: file.uri,
         name: fileName,
         type: file.type ? `image/${fileExt}` : `video/${fileExt}`,
-      });
+      } as unknown as Blob);
 
       const filePath = `${user?.id}.${fileExt}`;
 
