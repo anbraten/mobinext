@@ -209,6 +209,26 @@ export interface Database {
           pending?: boolean | null;
         };
       };
+      trusted_party_rentables: {
+        Row: {
+          id: number;
+          created_at: string | null;
+          trusted_party_id: number | null;
+          rentable_id: number | null;
+        };
+        Insert: {
+          id?: number;
+          created_at?: string | null;
+          trusted_party_id?: number | null;
+          rentable_id?: number | null;
+        };
+        Update: {
+          id?: number;
+          created_at?: string | null;
+          trusted_party_id?: number | null;
+          rentable_id?: number | null;
+        };
+      };
     };
     Views: {
       [_ in never]: never;
