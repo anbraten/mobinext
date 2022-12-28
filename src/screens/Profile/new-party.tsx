@@ -21,7 +21,10 @@ export const NewTrustedParty = ({ route, navigation }: any) => {
     const [possibleMembers, setPossibleMembers] = useState<any[]>([]);
 
     useEffect(() => {
-        navigation.setOptions({ title: update ? "Trusted Party bearbeiten" : "Trusted Party erstellen" });
+        let title = update ? "Trusted Party bearbeiten" : "Trusted Party erstellen";
+
+        navigation.setOptions({ title });
+
 
         (async () => {          
             if (!update) return;
@@ -38,6 +41,10 @@ export const NewTrustedParty = ({ route, navigation }: any) => {
                 setMembers(memberData.map((member: any) => {
                     return {full_name: member.profiles.full_name, id: member.user_id};
                 }));
+                
+                if (trustedParty.owner !== user?.id)
+                    title = trustedParty.name?.toString() || "Trusted Party";
+                    navigation.setOptions({ title });
             }
         })();
     }, [navigation]);
@@ -63,19 +70,23 @@ export const NewTrustedParty = ({ route, navigation }: any) => {
 
     return (
         <View style={{ margin: 20, zIndex: 0}}>
+            {trustedParty.owner === user?.id && (
             <TextInput 
                 label="Name"
                 mode="outlined"
                 value={trustedParty.name || ""}
                 onChangeText={text => setTrustedParty({ ...trustedParty, name: text })}
             />
+            )}
 
+            {trustedParty.owner === user?.id && (
             <Searchbar 
                 style={{ marginTop: 10 }}
                 placeholder="Search"
                 onChangeText={query => setSearchQuery(query)}
                 value={searchQuery}
             />
+            )}
 
             {possibleMembers.length > 0 && (
             <Title>Mögliche Mitglieder</Title>
@@ -107,7 +118,8 @@ export const NewTrustedParty = ({ route, navigation }: any) => {
                 renderItem={({ item }) => (
                     <Card style={{ margin: 5, padding: 10 }}>
                         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: 'center'}}>
-                            <Text>{item.full_name}</Text>
+                            <Text style={{ marginVertical: 10}}>{item.full_name}</Text>
+                            {trustedParty.owner === user?.id && (
                             <Button
                                 onPress={() => {
                                     setMembers(members.filter(member => member.id !== item.id));
@@ -115,16 +127,20 @@ export const NewTrustedParty = ({ route, navigation }: any) => {
                             >
                                 -
                             </Button>
+                            )}
                         </View>
                     </Card>
                 )}
             />
+
+        {trustedParty.owner === user?.id && (
         <Button
             mode="contained"
-            onPress={() => manageTrustedParty(trustedParty, members, navigation)}
+            onPress={() => manageTrustedParty(trustedParty, members, navigation, update)}
         >
-            Erstellen
+            {update? 'Aktualisieren' : 'Erstellen'}
         </Button>
+        )}
 
     </View>
     );
