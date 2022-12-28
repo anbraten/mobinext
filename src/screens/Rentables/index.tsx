@@ -79,13 +79,13 @@ const Rentables = ({ navigation }: any) => {
               <View style={{ display: "flex", flexDirection: "column" }}>
                 <Text variant="titleLarge">{reservation._rentable.model}</Text>
                 <Text variant="bodyMedium">
-                  Fueltype: {reservation._rentable.fuel}
+                  Kraftstoff: {reservation._rentable.fuel}
                 </Text>
                 <Text variant="bodyMedium">
-                  Cost per mile: {reservation._rentable.cost_per_km}€
+                  Kosten per mile: {reservation._rentable.cost_per_km}€
                 </Text>
                 <Text variant="bodyMedium">
-                  Cost per minute: {reservation._rentable.cost_per_minute}€
+                  Kosten per minute: {reservation._rentable.cost_per_minute}€
                 </Text>
               </View>
               <View
@@ -96,10 +96,10 @@ const Rentables = ({ navigation }: any) => {
                 }}
               >
                 <Text variant="titleLarge">
-                  Seats: {reservation._rentable.seat_count}
+                  Sitze: {reservation._rentable.seat_count}
                 </Text>
                 <Button mode="contained" compact>
-                  Hand over
+                  Abgeben
                 </Button>
               </View>
             </Card.Content>
@@ -173,10 +173,10 @@ const Rentables = ({ navigation }: any) => {
                 </View>
                 <View style={{ display: "flex", flexDirection: "column" }}>
                   <Text variant="titleLarge">{rentable.model}</Text>
-                  <Text>Seats: {rentable.seat_count}</Text>
-                  <Text>Fueltype: {rentable.fuel}</Text>
-                  <Text>Cost per km: {rentable.cost_per_km}€</Text>
-                  <Text>Cost per minute: {rentable.cost_per_minute}€</Text>
+                  <Text>Sitze: {rentable.seat_count}</Text>
+                  <Text>Kraftstoff: {rentable.fuel}</Text>
+                  <Text>Kosten per km: {rentable.cost_per_km}€</Text>
+                  <Text>Kosten per Minute: {rentable.cost_per_minute}€</Text>
                 </View>
                 <View
                   style={{
@@ -187,7 +187,7 @@ const Rentables = ({ navigation }: any) => {
                   }}
                 >
                   <Button mode="contained" compact>
-                    Edit
+                    Ändern
                   </Button>
                 </View>
               </Card.Content>
@@ -229,11 +229,11 @@ const Rentables = ({ navigation }: any) => {
           buttons={[
             {
               value: "rented",
-              label: "Rented",
+              label: "Geliehene",
             },
             {
               value: "loaned",
-              label: "Loaned",
+              label: "Eigene",
             },
           ]}
         />

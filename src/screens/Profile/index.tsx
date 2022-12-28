@@ -152,7 +152,7 @@ const Profile = ({ navigation }: any) => {
             }}
           >
             <Text variant="displayLarge">2</Text>
-            <Text variant="headlineLarge">Vehicles loaned</Text>
+            <Text variant="headlineLarge">Eigene Fahrzeuge</Text>
           </Card.Content>
         </Card>
         <Card>
@@ -164,7 +164,7 @@ const Profile = ({ navigation }: any) => {
             }}
           >
             <Text variant="displayLarge">17</Text>
-            <Text variant="headlineLarge">Vehicles rented</Text>
+            <Text variant="headlineLarge">Geliehen Fahrzeuge</Text>
           </Card.Content>
         </Card>
       </View>

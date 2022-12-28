@@ -90,10 +90,10 @@ const Discover = ({ navigation }: Props) => {
           <View>
             <Text variant="titleSmall">Fueltype: {selectedRentable?.fuel}</Text>
             <Text variant="titleSmall">
-              Cost per km: {selectedRentable?.cost_per_km}
+              Kosten per km: {selectedRentable?.cost_per_km}
             </Text>
             <Text variant="titleSmall">
-              Cost per minute: {selectedRentable?.cost_per_minute}
+              Kosten per Minute: {selectedRentable?.cost_per_minute}
             </Text>
           </View>
         </View>
@@ -106,7 +106,7 @@ const Discover = ({ navigation }: Props) => {
           }}
         >
           <Text variant="titleLarge">
-            Seats: {selectedRentable?.seat_count}
+            Sitze: {selectedRentable?.seat_count}
           </Text>
 
           {selectedRentable?.owner && selectedRentable.id === 1 ? (
@@ -119,7 +119,7 @@ const Discover = ({ navigation }: Props) => {
                 });
               }}
             >
-              Rent
+              Leihen
             </Button>
           ) : (
             <Button
@@ -131,7 +131,7 @@ const Discover = ({ navigation }: Props) => {
                 });
               }}
             >
-              Message
+              Anfragen
             </Button>
           )}
         </View>

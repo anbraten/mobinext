@@ -39,7 +39,7 @@ const BottomNavigation = () => {
         name="Discover"
         component={Discover}
         options={{
-          tabBarLabel: "Discover",
+          tabBarLabel: "Entdecken",
           tabBarIcon: ({ color }) => (
             <Ionicons name="map" color={color} size={24} />
           ),
@@ -49,7 +49,7 @@ const BottomNavigation = () => {
         name="Vehicles"
         component={Rentables}
         options={{
-          tabBarLabel: "Vehicles",
+          tabBarLabel: "Buchungen",
           tabBarIcon: ({ color }) => (
             <Ionicons name="car" color={color} size={24} />
           ),
@@ -59,7 +59,7 @@ const BottomNavigation = () => {
         name="Messages"
         component={Messages}
         options={{
-          tabBarLabel: "Messages",
+          tabBarLabel: "Chats",
           tabBarIcon: ({ color }) => (
             <Ionicons name="mail" color={color} size={24} />
           ),
@@ -69,7 +69,7 @@ const BottomNavigation = () => {
         name="Profile"
         component={Profile}
         options={{
-          tabBarLabel: "Profile",
+          tabBarLabel: "Profil",
           tabBarIcon: ({ color }) => (
             <Ionicons name="person" color={color} size={24} />
           ),

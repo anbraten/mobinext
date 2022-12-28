@@ -15,8 +15,8 @@ import { View, ScrollView } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as Location from "expo-location";
-import { Platform, StyleSheet } from 'react-native';
-import dayjs from 'dayjs';
+import { Platform, StyleSheet } from "react-native";
+import dayjs from "dayjs";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Renting">;
 
@@ -25,12 +25,12 @@ const Renting = ({ route, navigation }: Props) => {
     route.params.selectedRentable
   );
 
-  const isIOS = Platform.OS === 'ios';
+  const isIOS = Platform.OS === "ios";
   const [startDateTime, setStartDate] = useState(new Date());
   const [endDateTime, setEndDate] = useState(new Date());
   const [show, setShow] = useState(false);
-  const [startOrEndDate, setStartOrEnd] = useState('start');
-  const [mode, setMode] = useState('date');
+  const [startOrEndDate, setStartOrEnd] = useState("start");
+  const [mode, setMode] = useState("date");
 
   const [locationAddress, setLocationAddress] =
     useState<Location.LocationGeocodedAddress[]>();
@@ -76,36 +76,45 @@ const Renting = ({ route, navigation }: Props) => {
   }, [selectedRentable]);
 
   const rentACar = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    const reservation = {created_at: new Date().toLocaleString(), rentable: selectedRentable.id, borrower: user?.id, start: startDateTime.toLocaleString(), end: endDateTime.toLocaleString(), status: 'geliehen' };
+    const reservation = {
+      created_at: new Date().toLocaleString(),
+      rentable: selectedRentable.id,
+      borrower: user?.id,
+      start: startDateTime.toLocaleString(),
+      end: endDateTime.toLocaleString(),
+      status: "geliehen",
+    };
 
     const { data, error, status } = await supabase
-      .from('reservations')
+      .from("reservations")
       .insert([reservation]);
-    
+
     console.log(error);
     console.log(data);
     console.log(status);
-  }
+  };
 
   const onChangeStart = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || Date;
     setShow(false);
     setStartDate(currentDate);
-  }
+  };
 
   const onChangeEnd = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || Date;
     setShow(false);
     setEndDate(currentDate);
-  }
+  };
 
   const showDateTimePicker = (currentMode: any, startOrEnd: string) => {
     setMode(currentMode);
     setStartOrEnd(startOrEnd);
     setShow(true);
-  }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
@@ -141,10 +150,10 @@ const Renting = ({ route, navigation }: Props) => {
                 Fueltype: {selectedRentable?.fuel}
               </Text>
               <Text variant="titleSmall">
-                Cost per km: {selectedRentable?.cost_per_km}
+                Kosten per km: {selectedRentable?.cost_per_km}
               </Text>
               <Text variant="titleSmall">
-                Cost per minute: {selectedRentable?.cost_per_minute}
+                Kosten per minute: {selectedRentable?.cost_per_minute}
               </Text>
             </View>
           </View>
@@ -157,7 +166,7 @@ const Renting = ({ route, navigation }: Props) => {
             }}
           >
             <Text variant="titleLarge">
-              Seats: {selectedRentable?.seat_count}
+              Sitze: {selectedRentable?.seat_count}
             </Text>
           </View>
         </View>
@@ -214,7 +223,7 @@ const Renting = ({ route, navigation }: Props) => {
             padding: 10,
           }}
         >
-          <Text variant="titleLarge">Additional Information</Text>
+          <Text variant="titleLarge">Zusätzliche Informationen</Text>
           <View
             style={{
               display: "flex",
@@ -238,17 +247,17 @@ const Renting = ({ route, navigation }: Props) => {
               alignItems: "center",
             }}
           >
-            <Text variant="titleMedium">Startdate: </Text>
+            <Text variant="titleMedium">Startdatum: </Text>
             {isIOS ? (
               <DateTimePicker
-                mode='date'
+                mode="date"
                 value={startDateTime}
                 is24Hour={true}
                 onChange={onChangeStart}
               />
             ) : (
-              <Button onPress={() => showDateTimePicker('date', 'start')} >
-                {dayjs(startDateTime).format('DD. MMMM YYYY')}
+              <Button onPress={() => showDateTimePicker("date", "start")}>
+                {dayjs(startDateTime).format("DD. MMMM YYYY")}
               </Button>
             )}
           </View>
@@ -260,20 +269,19 @@ const Renting = ({ route, navigation }: Props) => {
               marginTop: 5,
             }}
           >
-            <Text variant="titleMedium">Starttime: </Text>
+            <Text variant="titleMedium">Startzeit: </Text>
             {isIOS ? (
               <DateTimePicker
-                mode='time'
+                mode="time"
                 value={startDateTime}
                 is24Hour={true}
                 onChange={onChangeStart}
               />
             ) : (
-              <Button onPress={() => showDateTimePicker('time', 'start')} >
-                {dayjs(startDateTime).format('HH:mm') + " Uhr"}
+              <Button onPress={() => showDateTimePicker("time", "start")}>
+                {dayjs(startDateTime).format("HH:mm") + " Uhr"}
               </Button>
             )}
-
           </View>
           <View
             style={{
@@ -283,20 +291,19 @@ const Renting = ({ route, navigation }: Props) => {
               marginTop: 5,
             }}
           >
-            <Text variant="titleMedium">Est. Enddate: </Text>
+            <Text variant="titleMedium">Geplantes Enddatum: </Text>
             {isIOS ? (
               <DateTimePicker
-                mode='date'
+                mode="date"
                 value={endDateTime}
                 is24Hour={true}
                 onChange={onChangeEnd}
               />
             ) : (
-              <Button onPress={() => showDateTimePicker('date', 'end')}>
-                {dayjs(endDateTime).format('DD. MMMM YYYY')}
+              <Button onPress={() => showDateTimePicker("date", "end")}>
+                {dayjs(endDateTime).format("DD. MMMM YYYY")}
               </Button>
             )}
-
           </View>
           <View
             style={{
@@ -306,29 +313,30 @@ const Renting = ({ route, navigation }: Props) => {
               marginTop: 5,
             }}
           >
-            <Text variant="titleMedium">Est. Endtime: </Text>
+            <Text variant="titleMedium">Geplante Endzeit: </Text>
             {isIOS ? (
               <DateTimePicker
-                mode='time'
+                mode="time"
                 value={endDateTime}
                 is24Hour={true}
                 onChange={onChangeEnd}
               />
             ) : (
-              <Button onPress={() => showDateTimePicker('time', 'end')} >
-                {dayjs(endDateTime).format('HH:mm') + " Uhr"}
+              <Button onPress={() => showDateTimePicker("time", "end")}>
+                {dayjs(endDateTime).format("HH:mm") + " Uhr"}
               </Button>
             )}
           </View>
           {show && (
             <DateTimePicker
-              mode={mode === 'time' ? 'time' : 'date'}
-              value={startOrEndDate === 'start' ? startDateTime : endDateTime}
+              mode={mode === "time" ? "time" : "date"}
+              value={startOrEndDate === "start" ? startDateTime : endDateTime}
               is24Hour={true}
-              onChange={startOrEndDate === 'start'? onChangeStart : onChangeEnd}
+              onChange={
+                startOrEndDate === "start" ? onChangeStart : onChangeEnd
+              }
             />
           )}
-
         </View>
       </ScrollView>
       <View
@@ -345,7 +353,9 @@ const Renting = ({ route, navigation }: Props) => {
         }}
       >
         <View>
-          <Text variant="titleSmall">Est. Costs (w/o miles): 18€</Text>
+          <Text variant="titleSmall">
+            Geschätzte Kosten (ohne Kilometerkosten): 18€
+          </Text>
         </View>
         <Button
           mode="contained"
@@ -354,7 +364,7 @@ const Renting = ({ route, navigation }: Props) => {
             navigation.navigate("Discover");
           }}
         >
-          Rent
+          Leihen
         </Button>
       </View>
     </SafeAreaView>
