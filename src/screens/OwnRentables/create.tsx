@@ -4,7 +4,9 @@ import { Text, Button } from "react-native-paper";
 import { manageRentable } from "./utils";
 
 export const OwnRentablesCreate = ({ route, navigation }: any) => {
-  const { rentable, success } = route.params;
+  const { rentable, success, update } = route.params;
+
+  const text = `${rentable.model} wurde ${success ? 'erfolgreich': 'nicht erfolgreich'} ${update ? 'aktualisiert' : 'erstellt'}`;
 
   return (
     <View
@@ -17,10 +19,7 @@ export const OwnRentablesCreate = ({ route, navigation }: any) => {
       }}
     >
       <Text>
-        {rentable.model}
-        {success
-          ? " wurde erfolgreich erstellt/aktualisiert"
-          : " wurde nicht erfolgreich erstellt/aktualisiert"}
+        {text}
       </Text>
       {!success && (
         <Button
@@ -33,7 +32,7 @@ export const OwnRentablesCreate = ({ route, navigation }: any) => {
       )}
       <Button
         mode="contained"
-        onPress={() => navigation.navigate("Vehicles")}
+        onPress={() => navigation.navigate("OwnRentables")}
         style={{ marginTop: 10 }}
       >
         Zurück zu den Fahrzeugen
