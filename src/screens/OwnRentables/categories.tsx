@@ -17,7 +17,7 @@ const btns = [
   { label: "Andere", route: "LoanDetails", value: "other" },
 ];
 
-export const Categories = ({ navigation }: any) => {
+export const OwnRentablesCategories = ({ navigation }: any) => {
   return (
     <View
       style={{

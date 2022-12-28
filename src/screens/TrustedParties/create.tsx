@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useEffect, useReducer, useState, useContext } from "react";
 import { View, Text, FlatList } from "react-native";
 import {
@@ -9,12 +10,16 @@ import {
   TextInput,
   Title,
 } from "react-native-paper";
+import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
 import { Trusted_parties, Trusted_party_members } from "~/types";
-import { deleteTrustedParty, manageTrustedParty } from "./utils";
+import { deleteTrustedParty, manageTrustedParty } from "../Profile/utils";
 
-export const NewTrustedParty = ({ route, navigation }: any) => {
+export const TrustedPartiesCreate = ({
+  route,
+  navigation,
+}: NativeStackScreenProps<RootStackParamList, "TrustedPartiesCreate">) => {
   const { update = false, trustedPartyId } = route.params;
   const { user } = useContext(AuthContext);
 
@@ -82,7 +87,7 @@ export const NewTrustedParty = ({ route, navigation }: any) => {
   useEffect(() => {
     if (trustedParty.owner !== user?.id) {
       navigation.setOptions({
-        title: trustedParty.name,
+        title: trustedParty.name || "...",
         headerRight: () => null,
       });
     } else if (trustedParty.owner === user?.id && update) {

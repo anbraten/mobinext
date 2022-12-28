@@ -1,12 +1,16 @@
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RealtimeChannel } from "@supabase/realtime-js";
 import { useContext, useEffect, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { Avatar, Button, Card, FAB, Text } from "react-native-paper";
+import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
 import { Rentable } from "~/types";
 
-export const OwnRentables = () => {
+export const OwnRentables = ({
+  navigation,
+}: NativeStackScreenProps<RootStackParamList, "OwnRentables">) => {
   const { user } = useContext(AuthContext);
 
   const [rentables, setRentables] = useState<Rentable[]>();
@@ -65,7 +69,9 @@ export const OwnRentables = () => {
             }}
             key={i}
             onPress={() =>
-              navigation.navigate("LoanDetails", { currRentable: rentable })
+              navigation.navigate("OwnRentablesDetails", {
+                currRentable: rentable,
+              })
             }
           >
             <Card.Content
@@ -104,7 +110,7 @@ export const OwnRentables = () => {
       <FAB
         style={{ position: "absolute", margin: 16, right: 0, bottom: 0 }}
         icon="plus"
-        onPress={() => navigation.navigate("Loaning")}
+        onPress={() => navigation.navigate("OwnRentablesCreate")}
       />
     </View>
   );

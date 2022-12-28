@@ -8,25 +8,35 @@ import Discover from "~/screens/Discover";
 import { Chat } from "~/screens/Messages/chat";
 import Renting from "~/screens/Discover/Renting";
 import { Rentable } from "~/types";
-import { Categories } from "~/screens/Rentables/categories";
-import { Details } from "~/screens/Rentables/details";
-import { Create } from "~/screens/Rentables/create";
-import { NewTrustedParty } from "~/screens/Profile/new-party";
-import { CreateTrustedPartyResult } from "~/screens/Profile/create";
+import { OwnRentablesCategories } from "~/screens/OwnRentables/categories";
+import { OwnRentablesDetails } from "~/screens/OwnRentables/details";
+import { OwnRentablesCreate } from "~/screens/OwnRentables/create";
+import { TrustedPartiesCreate } from "~/screens/TrustedParties/create";
+import { Reviews } from "~/screens/Profile/reviews";
+import { Statistics } from "~/screens/Profile/statistics";
+import { TrustedParties } from "~/screens/TrustedParties/list";
+import { OwnRentables } from "~/screens/OwnRentables/list";
 
 export type RootStackParamList = {
   Home: undefined;
   Discover: undefined;
   Rentables: undefined;
+  RentablesCreate: undefined;
   Messages: undefined;
   Chat: { chatPartnerId: string };
   Renting: { selectedRentable: Rentable };
+
   Profile: undefined;
-  Loaning: undefined;
-  LoanDetails: undefined;
-  CreateResult: undefined;
-  NewTrustedParty: undefined;
-  CreateTrustedPartyResult: undefined;
+
+  OwnRentables: undefined;
+  OwnRentablesDetails: { currRentable?: Partial<Rentable> };
+  OwnRentablesCreate: undefined;
+  OwnRentablesCategories: undefined;
+
+  Statistics: undefined;
+  Reviews: undefined;
+  TrustedParties: undefined;
+  TrustedPartiesCreate: { update?: boolean; trustedPartyId?: string };
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -59,7 +69,7 @@ const BottomNavigation = () => {
         name="Messages"
         component={Messages}
         options={{
-          tabBarLabel: "Chats",
+          tabBarLabel: "Nachrichten",
           tabBarIcon: ({ color }) => (
             <Ionicons name="mail" color={color} size={24} />
           ),
@@ -93,30 +103,47 @@ const MainStack = () => {
         component={Renting}
         options={{ title: "Rent a vehicle" }}
       />
+
       <Stack.Screen
-        name="Loaning"
-        component={Categories}
-        options={{ title: "Fahrzeug erstellen" }}
+        name="OwnRentables"
+        component={OwnRentables}
+        options={{ title: "Fahrzeug erstellen", headerBackTitle: "Back" }}
       />
       <Stack.Screen
-        name="LoanDetails"
-        component={Details}
-        options={{ title: "Details", headerBackTitle: "Back" }}
+        name="OwnRentablesDetails"
+        component={OwnRentablesDetails}
+        options={{ title: "Dein Fahrzeug", headerBackTitle: "Back" }}
       />
       <Stack.Screen
-        name="CreateResult"
-        component={Create}
-        options={{ headerShown: false, headerLeft: () => null }}
+        name="OwnRentablesCreate"
+        component={OwnRentablesCreate}
+        options={{ title: "Fahrzeug erstellen", headerBackTitle: "Back" }}
       />
       <Stack.Screen
-        name="NewTrustedParty"
-        component={NewTrustedParty}
+        name="OwnRentablesCategories"
+        component={OwnRentablesCategories}
+        options={{ title: "Fahrzeug erstellen", headerBackTitle: "Back" }}
+      />
+
+      <Stack.Screen
+        name="Reviews"
+        component={Reviews}
+        options={{ title: "Review" }}
+      />
+      <Stack.Screen
+        name="Statistics"
+        component={Statistics}
+        options={{ title: "Statistiken" }}
+      />
+      <Stack.Screen
+        name="TrustedParties"
+        component={TrustedParties}
+        options={{ title: "Trusted Parties" }}
+      />
+      <Stack.Screen
+        name="TrustedPartiesCreate"
+        component={TrustedPartiesCreate}
         options={{ title: "Trusted Party erstellen" }}
-      />
-      <Stack.Screen
-        name="CreateTrustedPartyResult"
-        component={CreateTrustedPartyResult}
-        options={{ headerShown: false, headerLeft: () => null }}
       />
     </Stack.Navigator>
   );

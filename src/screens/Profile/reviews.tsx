@@ -9,6 +9,7 @@ export const Reviews = () => {
         rating={4.5}
         text={"This worked really good! Thank you!"}
         date={"2 months ago"}
+        key={0}
       />
     </ScrollView>
   );

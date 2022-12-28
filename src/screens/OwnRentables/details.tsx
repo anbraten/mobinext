@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { useEffect, useState } from "react";
+import { View, ScrollView } from "react-native";
 import {
   Text,
   Button,
@@ -8,7 +8,6 @@ import {
   Portal,
   Dialog,
 } from "react-native-paper";
-import { supabase } from "~/supabase";
 import { Rentable } from "~/types";
 import * as Location from "expo-location";
 import { LocationObject } from "expo-location";
@@ -33,46 +32,54 @@ const categories = [
 
 const defaultSeats = 4;
 
-export const Details = ({ route, navigation }: any) => {
-    const { category, currRentable } = route.params;
+export const OwnRentablesDetails = ({ route, navigation }: any) => {
+  const { category, currRentable } = route.params;
 
-    // const edit = currRentable !== undefined;
-    const [rentable, setRentable] = React.useState<Partial <Rentable>>(currRentable || {}); 
-    const [visible, setVisible] = React.useState(false);
-    const [seats, setSeats] = React.useState<string>(defaultSeats.toString());
-    const [costMinute, setCostMinute] = React.useState<string>(rentable.cost_per_minute?.toString() || "0");
-    const [costKm, setCostKm] = React.useState<string>(rentable.cost_per_km?.toString() || "0");
-    const [locationAddress, setLocationAddress] = useState<Location.LocationGeocodedAddress[]>();
+  // const edit = currRentable !== undefined;
+  const [rentable, setRentable] = useState<Partial<Rentable>>(
+    currRentable || {}
+  );
+  const [visible, setVisible] = useState(false);
+  const [seats, setSeats] = useState<string>(defaultSeats.toString());
+  const [costMinute, setCostMinute] = useState<string>(
+    rentable.cost_per_minute?.toString() || "0"
+  );
+  const [costKm, setCostKm] = useState<string>(
+    rentable.cost_per_km?.toString() || "0"
+  );
+  const [locationAddress, setLocationAddress] =
+    useState<Location.LocationGeocodedAddress[]>();
 
-    rentable.type = rentable.type || category;
-    rentable.seat_count = rentable.seat_count || defaultSeats;
+  rentable.type = rentable.type || category;
+  rentable.seat_count = rentable.seat_count || defaultSeats;
 
-    
-    useEffect(() => {
-      navigation.setOptions({ title: categories.find(c => c.value === rentable.type)?.label || "Details" });
-    }, [navigation]);
+  useEffect(() => {
+    navigation.setOptions({
+      title:
+        categories.find((c) => c.value === rentable.type)?.label || "Details",
+    });
+  }, [navigation]);
 
-    useEffect(() => {
-      if (rentable?.latitude && rentable?.longitude) {
-        const coords = {
-          latitude: rentable.latitude,
-          longitude: rentable.longitude,
-        };
-        const { latitude, longitude } = coords;
-  
-        const getAdress = async () => {
-          const response = await Location.reverseGeocodeAsync({
-            latitude,
-            longitude,
-          });
-          if (response) {
-            setLocationAddress(response);
-          }
-        };  
-        getAdress();
-      }
-    }, [rentable]);
-  
+  useEffect(() => {
+    if (rentable?.latitude && rentable?.longitude) {
+      const coords = {
+        latitude: rentable.latitude,
+        longitude: rentable.longitude,
+      };
+      const { latitude, longitude } = coords;
+
+      const getAdress = async () => {
+        const response = await Location.reverseGeocodeAsync({
+          latitude,
+          longitude,
+        });
+        if (response) {
+          setLocationAddress(response);
+        }
+      };
+      getAdress();
+    }
+  }, [rentable]);
 
   return (
     <ScrollView style={{ margin: "5%" }}>
@@ -183,8 +190,11 @@ export const Details = ({ route, navigation }: any) => {
         ></TextInput>
       </View>
 
-      <Button onPress={() => manageRentable(rentable, navigation)} mode="contained">
-        {currRentable ? 'Fahrzeug aktualisieren' : 'Fahrzeug erstellen'}
+      <Button
+        onPress={() => manageRentable(rentable, navigation)}
+        mode="contained"
+      >
+        {currRentable ? "Fahrzeug aktualisieren" : "Fahrzeug erstellen"}
       </Button>
     </ScrollView>
   );

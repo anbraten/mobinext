@@ -6,12 +6,16 @@ import { View, ScrollView } from "react-native";
 import { TrustedPartiesCard } from "~/components/trusted-parties-card";
 import { FAB } from "react-native-paper";
 import { AuthContext } from "~/provider/AuthProvider";
+import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 type Trusted_Party_With_Members = Trusted_parties & {
   trusted_party_members: { user_id: string }[];
 };
 
-export const TrustedParties = () => {
+export const TrustedParties = ({
+  navigation,
+}: NativeStackScreenProps<RootStackParamList, "TrustedParties">) => {
   const { user } = useContext(AuthContext);
 
   const [trustedParties, setTrustedParties] = useState<
@@ -63,7 +67,7 @@ export const TrustedParties = () => {
             role={trustedParty.owner === user?.id ? "Besitzer" : "Mitglied"}
             key={trustedParty.id}
             callback={() => {
-              navigation.navigate("NewTrustedParty", {
+              navigation.push("TrustedPartiesCreate", {
                 trustedPartyId: trustedParty.id,
                 update: true,
               });
@@ -75,7 +79,7 @@ export const TrustedParties = () => {
         style={{ position: "absolute", margin: 16, right: 0, bottom: 0 }}
         icon="plus"
         onPress={() =>
-          navigation.navigate("NewTrustedParty", {
+          navigation.navigate("TrustedPartiesCreate", {
             trustedParties: trustedParties,
           })
         }

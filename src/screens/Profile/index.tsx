@@ -4,33 +4,23 @@ import {
   Avatar,
   Divider,
   Headline,
-  SegmentedButtons,
   Button,
   MD3Colors,
+  List,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { supabase } from "~/supabase";
 import { AuthContext } from "~/provider/AuthProvider";
 import * as ImagePicker from "expo-image-picker";
-import { TrustedParties } from "./trusted-parties";
-import { Reviews } from "./reviews";
-import { Statistics } from "./statistics";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 
-const Profile = ({ navigation }: any) => {
+const Profile = ({
+  navigation,
+}: NativeStackScreenProps<RootStackParamList, "Profile">) => {
   const { user, setUser } = useContext(AuthContext);
   const [value, setValue] = useState("trustedParties");
-
-  const renderContent = () => {
-    switch (value) {
-      case "trustedParties":
-        return <TrustedParties />;
-      case "reviews":
-        return <Reviews />;
-      case "statistics":
-        return <Statistics />;
-    }
-  };
 
   async function uploadProfileImage() {
     if (Platform.OS !== "web") {
@@ -145,32 +135,37 @@ const Profile = ({ navigation }: any) => {
         </Button>
       </View>
       <Divider style={{ height: 1.5 }} />
-      <View
-        style={{
-          paddingTop: 15,
-          paddingHorizontal: 20,
-        }}
-      >
-        <SegmentedButtons
-          value={value}
-          onValueChange={setValue}
-          buttons={[
-            {
-              value: "trustedParties",
-              label: "Trusted Parties",
-            },
-            {
-              value: "reviews",
-              label: "Reviews",
-            },
-            {
-              value: "statistics",
-              label: "Statistik",
-            },
-          ]}
+      <View style={{ paddingTop: 20 }}>
+        <List.Item
+          title="Profil"
+          left={(props) => <List.Icon {...props} icon="account" />}
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+        />
+        <List.Item
+          title="Deine Fahrzeuge"
+          left={(props) => <List.Icon {...props} icon="car-convertible" />}
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => navigation.push("OwnRentables")}
+        />
+        <List.Item
+          title="Trusted Parties"
+          left={(props) => <List.Icon {...props} icon="check-decagram" />}
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => navigation.push("TrustedParties")}
+        />
+        <List.Item
+          title="Reviews"
+          left={(props) => <List.Icon {...props} icon="message-draw" />}
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => navigation.push("Reviews")}
+        />
+        <List.Item
+          title="Statistiken"
+          left={(props) => <List.Icon {...props} icon="chart-line-variant" />}
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => navigation.push("Statistics")}
         />
       </View>
-      {renderContent()}
     </SafeAreaView>
   );
 };
