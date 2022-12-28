@@ -4,6 +4,7 @@ import { TextInput, Button, Text, HelperText } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "~/supabase.ts";
 import mobinext from "~/../assets/mobinext.png";
+import Toast from "react-native-toast-message";
 
 const Register = ({ navigation }: any) => {
   const [email, setEmail] = useState<string>("");
@@ -23,6 +24,13 @@ const Register = ({ navigation }: any) => {
 
     if (error) {
       setError(error.message);
+    } else {
+      Toast.show({
+        type: "success",
+        text1: "Du hast dich erfolgreich registriert.",
+        text2: "Schaue in deine E-Mails und bestätige die Verfikation!",
+      });
+      navigation.navigate("Login");
     }
 
     setLoading(false);
@@ -30,7 +38,7 @@ const Register = ({ navigation }: any) => {
 
   useEffect(() => {
     setError("");
-  }, [email, password]);
+  }, [email, password, passwordConfirm]);
 
   useEffect(() => {
     if (password && passwordConfirm && password !== passwordConfirm) {
