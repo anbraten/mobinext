@@ -120,7 +120,7 @@ export const OwnRentables = ({
       <FAB
         style={{ position: "absolute", margin: 16, right: 0, bottom: 0 }}
         icon="plus"
-        onPress={() => navigation.navigate("OwnRentablesCreate")}
+        onPress={() => navigation.navigate("OwnRentablesCategories")}
       />
     </View>
   );

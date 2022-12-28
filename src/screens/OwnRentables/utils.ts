@@ -12,5 +12,5 @@ rentable.owner = user?.id as string;
     ])
 
     console.log(error, status);
-    navigation.navigate("CreateResult", { rentable, success: status === 201 });
+    navigation.navigate("OwnRentablesCreate", { rentable, success: status === 201 });
 }

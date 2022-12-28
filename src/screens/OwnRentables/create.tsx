@@ -33,7 +33,7 @@ export const OwnRentablesCreate = ({ route, navigation }: any) => {
       )}
       <Button
         mode="contained"
-        onPress={() => navigation.navigate("Vehicles")}
+        onPress={() => navigation.navigate("OwnRentables")}
         style={{ marginTop: 10 }}
       >
         Zurück zu den Fahrzeugen

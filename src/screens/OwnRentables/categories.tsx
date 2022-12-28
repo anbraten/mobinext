@@ -9,12 +9,12 @@ import {
 import { Text, Button } from "react-native-paper";
 
 const btns = [
-  { label: "Auto", route: "LoanDetails", value: "car" },
-  { label: "Transporter", route: "LoanDetails", value: "transporter" },
-  { label: "Fahrrad", route: "LoanDetails", value: "bicycle" },
-  { label: "Motorrad", route: "LoanDetails", value: "motorbike" },
-  { label: "Landwirtschaft", route: "LoanDetails", value: "agriculture" },
-  { label: "Andere", route: "LoanDetails", value: "other" },
+  { label: "Auto", value: "car" },
+  { label: "Transporter", value: "transporter" },
+  { label: "Fahrrad", value: "bicycle" },
+  { label: "Motorrad", value: "motorbike" },
+  { label: "Landwirtschaft", value: "agriculture" },
+  { label: "Andere", value: "other" },
 ];
 
 export const OwnRentablesCategories = ({ navigation }: any) => {
@@ -52,7 +52,7 @@ export const OwnRentablesCategories = ({ navigation }: any) => {
             <Button
               mode="contained"
               onPress={() =>
-                navigation.navigate(item.route, { category: item.value })
+                navigation.navigate("OwnRentablesDetails", { category: item.value })
               }
               contentStyle={{ width: "100%", aspectRatio: 1 / 1 }}
             >
