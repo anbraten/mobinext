@@ -88,7 +88,7 @@ const Discover = ({ navigation }: Props) => {
         >
           <Text variant="titleLarge">{selectedRentable?.model}</Text>
           <View>
-            <Text variant="titleSmall">Fueltype: {selectedRentable?.fuel}</Text>
+            <Text variant="titleSmall">Kraftstoff: {selectedRentable?.fuel}</Text>
             <Text variant="titleSmall">
               Kosten per km: {selectedRentable?.cost_per_km}
             </Text>
