@@ -11,7 +11,7 @@ import {
   MD3Colors,
   Text,
 } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaFrame } from "react-native-safe-area-context";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
@@ -19,6 +19,8 @@ type Props = NativeStackScreenProps<RootStackParamList, "Discover">;
 
 const Discover = ({ navigation }: Props) => {
   const [location, setLocation] = useState<any>(null);
+  const [userID, setUserID] = useState<any>();
+  const [isRentable, setIsRentable] = useState(false);
   const [errorMsg, setErrorMsg] = useState<any>(null);
   const [rentables, setRentables] = useState<Rentable[]>([]);
   const [selectedRentable, setSelectedRentable] = useState<
@@ -45,6 +47,10 @@ const Discover = ({ navigation }: Props) => {
       if (data) {
         setRentables(data);
       }
+
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserID(user?.id);
+      canRent();
     })();
   }, []);
 
@@ -59,6 +65,24 @@ const Discover = ({ navigation }: Props) => {
       });
     }
   }, [location]);
+
+  useEffect(() => {
+    canRent();
+  }, [selectedRentable]);
+
+  const canRent = async () => {
+    setIsRentable(false);
+    const { error, data: TP_FROM_RENTABLE } = await supabase.from("trusted_party_rentables").select("trusted_party_id").eq("rentable_id", selectedRentable?.id);
+    const { data: TP_FROM_USER } = await supabase.from("trusted_party_members").select("trusted_party_id").eq("user_id", userID);
+    
+    TP_FROM_USER?.forEach((user) => {
+        TP_FROM_RENTABLE?.forEach((rentable) => {
+          if (user.trusted_party_id == rentable.trusted_party_id) {
+            setIsRentable(true);
+          }
+        })
+    });
+  }
 
   const SelectedRentable = () => {
     return (
@@ -109,7 +133,7 @@ const Discover = ({ navigation }: Props) => {
             Seats: {selectedRentable?.seat_count}
           </Text>
 
-          {selectedRentable?.owner && selectedRentable.id === 1 ? (
+          {selectedRentable != null && (selectedRentable?.owner === userID || isRentable) ? (
             <Button
               mode="contained"
               compact

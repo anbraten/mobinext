@@ -203,6 +203,26 @@ export interface Database {
           pending?: boolean | null;
         };
       };
+      trusted_party_rentables: {
+        Row: {
+          id: number;
+          created_at: string | null;
+          trusted_party_id: number | null;
+          rentable_id: string | null;
+        };
+        Insert: {
+          id?: number;
+          created_at?: string | null;
+          trusted_party_id?: number | null;
+          rentable_id?: string | null;
+        };
+        Update: {
+          id?: number;
+          created_at?: string | null;
+          trusted_party_id?: number | null;
+          rentable_id?: string | null;
+        };
+      };
     };
     Views: {
       [_ in never]: never;

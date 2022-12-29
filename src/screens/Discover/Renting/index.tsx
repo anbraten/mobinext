@@ -29,6 +29,7 @@ const Renting = ({ route, navigation }: Props) => {
   const [startDateTime, setStartDate] = useState(new Date());
   const [endDateTime, setEndDate] = useState(new Date());
   const [show, setShow] = useState(false);
+  const [showErorr, setShowError] = useState(false);
   const [startOrEndDate, setStartOrEnd] = useState('start');
   const [mode, setMode] = useState('date');
 
@@ -38,7 +39,11 @@ const Renting = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     endDateTime.setHours(startDateTime.getHours() + 1);
-  }, [startDateTime]);
+  }, []);
+
+  useEffect(() => {
+
+  }, [endDateTime, startDateTime]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -75,15 +80,41 @@ const Renting = ({ route, navigation }: Props) => {
     }
   }, [selectedRentable]);
 
+  const checkIfFreeToRent = async () => {
+    const { data, error } = await supabase
+      .from('reservations')
+      .select('*')
+      .eq('rentable', selectedRentable.id);
+
+    data?.forEach(reservation => {
+      if (reservation.start != null && reservation.end != null) {
+        if (dayjs(reservation.start).isBefore(endDateTime) && dayjs(startDateTime).isBefore(reservation.end)) {
+          setShowError(true);
+        }
+        else {
+          setShowError(false);
+        }
+      }
+    });
+  }
+
+  // const isBetween = (checkDate: Date, startDate: Date, endDate: Date) => {
+  //   var isBefore = dayjs(startDate).isBefore(checkDate);
+  //   var isAfter = dayjs(endDate).isAfter(checkDate);
+  //   var isSameStart = dayjs(startDate).isSame(checkDate);
+  //   var isSameEnd = dayjs(endDate).isSame(checkDate);
+  //   return (isBefore && isAfter) || isSameEnd || isSameStart;
+  // }
+
   const rentACar = async () => {
     const { data: { user } } = await supabase.auth.getUser();
 
-    const reservation = {created_at: new Date().toLocaleString(), rentable: selectedRentable.id, borrower: user?.id, start: startDateTime.toLocaleString(), end: endDateTime.toLocaleString(), status: 'geliehen' };
+    const reservation = { created_at: new Date().toLocaleString(), rentable: selectedRentable.id, borrower: user?.id, start: startDateTime.toLocaleString(), end: endDateTime.toLocaleString(), status: 'geliehen' };
 
     const { data, error, status } = await supabase
       .from('reservations')
       .insert([reservation]);
-    
+
     console.log(error);
     console.log(data);
     console.log(status);
@@ -93,12 +124,14 @@ const Renting = ({ route, navigation }: Props) => {
     const currentDate = selectedDate || Date;
     setShow(false);
     setStartDate(currentDate);
+    checkIfFreeToRent();
   }
 
   const onChangeEnd = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || Date;
     setShow(false);
     setEndDate(currentDate);
+    checkIfFreeToRent();
   }
 
   const showDateTimePicker = (currentMode: any, startOrEnd: string) => {
@@ -320,12 +353,15 @@ const Renting = ({ route, navigation }: Props) => {
               </Button>
             )}
           </View>
+          {showErorr && (
+            <Text variant="titleMedium">Diese Zeit wurde bereits gebucht. Bitte wählen Sie einen anderen Zeitraum</Text>
+          )}
           {show && (
             <DateTimePicker
               mode={mode === 'time' ? 'time' : 'date'}
               value={startOrEndDate === 'start' ? startDateTime : endDateTime}
               is24Hour={true}
-              onChange={startOrEndDate === 'start'? onChangeStart : onChangeEnd}
+              onChange={startOrEndDate === 'start' ? onChangeStart : onChangeEnd}
             />
           )}
 
