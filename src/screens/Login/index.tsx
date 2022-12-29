@@ -4,6 +4,7 @@ import { TextInput, Button, Text, HelperText } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "~/supabase.ts";
 import mobinext from "~/../assets/mobinext.png";
+import Toast from "react-native-toast-message";
 
 const Login = ({ navigation }: any) => {
   const [email, setEmail] = useState<string>("");
@@ -20,6 +21,10 @@ const Login = ({ navigation }: any) => {
     });
 
     if (error) {
+      Toast.show({
+        type: "error",
+        text1: error.message,
+      });
       setError(error.message);
     }
 
@@ -43,10 +48,10 @@ const Login = ({ navigation }: any) => {
         variant="displaySmall"
         style={{ textAlign: "center", marginBottom: 10 }}
       >
-        Login
+        Anmelden
       </Text>
       <TextInput
-        label="Email"
+        label="E-Mail"
         mode="outlined"
         autoCapitalize="none"
         autoComplete="email"
@@ -58,7 +63,7 @@ const Login = ({ navigation }: any) => {
         style={{ marginBottom: 10 }}
       />
       <TextInput
-        label="Password"
+        label="Passwort"
         mode="outlined"
         returnKeyType="done"
         secureTextEntry
@@ -68,7 +73,7 @@ const Login = ({ navigation }: any) => {
       />
       {error && (
         <HelperText type="error" style={{ marginBottom: 10 }}>
-          {error}
+          {`Fehler: ${error}`}
         </HelperText>
       )}
       <Button
@@ -77,14 +82,14 @@ const Login = ({ navigation }: any) => {
         onPress={() => signInWithEmail()}
         style={{ marginBottom: 10 }}
       >
-        Login
+        Anmelden
       </Button>
       <Button
         mode="text"
         disabled={loading}
         onPress={() => navigation.navigate("Register")}
       >
-        Don't have an account? Register here
+        Du hast noch kein Konto? Hier registrieren
       </Button>
     </SafeAreaView>
   );

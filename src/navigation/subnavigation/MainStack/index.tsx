@@ -1,32 +1,46 @@
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import Messages from "~/screens/Messages";
-import Profile from "~/screens/Profile";
-import Rentables from "~/screens/Rentables";
-import Discover from "~/screens/Discover";
+import { Messages } from "~/screens/Messages";
+import { Profile } from "~/screens/Profile";
+import { Reservations } from "~/screens/Reservations";
+import { Discover } from "~/screens/Discover";
 import { Chat } from "~/screens/Messages/chat";
-import Renting from "~/screens/Discover/Renting";
+import { Renting } from "~/screens/Discover/Renting";
 import { Rentable } from "~/types";
-import { Categories } from "~/screens/Rentables/categories";
-import { Details } from "~/screens/Rentables/details";
-import { Create } from "~/screens/Rentables/create";
-import { NewTrustedParty } from "~/screens/Profile/new-party";
-import { CreateTrustedPartyResult } from "~/screens/Profile/create";
+import { OwnRentablesCategories } from "~/screens/OwnRentables/categories";
+import { OwnRentablesDetails } from "~/screens/OwnRentables/details";
+import { OwnRentablesCreate } from "~/screens/OwnRentables/create";
+import { TrustedPartiesCreate } from "~/screens/TrustedParties/create";
+import { Reviews } from "~/screens/Profile/reviews";
+import { Statistics } from "~/screens/Profile/statistics";
+import { TrustedParties } from "~/screens/TrustedParties/list";
+import { OwnRentables } from "~/screens/OwnRentables/list";
+import { GiveBackRentedVehicle } from "~/screens/GiveBackRentedVehicle";
 
 export type RootStackParamList = {
   Home: undefined;
   Discover: undefined;
-  Rentables: undefined;
+  Reservations: undefined;
+  RentablesCreate: undefined;
   Messages: undefined;
   Chat: { chatPartnerId: string };
   Renting: { selectedRentable: Rentable };
+
   Profile: undefined;
-  Loaning: undefined;
-  LoanDetails: undefined;
-  CreateResult: undefined;
-  NewTrustedParty: undefined;
-  CreateTrustedPartyResult: undefined;
+
+  OwnRentables: undefined;
+  OwnRentablesDetails: { currRentable?: Partial<Rentable> };
+  OwnRentablesCreate: undefined;
+  OwnRentablesCategories: undefined;
+
+  Statistics: undefined;
+  Reviews: undefined;
+  TrustedParties: undefined;
+  TrustedPartiesCreate: { update?: boolean; trustedPartyId?: string };
+
+  GiveBackRentedVehicle: { selectedRentable: Rentable }
+
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -39,17 +53,17 @@ const BottomNavigation = () => {
         name="Discover"
         component={Discover}
         options={{
-          tabBarLabel: "Discover",
+          tabBarLabel: "Entdecken",
           tabBarIcon: ({ color }) => (
             <Ionicons name="map" color={color} size={24} />
           ),
         }}
       />
       <Tab.Screen
-        name="Vehicles"
-        component={Rentables}
+        name="Reservations"
+        component={Reservations}
         options={{
-          tabBarLabel: "Vehicles",
+          tabBarLabel: "Buchungen",
           tabBarIcon: ({ color }) => (
             <Ionicons name="car" color={color} size={24} />
           ),
@@ -59,7 +73,7 @@ const BottomNavigation = () => {
         name="Messages"
         component={Messages}
         options={{
-          tabBarLabel: "Messages",
+          tabBarLabel: "Nachrichten",
           tabBarIcon: ({ color }) => (
             <Ionicons name="mail" color={color} size={24} />
           ),
@@ -69,7 +83,7 @@ const BottomNavigation = () => {
         name="Profile"
         component={Profile}
         options={{
-          tabBarLabel: "Profile",
+          tabBarLabel: "Profil",
           tabBarIcon: ({ color }) => (
             <Ionicons name="person" color={color} size={24} />
           ),
@@ -91,32 +105,54 @@ const MainStack = () => {
       <Stack.Screen
         name="Renting"
         component={Renting}
-        options={{ title: "Rent a vehicle" }}
+        options={{ title: "Leihe ein Fahrzeug aus" }}
+      />
+
+      <Stack.Screen
+        name="OwnRentables"
+        component={OwnRentables}
+        options={{ title: "Fahrzeug erstellen", headerBackTitle: "Back" }}
       />
       <Stack.Screen
-        name="Loaning"
-        component={Categories}
-        options={{ title: "Fahrzeug erstellen" }}
+        name="OwnRentablesDetails"
+        component={OwnRentablesDetails}
+        options={{ title: "Dein Fahrzeug", headerBackTitle: "Back" }}
       />
       <Stack.Screen
-        name="LoanDetails"
-        component={Details}
-        options={{ title: "Details", headerBackTitle: "Back" }}
+        name="OwnRentablesCreate"
+        component={OwnRentablesCreate}
+        options={{ title: "Fahrzeug erstellen", headerBackTitle: "Back" }}
       />
       <Stack.Screen
-        name="CreateResult"
-        component={Create}
-        options={{ headerShown: false, headerLeft: () => null }}
+        name="OwnRentablesCategories"
+        component={OwnRentablesCategories}
+        options={{ title: "Fahrzeug erstellen", headerBackTitle: "Back" }}
+      />
+
+      <Stack.Screen
+        name="Reviews"
+        component={Reviews}
+        options={{ title: "Review" }}
       />
       <Stack.Screen
-        name="NewTrustedParty"
-        component={NewTrustedParty}
+        name="Statistics"
+        component={Statistics}
+        options={{ title: "Statistiken" }}
+      />
+      <Stack.Screen
+        name="TrustedParties"
+        component={TrustedParties}
+        options={{ title: "Trusted Parties" }}
+      />
+      <Stack.Screen
+        name="TrustedPartiesCreate"
+        component={TrustedPartiesCreate}
         options={{ title: "Trusted Party erstellen" }}
       />
       <Stack.Screen
-        name="CreateTrustedPartyResult"
-        component={CreateTrustedPartyResult}
-        options={{ headerShown: false, headerLeft: () => null }}
+        name="GiveBackRentedVehicle"
+        component={GiveBackRentedVehicle}
+        options={{ title: "Fahrzeug zurückgeben" }}
       />
     </Stack.Navigator>
   );

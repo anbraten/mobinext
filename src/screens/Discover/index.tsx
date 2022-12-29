@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import { supabase } from "~/supabase";
-import { Rentable } from "~/types";
+import { FuelTypes, Rentable } from "~/types";
 import {
   Avatar,
   Button,
@@ -14,10 +14,13 @@ import {
 import { SafeAreaView, useSafeAreaFrame } from "react-native-safe-area-context";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { ErrorToast } from "react-native-toast-message";
+import { AuthContext } from "~/provider/AuthProvider";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Discover">;
 
-const Discover = ({ navigation }: Props) => {
+export const Discover = ({ navigation }: Props) => {
+  const { user } = useContext(AuthContext);
   const [location, setLocation] = useState<any>(null);
   const [userID, setUserID] = useState<any>();
   const [isRentable, setIsRentable] = useState(false);
@@ -32,7 +35,7 @@ const Discover = ({ navigation }: Props) => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
+        ErrorToast({ text1: "Permission to access location was denied" });
         return;
       }
 
@@ -42,7 +45,7 @@ const Discover = ({ navigation }: Props) => {
       const { error, data } = await supabase.from("rentables").select("*");
 
       if (error) {
-        setErrorMsg(error.message);
+        ErrorToast({ text1: error.message });
       }
       if (data) {
         setRentables(data);
@@ -53,6 +56,27 @@ const Discover = ({ navigation }: Props) => {
       canRent();
     })();
   }, []);
+
+  async function requestRentableAccess() {
+    const res = await supabase.from("messages").insert({
+      message: `${user?.full_name} möchte Zugriff auf dein Fahrzeug haben.`,
+      type: "rentable_request",
+      context: {
+        rentable: selectedRentable?.id!,
+      },
+      author: user?.id!,
+      target: selectedRentable?.owner!,
+    });
+
+    if (res.error) {
+      ErrorToast({ text1: res.error.message });
+      return;
+    }
+
+    navigation.push("Chat", {
+      chatPartnerId: selectedRentable?.owner!,
+    });
+  }
 
   useEffect(() => {
     console.log("My location", location);
@@ -112,12 +136,18 @@ const Discover = ({ navigation }: Props) => {
         >
           <Text variant="titleLarge">{selectedRentable?.model}</Text>
           <View>
-            <Text variant="titleSmall">Fueltype: {selectedRentable?.fuel}</Text>
             <Text variant="titleSmall">
-              Cost per km: {selectedRentable?.cost_per_km}
+              {`Kraftstoff: ${
+                selectedRentable?.fuel
+                  ? FuelTypes[selectedRentable.fuel]
+                  : "N/A"
+              }`}
             </Text>
             <Text variant="titleSmall">
-              Cost per minute: {selectedRentable?.cost_per_minute}
+              Kosten per km: {selectedRentable?.cost_per_km}€
+            </Text>
+            <Text variant="titleSmall">
+              Kosten per Minute: {selectedRentable?.cost_per_minute}€
             </Text>
           </View>
         </View>
@@ -130,7 +160,7 @@ const Discover = ({ navigation }: Props) => {
           }}
         >
           <Text variant="titleLarge">
-            Seats: {selectedRentable?.seat_count}
+            Sitze: {selectedRentable?.seat_count}
           </Text>
 
           {selectedRentable != null && (selectedRentable?.owner === userID || isRentable) ? (
@@ -143,19 +173,11 @@ const Discover = ({ navigation }: Props) => {
                 });
               }}
             >
-              Rent
+              Leihen
             </Button>
           ) : (
-            <Button
-              mode="contained"
-              compact
-              onPress={() => {
-                navigation.navigate("Chat", {
-                  chatPartnerId: selectedRentable?.owner!,
-                });
-              }}
-            >
-              Message
+            <Button mode="contained" compact onPress={requestRentableAccess}>
+              Anfragen
             </Button>
           )}
         </View>
@@ -208,5 +230,3 @@ const Discover = ({ navigation }: Props) => {
     </SafeAreaView>
   );
 };
-
-export default Discover;

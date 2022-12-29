@@ -18,7 +18,7 @@ type Chat = {
 
 type Props = NativeStackScreenProps<RootStackParamList, "Messages">;
 
-const Messages = ({ navigation }: Props) => {
+export const Messages = ({ navigation }: Props) => {
   const { user } = useContext(AuthContext);
   const [chats, setChats] = useState<Map<string, Chat>>(new Map());
 
@@ -96,10 +96,14 @@ const Messages = ({ navigation }: Props) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-      <ScrollView style={{ flex: 1, padding: 15 }}>
+      <ScrollView style={{ flex: 1 }}>
         {Array.from(chats.values()).map((chat, i) => (
           <Card
-            style={{ marginBottom: 10 }}
+            style={{
+              margin: 15,
+              marginBottom: 10,
+              marginTop: i === 0 ? 15 : 0,
+            }}
             key={i}
             onPress={() =>
               navigation.navigate("Chat", {
@@ -161,5 +165,3 @@ const Messages = ({ navigation }: Props) => {
     </SafeAreaView>
   );
 };
-
-export default Messages;
