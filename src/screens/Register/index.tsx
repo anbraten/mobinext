@@ -24,6 +24,10 @@ const Register = ({ navigation }: any) => {
 
     if (error) {
       setError(error.message);
+      Toast.show({
+        type: "error",
+        text1: error.message,
+      });
     } else {
       Toast.show({
         type: "success",
@@ -101,7 +105,7 @@ const Register = ({ navigation }: any) => {
       )}
       {error && (
         <HelperText type="error" style={{ marginBottom: 10 }}>
-          {error}
+          {`Fehler: ${error}`}
         </HelperText>
       )}
       <Button

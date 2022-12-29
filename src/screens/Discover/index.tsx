@@ -3,7 +3,7 @@ import { View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import { supabase } from "~/supabase";
-import { Rentable } from "~/types";
+import { FuelTypes, Rentable } from "~/types";
 import {
   Avatar,
   Button,
@@ -11,7 +11,7 @@ import {
   MD3Colors,
   Text,
 } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaFrame } from "react-native-safe-area-context";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ErrorToast } from "react-native-toast-message";
@@ -22,6 +22,9 @@ type Props = NativeStackScreenProps<RootStackParamList, "Discover">;
 export const Discover = ({ navigation }: Props) => {
   const { user } = useContext(AuthContext);
   const [location, setLocation] = useState<any>(null);
+  const [userID, setUserID] = useState<any>();
+  const [isRentable, setIsRentable] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<any>(null);
   const [rentables, setRentables] = useState<Rentable[]>([]);
   const [selectedRentable, setSelectedRentable] = useState<
     Rentable | undefined
@@ -47,6 +50,10 @@ export const Discover = ({ navigation }: Props) => {
       if (data) {
         setRentables(data);
       }
+
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserID(user?.id);
+      canRent();
     })();
   }, []);
 
@@ -83,6 +90,24 @@ export const Discover = ({ navigation }: Props) => {
     }
   }, [location]);
 
+  useEffect(() => {
+    canRent();
+  }, [selectedRentable]);
+
+  const canRent = async () => {
+    setIsRentable(false);
+    const { error, data: TP_FROM_RENTABLE } = await supabase.from("trusted_party_rentables").select("trusted_party_id").eq("rentable_id", selectedRentable?.id);
+    const { data: TP_FROM_USER } = await supabase.from("trusted_party_members").select("trusted_party_id").eq("user_id", userID);
+    
+    TP_FROM_USER?.forEach((user) => {
+        TP_FROM_RENTABLE?.forEach((rentable) => {
+          if (user.trusted_party_id == rentable.trusted_party_id) {
+            setIsRentable(true);
+          }
+        })
+    });
+  }
+
   const SelectedRentable = () => {
     return (
       <View
@@ -112,13 +137,17 @@ export const Discover = ({ navigation }: Props) => {
           <Text variant="titleLarge">{selectedRentable?.model}</Text>
           <View>
             <Text variant="titleSmall">
-              Kraftstoff: {selectedRentable?.fuel}
+              {`Kraftstoff: ${
+                selectedRentable?.fuel
+                  ? FuelTypes[selectedRentable.fuel]
+                  : "N/A"
+              }`}
             </Text>
             <Text variant="titleSmall">
-              Kosten per km: {selectedRentable?.cost_per_km}
+              Kosten per km: {selectedRentable?.cost_per_km}€
             </Text>
             <Text variant="titleSmall">
-              Kosten per Minute: {selectedRentable?.cost_per_minute}
+              Kosten per Minute: {selectedRentable?.cost_per_minute}€
             </Text>
           </View>
         </View>
@@ -134,7 +163,7 @@ export const Discover = ({ navigation }: Props) => {
             Sitze: {selectedRentable?.seat_count}
           </Text>
 
-          {selectedRentable?.owner && selectedRentable.id === 1 ? (
+          {selectedRentable != null && (selectedRentable?.owner === userID || isRentable) ? (
             <Button
               mode="contained"
               compact

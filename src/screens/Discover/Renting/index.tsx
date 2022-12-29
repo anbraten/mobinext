@@ -29,8 +29,9 @@ export const Renting = ({ route, navigation }: Props) => {
   const [startDateTime, setStartDate] = useState(new Date());
   const [endDateTime, setEndDate] = useState(new Date());
   const [show, setShow] = useState(false);
-  const [startOrEndDate, setStartOrEnd] = useState("start");
-  const [mode, setMode] = useState("date");
+  const [showErorr, setShowError] = useState(false);
+  const [startOrEndDate, setStartOrEnd] = useState('start');
+  const [mode, setMode] = useState('date');
 
   const [locationAddress, setLocationAddress] =
     useState<Location.LocationGeocodedAddress[]>();
@@ -38,7 +39,11 @@ export const Renting = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     endDateTime.setHours(startDateTime.getHours() + 1);
-  }, [startDateTime]);
+  }, []);
+
+  useEffect(() => {
+
+  }, [endDateTime, startDateTime]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -75,6 +80,32 @@ export const Renting = ({ route, navigation }: Props) => {
     }
   }, [selectedRentable]);
 
+  const checkIfFreeToRent = async () => {
+    const { data, error } = await supabase
+      .from('reservations')
+      .select('*')
+      .eq('rentable', selectedRentable.id);
+
+    data?.forEach(reservation => {
+      if (reservation.start != null && reservation.end != null) {
+        if (dayjs(reservation.start).isBefore(endDateTime) && dayjs(startDateTime).isBefore(reservation.end)) {
+          setShowError(true);
+        }
+        else {
+          setShowError(false);
+        }
+      }
+    });
+  }
+
+  // const isBetween = (checkDate: Date, startDate: Date, endDate: Date) => {
+  //   var isBefore = dayjs(startDate).isBefore(checkDate);
+  //   var isAfter = dayjs(endDate).isAfter(checkDate);
+  //   var isSameStart = dayjs(startDate).isSame(checkDate);
+  //   var isSameEnd = dayjs(endDate).isSame(checkDate);
+  //   return (isBefore && isAfter) || isSameEnd || isSameStart;
+  // }
+
   const rentACar = async () => {
     const {
       data: { user },
@@ -102,13 +133,15 @@ export const Renting = ({ route, navigation }: Props) => {
     const currentDate = selectedDate || Date;
     setShow(false);
     setStartDate(currentDate);
-  };
+    checkIfFreeToRent();
+  }
 
   const onChangeEnd = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || Date;
     setShow(false);
     setEndDate(currentDate);
-  };
+    checkIfFreeToRent();
+  }
 
   const showDateTimePicker = (currentMode: any, startOrEnd: string) => {
     setMode(currentMode);
@@ -327,6 +360,9 @@ export const Renting = ({ route, navigation }: Props) => {
               </Button>
             )}
           </View>
+          {showErorr && (
+            <Text variant="titleMedium">Diese Zeit wurde bereits gebucht. Bitte wählen Sie einen anderen Zeitraum</Text>
+          )}
           {show && (
             <DateTimePicker
               mode={mode === "time" ? "time" : "date"}

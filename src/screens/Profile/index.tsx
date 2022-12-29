@@ -143,7 +143,7 @@ export const Profile = ({
           onPress={() => {
             Toast.show({
               type: "success",
-              text1: "Nice hello",
+              text1: "Soon™",
             });
           }}
         />

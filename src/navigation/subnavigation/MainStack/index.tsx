@@ -16,6 +16,7 @@ import { Reviews } from "~/screens/Profile/reviews";
 import { Statistics } from "~/screens/Profile/statistics";
 import { TrustedParties } from "~/screens/TrustedParties/list";
 import { OwnRentables } from "~/screens/OwnRentables/list";
+import { GiveBackRentedVehicle } from "~/screens/GiveBackRentedVehicle";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -37,6 +38,9 @@ export type RootStackParamList = {
   Reviews: undefined;
   TrustedParties: undefined;
   TrustedPartiesCreate: { update?: boolean; trustedPartyId?: string };
+
+  GiveBackRentedVehicle: { selectedRentable: Rentable }
+
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -101,7 +105,7 @@ const MainStack = () => {
       <Stack.Screen
         name="Renting"
         component={Renting}
-        options={{ title: "Rent a vehicle" }}
+        options={{ title: "Leihe ein Fahrzeug aus" }}
       />
 
       <Stack.Screen
@@ -144,6 +148,11 @@ const MainStack = () => {
         name="TrustedPartiesCreate"
         component={TrustedPartiesCreate}
         options={{ title: "Trusted Party erstellen" }}
+      />
+      <Stack.Screen
+        name="GiveBackRentedVehicle"
+        component={GiveBackRentedVehicle}
+        options={{ title: "Fahrzeug zurückgeben" }}
       />
     </Stack.Navigator>
   );
