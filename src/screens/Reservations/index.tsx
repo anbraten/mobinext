@@ -114,7 +114,14 @@ export const Reservations = ({ navigation }: any) => {
                   <Text variant="titleLarge">
                     Sitze: {reservation._rentable.seat_count}
                   </Text>
-                  <Button mode="contained" compact>
+                  <Button mode="contained" 
+                  onPress={() => {
+                    navigation.navigate("GiveBackRentedVehicle", {
+                      reservation: reservation
+                    })
+                  }}
+                  
+                  compact>
                     Abgeben
                   </Button>
                 </View>
