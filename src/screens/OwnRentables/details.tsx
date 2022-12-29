@@ -44,7 +44,9 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
     currRentable || {}
   );
   const [visible, setVisible] = useState(false);
-  const [seats, setSeats] = useState<string>(defaultSeats.toString());
+  const [seats, setSeats] = useState<string>(
+    rentable.seat_count?.toString() || defaultSeats.toString()
+  );
   const [costMinute, setCostMinute] = useState<string>(
     rentable.cost_per_minute?.toString() || "0"
   );
@@ -64,12 +66,19 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
     (async () => {
       const { data } = await supabase
         .from("trusted_parties")
-        .select("*, trusted_party_members ( * )")
-      
-      setTrustedParties(data?.filter(tp => tp.owner === user?.id || (tp.trusted_party_members as Trusted_party_members[]).some(member => member.user_id === user?.id)));
+        .select("*, trusted_party_members ( * )");
+
+      setTrustedParties(
+        data?.filter(
+          (tp) =>
+            tp.owner === user?.id ||
+            (tp.trusted_party_members as Trusted_party_members[]).some(
+              (member) => member.user_id === user?.id
+            )
+        )
+      );
     })();
   }, []);
-
 
   useEffect(() => {
     navigation.setOptions({
@@ -223,9 +232,10 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
         <Text>{trustedParties?.length}</Text>
       </View>
 
-
       <Button
-        onPress={() => manageRentable(rentable, navigation, currRentable ? true : false)}
+        onPress={() =>
+          manageRentable(rentable, navigation, currRentable ? true : false)
+        }
         mode="contained"
       >
         {currRentable ? "Fahrzeug aktualisieren" : "Fahrzeug erstellen"}

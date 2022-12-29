@@ -4,6 +4,7 @@ import { TextInput, Button, Text, HelperText } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "~/supabase.ts";
 import mobinext from "~/../assets/mobinext.png";
+import Toast from "react-native-toast-message";
 
 const Login = ({ navigation }: any) => {
   const [email, setEmail] = useState<string>("");
@@ -20,6 +21,10 @@ const Login = ({ navigation }: any) => {
     });
 
     if (error) {
+      Toast.show({
+        type: "error",
+        text1: error.message,
+      });
       setError(error.message);
     }
 
@@ -68,7 +73,7 @@ const Login = ({ navigation }: any) => {
       />
       {error && (
         <HelperText type="error" style={{ marginBottom: 10 }}>
-          {error}
+          {`Fehler: ${error}`}
         </HelperText>
       )}
       <Button
