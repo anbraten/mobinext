@@ -101,7 +101,7 @@ const MainStack = () => {
       <Stack.Screen
         name="Renting"
         component={Renting}
-        options={{ title: "Rent a vehicle" }}
+        options={{ title: "Leihe ein Fahrzeug aus" }}
       />
 
       <Stack.Screen
