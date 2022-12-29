@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { Avatar, Text, Card, Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -6,6 +6,7 @@ import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
 import { Rentable, Reservations as _Reservations } from "~/types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 
 export const Reservations = ({ navigation }: any) => {
   const { user } = useContext(AuthContext);
@@ -16,32 +17,38 @@ export const Reservations = ({ navigation }: any) => {
 
   const [reservations, setReservations] = useState<Reservation[]>([]);
 
-  useEffect(() => {
-    (async () => {
-      const { data, error } = await supabase
-        .from("reservations")
-        .select("*")
-        .or(`borrower.eq.${user?.id}`)
-        .order("created_at", { ascending: false });
-      if (data) {
-        for await (const reservation of data) {
-          const rentable = await supabase
-            .from("rentables")
-            .select("*")
-            .or(`id.eq.${reservation.rentable}`);
-          if (rentable.data) {
-            setReservations([
-              ...reservations,
-              { ...reservation, _rentable: rentable.data[0] },
-            ]);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchReservations = async () => {
+        const { data, error } = await supabase
+          .from("reservations")
+          .select("*")
+          .or(`borrower.eq.${user?.id}`)
+          .order("created_at", { ascending: false });
+        if (data) {
+          for await (const reservation of data) {
+            const rentable = await supabase
+              .from("rentables")
+              .select("*")
+              .or(`id.eq.${reservation.rentable}`);
+            if (rentable.data) {
+              setReservations([
+                ...reservations,
+                { ...reservation, _rentable: rentable.data[0] },
+              ]);
+            }
           }
         }
-      }
 
-      // TODO: show error
-      error && console.error(error);
-    })();
-  }, []);
+        // TODO: show error
+        error && console.error(error);
+      };
+
+      fetchReservations();
+
+      return () => {};
+    }, [])
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
