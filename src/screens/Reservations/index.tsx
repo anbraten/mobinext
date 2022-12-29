@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
 import { Rentable, Reservations as _Reservations } from "~/types";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export const Reservations = ({ navigation }: any) => {
   const { user } = useContext(AuthContext);
@@ -44,56 +45,77 @@ export const Reservations = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-      <ScrollView style={{ flex: 1 }}>
-        {reservations.map((reservation, i) => (
-          <Card
-            style={{
-              margin: 15,
-              marginBottom: 10,
-              marginTop: i === 0 ? 15 : 0,
-            }}
-            key={i}
-          >
-            <Card.Content
+      {reservations?.length === 0 ? (
+        <View
+          style={{
+            marginTop: 50,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <MaterialCommunityIcons
+            name="emoticon-sad-outline"
+            size={35}
+            color="black"
+          />
+          <Text variant="headlineSmall" style={{ textAlign: "center" }}>
+            Du hast aktuell keine Fahrzeuge ausgeliehen
+          </Text>
+        </View>
+      ) : (
+        <ScrollView style={{ flex: 1 }}>
+          {reservations.map((reservation, i) => (
+            <Card
               style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
+                margin: 15,
+                marginBottom: 10,
+                marginTop: i === 0 ? 15 : 0,
               }}
+              key={i}
             >
-              <View style={{ display: "flex", flexDirection: "column" }}>
-                <Avatar.Icon size={50} icon="car" />
-              </View>
-              <View style={{ display: "flex", flexDirection: "column" }}>
-                <Text variant="titleLarge">{reservation._rentable.model}</Text>
-                <Text variant="bodyMedium">
-                  Kraftstoff: {reservation._rentable.fuel}
-                </Text>
-                <Text variant="bodyMedium">
-                  Kosten per mile: {reservation._rentable.cost_per_km}€
-                </Text>
-                <Text variant="bodyMedium">
-                  Kosten per minute: {reservation._rentable.cost_per_minute}€
-                </Text>
-              </View>
-              <View
+              <Card.Content
                 style={{
                   display: "flex",
-                  flexDirection: "column",
+                  flexDirection: "row",
                   justifyContent: "space-between",
                 }}
               >
-                <Text variant="titleLarge">
-                  Sitze: {reservation._rentable.seat_count}
-                </Text>
-                <Button mode="contained" compact>
-                  Abgeben
-                </Button>
-              </View>
-            </Card.Content>
-          </Card>
-        ))}
-      </ScrollView>
+                <View style={{ display: "flex", flexDirection: "column" }}>
+                  <Avatar.Icon size={50} icon="car" />
+                </View>
+                <View style={{ display: "flex", flexDirection: "column" }}>
+                  <Text variant="titleLarge">
+                    {reservation._rentable.model}
+                  </Text>
+                  <Text variant="bodyMedium">
+                    Kraftstoff: {reservation._rentable.fuel}
+                  </Text>
+                  <Text variant="bodyMedium">
+                    Kosten per mile: {reservation._rentable.cost_per_km}€
+                  </Text>
+                  <Text variant="bodyMedium">
+                    Kosten per minute: {reservation._rentable.cost_per_minute}€
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text variant="titleLarge">
+                    Sitze: {reservation._rentable.seat_count}
+                  </Text>
+                  <Button mode="contained" compact>
+                    Abgeben
+                  </Button>
+                </View>
+              </Card.Content>
+            </Card>
+          ))}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };

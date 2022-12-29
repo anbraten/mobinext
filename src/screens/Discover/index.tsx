@@ -3,7 +3,7 @@ import { View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import { supabase } from "~/supabase";
-import { Rentable } from "~/types";
+import { FuelTypes, Rentable } from "~/types";
 import {
   Avatar,
   Button,
@@ -112,13 +112,17 @@ export const Discover = ({ navigation }: Props) => {
           <Text variant="titleLarge">{selectedRentable?.model}</Text>
           <View>
             <Text variant="titleSmall">
-              Kraftstoff: {selectedRentable?.fuel}
+              {`Kraftstoff: ${
+                selectedRentable?.fuel
+                  ? FuelTypes[selectedRentable.fuel]
+                  : "N/A"
+              }`}
             </Text>
             <Text variant="titleSmall">
-              Kosten per km: {selectedRentable?.cost_per_km}
+              Kosten per km: {selectedRentable?.cost_per_km}€
             </Text>
             <Text variant="titleSmall">
-              Kosten per Minute: {selectedRentable?.cost_per_minute}
+              Kosten per Minute: {selectedRentable?.cost_per_minute}€
             </Text>
           </View>
         </View>

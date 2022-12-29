@@ -6,14 +6,7 @@ import { Avatar, Button, Card, FAB, Text } from "react-native-paper";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
-import { Rentable } from "~/types";
-
-const fuelTypes: { [key: string]: string } = {
-  gas: "Benzin",
-  diesel: "Diesel",
-  electric: "Elektro",
-  other: "Andere",
-};
+import { FuelTypes, Rentable } from "~/types";
 
 export const OwnRentables = ({
   navigation,
@@ -95,8 +88,9 @@ export const OwnRentables = ({
                 <Text variant="titleLarge">{rentable.model}</Text>
                 <Text>Sitze: {rentable.seat_count}</Text>
                 <Text>
-                  Kraftstoff:{" "}
-                  {rentable?.fuel ? fuelTypes[rentable.fuel] : "N/A"}
+                  {`Kraftstoff: ${
+                    rentable?.fuel ? FuelTypes[rentable.fuel] : "N/A"
+                  }`}
                 </Text>
                 <Text>Kosten per km: {rentable.cost_per_km}€</Text>
                 <Text>Kosten per Minute: {rentable.cost_per_minute}€</Text>

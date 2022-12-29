@@ -19,3 +19,10 @@ export type Trusted_party_members =
   Database["public"]["Tables"]["trusted_party_members"]["Row"];
 
 export * from "./database.types";
+
+export const FuelTypes: { [key: string]: string } = {
+  gas: "Benzin",
+  diesel: "Diesel",
+  electric: "Elektro",
+  other: "Andere",
+};
