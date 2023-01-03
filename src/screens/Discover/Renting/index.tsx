@@ -30,8 +30,11 @@ export const Renting = ({ route, navigation }: Props) => {
   const [endDateTime, setEndDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [showErorr, setShowError] = useState(false);
-  const [startOrEndDate, setStartOrEnd] = useState('start');
-  const [mode, setMode] = useState('date');
+  const [startOrEndDate, setStartOrEnd] = useState("start");
+  const [mode, setMode] = useState("date");
+  const [timeDiff, setTimeDiff] = useState(
+    Math.abs(startDateTime.getTime() - endDateTime.getTime()) / 36e5
+  );
 
   const [locationAddress, setLocationAddress] =
     useState<Location.LocationGeocodedAddress[]>();
@@ -41,9 +44,7 @@ export const Renting = ({ route, navigation }: Props) => {
     endDateTime.setHours(startDateTime.getHours() + 1);
   }, []);
 
-  useEffect(() => {
-
-  }, [endDateTime, startDateTime]);
+  useEffect(() => {}, [endDateTime, startDateTime]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -82,21 +83,23 @@ export const Renting = ({ route, navigation }: Props) => {
 
   const checkIfFreeToRent = async () => {
     const { data, error } = await supabase
-      .from('reservations')
-      .select('*')
-      .eq('rentable', selectedRentable.id);
+      .from("reservations")
+      .select("*")
+      .eq("rentable", selectedRentable.id);
 
-    data?.forEach(reservation => {
+    data?.forEach((reservation) => {
       if (reservation.start != null && reservation.end != null) {
-        if (dayjs(reservation.start).isBefore(endDateTime) && dayjs(startDateTime).isBefore(reservation.end)) {
+        if (
+          dayjs(reservation.start).isBefore(endDateTime) &&
+          dayjs(startDateTime).isBefore(reservation.end)
+        ) {
           setShowError(true);
-        }
-        else {
+        } else {
           setShowError(false);
         }
       }
     });
-  }
+  };
 
   // const isBetween = (checkDate: Date, startDate: Date, endDate: Date) => {
   //   var isBefore = dayjs(startDate).isBefore(checkDate);
@@ -134,20 +137,26 @@ export const Renting = ({ route, navigation }: Props) => {
     setShow(false);
     setStartDate(currentDate);
     checkIfFreeToRent();
-  }
+  };
 
   const onChangeEnd = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || Date;
     setShow(false);
     setEndDate(currentDate);
     checkIfFreeToRent();
-  }
+  };
 
   const showDateTimePicker = (currentMode: any, startOrEnd: string) => {
     setMode(currentMode);
     setStartOrEnd(startOrEnd);
     setShow(true);
   };
+
+  useEffect(() => {
+    setTimeDiff(
+      Math.abs(startDateTime.getTime() - endDateTime.getTime()) / 36e5
+    );
+  }, [startDateTime, endDateTime]);
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
@@ -361,7 +370,10 @@ export const Renting = ({ route, navigation }: Props) => {
             )}
           </View>
           {showErorr && (
-            <Text variant="titleMedium">Diese Zeit wurde bereits gebucht. Bitte wählen Sie einen anderen Zeitraum</Text>
+            <Text variant="titleMedium">
+              Diese Zeit wurde bereits gebucht. Bitte wählen Sie einen anderen
+              Zeitraum
+            </Text>
           )}
           {show && (
             <DateTimePicker
@@ -378,6 +390,7 @@ export const Renting = ({ route, navigation }: Props) => {
       <View
         style={{
           height: "10%",
+          width: "100%",
           borderColor: MD3Colors.neutral50,
           borderStyle: "solid",
           borderTopWidth: 1.5,
@@ -388,9 +401,13 @@ export const Renting = ({ route, navigation }: Props) => {
           alignItems: "center",
         }}
       >
-        <View>
+        <View style={{ width: "75%" }}>
           <Text variant="titleSmall">
-            Geschätzte Kosten (ohne Kilometerkosten): 18€
+            Geschätzte Kosten (ohne Kilometerkosten):{" "}
+            {selectedRentable?.cost_per_minute
+              ? Math.round(timeDiff * selectedRentable.cost_per_minute * 60) +
+                "€"
+              : "N/A"}
           </Text>
         </View>
         <Button
