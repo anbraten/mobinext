@@ -44,8 +44,6 @@ export const Renting = ({ route, navigation }: Props) => {
     endDateTime.setHours(startDateTime.getHours() + 1);
   }, []);
 
-  useEffect(() => {}, [endDateTime, startDateTime]);
-
   useEffect(() => {
     setTimeout(() => {
       if (selectedRentable?.latitude && selectedRentable?.longitude) {
