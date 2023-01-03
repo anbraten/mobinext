@@ -60,23 +60,26 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
   rentable.seat_count = rentable.seat_count || defaultSeats;
 
   // let trustedParties = rentable.trusted_parties || []
-  let [trustedParties, setTrustedParties] = useState<any[] | undefined>([]);
+  let [allTrustedParties, setAllTrustedParties] = useState<any[] | undefined>([]);
+  let [rentableTrustedParties, setRentableTrustedParties] = useState<number[] | undefined>([]);
 
   useEffect(() => {
     (async () => {
       const { data } = await supabase
         .from("trusted_parties")
-        .select("*, trusted_party_members ( * )");
+        .select("*, trusted_party_members ( * )")
+      
+      setAllTrustedParties(data?.filter(tp => tp.owner === user?.id || (tp.trusted_party_members as Trusted_party_members[]).some(member => member.user_id === user?.id)));
 
-      setTrustedParties(
-        data?.filter(
-          (tp) =>
-            tp.owner === user?.id ||
-            (tp.trusted_party_members as Trusted_party_members[]).some(
-              (member) => member.user_id === user?.id
-            )
-        )
-      );
+      if (rentable.id) {
+        const { data: rentableTmp } = await supabase
+          .from("rentables")
+          .select("*, trusted_party_rentables ( trusted_party_id )")
+          .eq("id", rentable.id) as any;
+
+        const tpIds = rentableTmp?.[0]?.trusted_party_rentables?.map((tpr: any) => tpr.trusted_party_id);
+        setRentableTrustedParties(tpIds);
+      }
     })();
   }, []);
 
@@ -219,23 +222,31 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
 
       <View style={{ marginBottom: 10 }}>
         <Text variant="titleMedium">Trusted Parties:</Text>
-        {trustedParties?.map((party) => (
+        {allTrustedParties?.map((party) => (
           <Chip
             key={party.id}
             style={{ marginVertical: 5 }}
-            onPress={() => {}}
-            mode="outlined"
+            onPress={() => {
+              if (rentableTrustedParties?.includes(party.id)) {
+                setRentableTrustedParties(
+                  rentableTrustedParties?.filter((id) => id !== party.id)
+                );
+              } else {
+                setRentableTrustedParties([
+                  ...(rentableTrustedParties || []),
+                  party.id,
+                ]);
+              }
+            }}
+            mode={rentableTrustedParties?.includes(party.id) ? "flat" : "outlined"}
           >
             <Text>{party.name}</Text>
           </Chip>
         ))}
-        <Text>{trustedParties?.length}</Text>
       </View>
 
       <Button
-        onPress={() =>
-          manageRentable(rentable, navigation, currRentable ? true : false)
-        }
+        onPress={() => manageRentable(rentable, navigation, currRentable ? true : false, rentableTrustedParties)}
         mode="contained"
       >
         {currRentable ? "Fahrzeug aktualisieren" : "Fahrzeug erstellen"}

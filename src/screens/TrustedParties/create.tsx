@@ -44,20 +44,29 @@ export const TrustedPartiesCreate = ({
 
       const { data, error } = await supabase
         .from("trusted_parties")
-        .select("*, trusted_party_members(user_id, profiles(full_name))")
+        .select("*, trusted_party_members(user_id, profiles(full_name)), profiles(id, full_name)")
         .eq("id", trustedPartyId);
 
       if (data) {
+        console.log(data[0]);
+        
         setTrustedParty(data[0]);
         const memberData = data[0].trusted_party_members as {
           user_id: string;
           profiles: { full_name: string };
         }[];
 
+        const ownerId = data[0].owner?.toString() as string;
+        const ownerFullName = data[0]?.profiles?.full_name as string;
+        memberData.push({
+          user_id: ownerId,
+          profiles: { full_name: ownerFullName },
+        });
+
         setMembers(
           memberData.map((member: any) => {
             return { full_name: member.profiles.full_name, id: member.user_id };
-          })
+          }).sort((a, b) => a.full_name.localeCompare(b.full_name))
         );
       }
     })();
@@ -164,7 +173,7 @@ export const TrustedPartiesCreate = ({
       <FlatList
         data={members}
         renderItem={({ item }) => (
-          <Card style={{ margin: 5, padding: 10 }}>
+          <Card style={{ margin: 5, padding: 10 }} mode={item.id === user?.id ? "contained" : "elevated"}>
             <View
               style={{
                 flexDirection: "row",
@@ -173,7 +182,7 @@ export const TrustedPartiesCreate = ({
               }}
             >
               <Text style={{ marginVertical: 10 }}>{item.full_name}</Text>
-              {trustedParty.owner === user?.id && (
+              {trustedParty.owner === user?.id && item.id !== user?.id && (
                 <Button
                   onPress={() => {
                     setMembers(
