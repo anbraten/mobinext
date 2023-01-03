@@ -42,10 +42,6 @@ export const Renting = ({ route, navigation }: Props) => {
   }, []);
 
   useEffect(() => {
-
-  }, [endDateTime, startDateTime]);
-
-  useEffect(() => {
     setTimeout(() => {
       if (selectedRentable?.latitude && selectedRentable?.longitude) {
         map.animateToRegion({
@@ -87,6 +83,7 @@ export const Renting = ({ route, navigation }: Props) => {
       .eq('rentable', selectedRentable.id);
 
     data?.forEach(reservation => {
+      console.log(reservation);
       if (reservation.start != null && reservation.end != null) {
         if (dayjs(reservation.start).isBefore(endDateTime) && dayjs(startDateTime).isBefore(reservation.end)) {
           setShowError(true);
