@@ -51,7 +51,9 @@ export const Discover = ({ navigation }: Props) => {
         setRentables(data);
       }
 
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setUserID(user?.id);
       canRent();
     })();
@@ -96,17 +98,23 @@ export const Discover = ({ navigation }: Props) => {
 
   const canRent = async () => {
     setIsRentable(false);
-    const { error, data: TP_FROM_RENTABLE } = await supabase.from("trusted_party_rentables").select("trusted_party_id").eq("rentable_id", selectedRentable?.id);
-    const { data: TP_FROM_USER } = await supabase.from("trusted_party_members").select("trusted_party_id").eq("user_id", userID);
-    
+    const { error, data: TP_FROM_RENTABLE } = await supabase
+      .from("trusted_party_rentables")
+      .select("trusted_party_id")
+      .eq("rentable_id", selectedRentable?.id);
+    const { data: TP_FROM_USER } = await supabase
+      .from("trusted_party_members")
+      .select("trusted_party_id")
+      .eq("user_id", userID);
+
     TP_FROM_USER?.forEach((user) => {
-        TP_FROM_RENTABLE?.forEach((rentable) => {
-          if (user.trusted_party_id == rentable.trusted_party_id) {
-            setIsRentable(true);
-          }
-        })
+      TP_FROM_RENTABLE?.forEach((rentable) => {
+        if (user.trusted_party_id == rentable.trusted_party_id) {
+          setIsRentable(true);
+        }
+      });
     });
-  }
+  };
 
   const SelectedRentable = () => {
     return (
@@ -135,21 +143,30 @@ export const Discover = ({ navigation }: Props) => {
           }}
         >
           <Text variant="titleLarge">{selectedRentable?.model}</Text>
-          <View>
-            <Text variant="titleSmall">
-              {`Kraftstoff: ${
-                selectedRentable?.fuel
-                  ? FuelTypes[selectedRentable.fuel]
-                  : "N/A"
-              }`}
-            </Text>
-            <Text variant="titleSmall">
-              Kosten per km: {selectedRentable?.cost_per_km}€
-            </Text>
-            <Text variant="titleSmall">
-              Kosten per Minute: {selectedRentable?.cost_per_minute}€
-            </Text>
-          </View>
+          {selectedRentable != null &&
+          (selectedRentable?.owner === userID || isRentable) ? (
+            <View>
+              <Text variant="titleSmall">
+                {`Kraftstoff: ${
+                  selectedRentable?.fuel
+                    ? FuelTypes[selectedRentable.fuel]
+                    : "N/A"
+                }`}
+              </Text>
+              <Text variant="titleSmall">
+                Kosten per km: {selectedRentable?.cost_per_km}€
+              </Text>
+              <Text variant="titleSmall">
+                Kosten per Minute: {selectedRentable?.cost_per_minute}€
+              </Text>
+            </View>
+          ) : (
+            <View style={{ width: "55%" }}>
+              <Text variant="labelSmall">
+                Du bist noch nicht in der Trusted Party des Fahrzeugs!
+              </Text>
+            </View>
+          )}
         </View>
         <View
           style={{
@@ -163,7 +180,8 @@ export const Discover = ({ navigation }: Props) => {
             Sitze: {selectedRentable?.seat_count}
           </Text>
 
-          {selectedRentable != null && (selectedRentable?.owner === userID || isRentable) ? (
+          {selectedRentable != null &&
+          (selectedRentable?.owner === userID || isRentable) ? (
             <Button
               mode="contained"
               compact
