@@ -84,9 +84,25 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
       console.log(error);
       console.log(data);
       console.log(status);
-      console.log(currentReservation.id + " should be gone now")
+      console.log(currentReservation + " deleted")
     };
 
+    // const convertUTCToLocalTime = (dateString: any) => {
+    //   let date = new Date(dateString.getUTCDate);
+    //   const milliseconds = Date.UTC(
+    //     date.getFullYear(),
+    //     date.getMonth(),
+    //     date.getDate(),
+    //     date.getHours(),
+    //     date.getMinutes(),
+    //     date.getSeconds(),
+    //   );
+    //   const localTime = new Date(milliseconds);
+    //   localTime.getDate() // local date
+    //   localTime.getHours() // local hour
+    // };
+
+    // console.log(convertUTCToLocalTime(currentReservation.created_at))
 
     return (<SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
     <ScrollView style={{ height: "90%" }}>
@@ -147,7 +163,7 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
           padding: 10,
         }}
       >
-        <Text variant="titleLarge">Location</Text>
+        <Text variant="titleLarge">Standort</Text>
         <View
           style={{
             height: 125,
@@ -205,7 +221,7 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
             variant="titleSmall"
             style={{ marginLeft: 10, alignSelf: "center" }}
           >
-            {selectedRentable?.additional_information || "N/A"}
+            {vehicleInfo.additional_information || "N/A"}
           </Text>
         </View>
       </View>
@@ -218,12 +234,7 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
             alignItems: "center",
           }}
         >
-          <Text variant="titleMedium">Startdatum: </Text>
-          {isIOS ? (
-            <View/>
-          ) : (
-            <View/>
-          )}
+          <Text variant="titleMedium">Gebucht am: {currentReservation.created_at}</Text>
         </View>
         <View
           style={{
@@ -233,12 +244,7 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
             marginTop: 5,
           }}
         >
-          <Text variant="titleMedium">Startzeit: </Text>
-          {isIOS ? (
-            <View/>
-          ) : (
-            <View/>
-          )}
+          <Text variant="titleMedium">Geplanter Start: {currentReservation.start}</Text>
         </View>
         <View
           style={{
@@ -248,12 +254,7 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
             marginTop: 5,
           }}
         >
-          <Text variant="titleMedium">Geplantes Enddatum: </Text>
-          {isIOS ? (
-            <View/>
-          ) : (
-            <View/>
-          )}
+          <Text variant="titleMedium">Geplantes Ende: {currentReservation.end}</Text>
         </View>
         <View
           style={{
@@ -263,23 +264,7 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
             marginTop: 5,
           }}
         >
-          <Text variant="titleMedium">Geplante Endzeit: </Text>
-          {isIOS ? (
-            <View/>
-          ) : (
-            <View/>
-          )}
         </View>
-        {showErorr && (
-          <Text variant="titleMedium">
-            Diese Zeit wurde bereits gebucht. Bitte wählen Sie einen anderen
-            Zeitraum
-          </Text>
-        )}
-        {show && (
-          <View
-            />
-        )}
       </View>
     </ScrollView>
     <View
@@ -297,9 +282,9 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
       }}
     >
       
-      <View style={{ width: "75%" }}>
+      <View style={{ width: "50%" }}>
         <Text variant="titleSmall">
-          Möchtest du "{vehicleInfo.model}" jetzt zurückgeben?
+          Möchtest du "{vehicleInfo.model}" jetzt abgeben?
         </Text>
       </View>
       <Button
@@ -309,7 +294,7 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
           navigation.navigate("Reservations");
         }}
       >
-        Ja
+        Abgabe bestätigen
       </Button>
     </View>
   </SafeAreaView>);
