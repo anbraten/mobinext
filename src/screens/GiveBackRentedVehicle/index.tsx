@@ -18,6 +18,7 @@ import {
   Text,
 } from "react-native-paper";
 import moment from "moment";
+import Toast from "react-native-toast-message";
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -89,6 +90,19 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
     console.log(data);
     console.log(status);
     console.log(currentReservation + " deleted");
+
+    if (error) {
+      Toast.show({
+        type: "error",
+        text1: error.message,
+      });
+    } else {
+      navigation.navigate("Reservations");
+      Toast.show({
+        type: "success",
+        text1: "Du hast das Fahrzeug erfolgreich abgegeben!",
+      });
+    }
   };
 
   // const convertUTCToLocalTime = (dateString: any) => {
@@ -324,7 +338,6 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
           mode="contained"
           onPress={async () => {
             await removeSupabaseCarEntry();
-            navigation.navigate("Reservations");
           }}
         >
           Abgabe bestätigen

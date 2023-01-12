@@ -57,8 +57,12 @@ export const Chat = ({ route, navigation }: Props) => {
           { event: "INSERT", schema: "public", table: "messages" },
           (payload) => {
             const msg = payload.new as Message;
-
-            if (msg.author === user?.id || msg.author === chatPartner?.id) {
+            if (
+              msg.author === user?.id ||
+              msg.author === chatPartner?.id ||
+              msg.target === user?.id ||
+              msg.target === chatPartner?.id
+            ) {
               setMessages((oldMessages) => [...oldMessages, msg]);
             }
           }
