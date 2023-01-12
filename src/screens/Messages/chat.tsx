@@ -10,8 +10,7 @@ import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
 import { Message, User } from "~/types";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { TextMessage } from "./messages/text";
-import { RentableRequestMessage } from "./messages/rentable_request";
+import { ChatMessage } from "./messages/chat_message";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Chat">;
 
@@ -57,10 +56,11 @@ export const Chat = ({ route, navigation }: Props) => {
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "messages" },
           (payload) => {
-            setMessages((oldMessages) => [
-              ...oldMessages,
-              payload.new as Message,
-            ]);
+            const msg = payload.new as Message;
+
+            if (msg.author === user?.id || msg.author === chatPartner?.id) {
+              setMessages((oldMessages) => [...oldMessages, msg]);
+            }
           }
         );
 
@@ -111,23 +111,17 @@ export const Chat = ({ route, navigation }: Props) => {
             scrollViewRef.current?.scrollToEnd();
           }}
         >
-          {messages.map((message, i) => (
-            <View
-              key={i}
-              style={{
-                marginTop: 10,
-              }}
-            >
-              {message.type === "rentable_request" ? (
-                <RentableRequestMessage
-                  message={message}
-                  chatPartner={chatPartner!}
-                />
-              ) : (
-                <TextMessage message={message} chatPartner={chatPartner!} />
-              )}
-            </View>
-          ))}
+          {chatPartner !== undefined &&
+            messages.map((message, i) => (
+              <View
+                key={i}
+                style={{
+                  marginTop: 10,
+                }}
+              >
+                <ChatMessage message={message} chatPartner={chatPartner} />
+              </View>
+            ))}
         </ScrollView>
 
         <View
@@ -150,7 +144,7 @@ export const Chat = ({ route, navigation }: Props) => {
               flexShrink: 0,
             }}
           >
-            Send
+            Senden
           </Button>
         </View>
       </KeyboardAvoidingView>
