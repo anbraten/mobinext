@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
@@ -18,6 +18,7 @@ import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Toast from "react-native-toast-message";
 import { AuthContext } from "~/provider/AuthProvider";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Discover">;
 
@@ -44,23 +45,6 @@ export const Discover = ({ navigation }: Props) => {
         });
         return;
       }
-
-      setLoadingVehicles(true);
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-
-      const { error, data } = await supabase.from("rentables").select("*");
-
-      if (error) {
-        Toast.show({ type: "error", text1: error.message });
-      }
-      if (data) {
-        setRentables(data);
-      }
-
-      setLoadingVehicles(false);
-
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -68,6 +52,32 @@ export const Discover = ({ navigation }: Props) => {
       canRent();
     })();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchVehicles = async () => {
+        setLoadingVehicles(true);
+
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+
+        const { error, data } = await supabase.from("rentables").select("*");
+
+        if (error) {
+          Toast.show({ type: "error", text1: error.message });
+        }
+        if (data) {
+          setRentables(data);
+        }
+
+        setLoadingVehicles(false);
+      };
+
+      fetchVehicles();
+
+      return () => {};
+    }, [])
+  );
 
   async function requestRentableAccess() {
     const res = await supabase.from("messages").insert({
@@ -261,14 +271,14 @@ export const Discover = ({ navigation }: Props) => {
 
           return (
             <Marker
-              key={rentable.id}
+              key={`${rentable.id}${
+                rentable.id === selectedRentable?.id && "active"
+              }`}
               coordinate={{
                 latitude: rentable.latitude,
                 longitude: rentable.longitude,
               }}
-              pinColor={
-                selectedRentable?.id === rentable.id ? "#00FF00" : "red"
-              }
+              pinColor={selectedRentable?.id === rentable.id ? "blue" : "red"}
               onPress={(e) => {
                 setSelectedRentable(rentable);
               }}
