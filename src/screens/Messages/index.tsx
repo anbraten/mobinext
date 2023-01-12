@@ -2,7 +2,7 @@ import { View, ScrollView } from "react-native";
 import { Text, Card, Avatar, Title } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { RealtimeChannel } from "@supabase/realtime-js";
 import { supabase } from "~/supabase";
 import { AuthContext } from "~/provider/AuthProvider";
@@ -10,6 +10,7 @@ import { Message, User } from "~/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import moment from "moment";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Chat = {
   partner: User;
@@ -54,45 +55,53 @@ export const Messages = ({ navigation }: Props) => {
     }
   }
 
-  useEffect(() => {
-    let messagesSubscription: RealtimeChannel;
-    (async () => {
-      const { data, error } = await supabase
-        .from("messages")
-        .select("*")
-        .or(`author.eq.${user?.id},target.eq.${user?.id})`)
-        .order("created_at", { ascending: false });
-      if (data) {
-        for await (const message of data) {
-          const chatPartnerId =
-            message.author === user?.id ? message.target : message.author;
-          if (chatPartnerId && !chats.has(chatPartnerId)) {
-            await addChat(message);
+  useFocusEffect(
+    useCallback(() => {
+      let messagesSubscription: RealtimeChannel;
+      (async () => {
+        const { data, error } = await supabase
+          .from("messages")
+          .select("*")
+          .or(`author.eq.${user?.id},target.eq.${user?.id})`)
+          .order("created_at", { ascending: false });
+        if (data) {
+          let myMessages: { [key: string]: any[] } = {};
+          for await (const message of data) {
+            const chatPartnerId =
+              message.author === user?.id ? message.target : message.author;
+            if (!myMessages[chatPartnerId as string]) {
+              myMessages[chatPartnerId as string] = [message];
+            } else {
+              myMessages[chatPartnerId as string].push(message);
+            }
+            Object.keys(myMessages).forEach(
+              async (key, i) => await addChat(myMessages[key][0])
+            );
           }
         }
-      }
 
-      // TODO: show error
-      error && console.error(error);
+        // TODO: show error
+        error && console.error(error);
 
-      messagesSubscription = supabase
-        .channel("messages")
-        .on(
-          "postgres_changes",
-          { event: "INSERT", schema: "public", table: "messages" },
-          (payload) => {
-            const message = payload.new as Message;
-            addChat(message);
-          }
-        );
+        messagesSubscription = supabase
+          .channel("messages")
+          .on(
+            "postgres_changes",
+            { event: "INSERT", schema: "public", table: "messages" },
+            (payload) => {
+              const message = payload.new as Message;
+              addChat(message);
+            }
+          );
 
-      messagesSubscription.subscribe();
-    })();
+        messagesSubscription.subscribe();
+      })();
 
-    return () => {
-      messagesSubscription?.unsubscribe();
-    };
-  }, []);
+      return () => {
+        messagesSubscription?.unsubscribe();
+      };
+    }, [])
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
