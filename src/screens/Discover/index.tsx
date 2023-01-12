@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Avatar,
   Button,
+  Card,
   IconButton,
   MD3Colors,
   Text,
@@ -232,8 +233,14 @@ export const Discover = ({ navigation }: Props) => {
             zIndex: 1,
           }}
         >
-          <Text variant="headlineSmall">Lade Fahrzeuge...</Text>
-          <ActivityIndicator animating={loadingVehicles} size="large" />
+          <Card>
+            <Card.Content>
+              <Text variant="headlineSmall" style={{ marginBottom: 10 }}>
+                Lade Fahrzeuge...
+              </Text>
+              <ActivityIndicator animating={loadingVehicles} />
+            </Card.Content>
+          </Card>
         </View>
       )}
       <MapView
