@@ -65,7 +65,7 @@ export const Messages = ({ navigation }: Props) => {
           .or(`author.eq.${user?.id},target.eq.${user?.id})`)
           .order("created_at", { ascending: false });
         if (data) {
-          let myMessages: { [key: string]: any[] } = {};
+          let myMessages: { [key: string]: Message[] } = {};
           for await (const message of data) {
             const chatPartnerId =
               message.author === user?.id ? message.target : message.author;
