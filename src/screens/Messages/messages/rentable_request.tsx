@@ -69,10 +69,9 @@ export function RentableRequestMessage({
 
     const trusted_party_id = tp.data[0].id;
 
-    let res = await supabase.from("trusted_party_members").insert({
+    let res = await supabase.from("trusted_party_rentables").insert({
       trusted_party_id,
-      pending: false,
-      user_id: chatPartner.id,
+      rentable_id: rentable?.id!,
     });
 
     if (res.error) {
@@ -80,11 +79,6 @@ export function RentableRequestMessage({
       Toast.show({ type: "error", text1: res.error?.message });
       return;
     }
-
-    res = await supabase.from("trusted_party_rentables").insert({
-      trusted_party_id,
-      rentable_id: rentable?.id!,
-    });
 
     return trusted_party_id;
   }
