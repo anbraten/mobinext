@@ -5,7 +5,7 @@ import { Button, Text } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
-import { Message, Profile, Rentable } from "~/types";
+import { Message, Profile, Rentable, Trusted_parties } from "~/types";
 
 export function RentableRequestMessage({
   message,
@@ -37,10 +37,77 @@ export function RentableRequestMessage({
     })();
   }, []);
 
-  async function grantAccess() {
-    // TODO: add chat partner to trusted party
+  async function getOrCreateTrustedParty() {
+    const tp_rentable = await supabase
+      .from("trusted_party_rentables")
+      .select("*")
+      .eq("rentable_id", rentable?.id!);
 
-    let res = await supabase
+    if (tp_rentable.error) {
+      console.error(tp_rentable.error);
+      Toast.show({ type: "error", text1: tp_rentable.error.message });
+      return;
+    }
+
+    if (tp_rentable.data?.length || 0 > 0) {
+      return tp_rentable.data[0].trusted_party_id;
+    }
+
+    const tp = await supabase
+      .from("trusted_parties")
+      .insert({
+        name: `${user?.full_name} - ${chatPartner.full_name}`,
+        owner: user?.id,
+      })
+      .select();
+
+    if (tp.error) {
+      console.error(tp.error);
+      Toast.show({ type: "error", text1: tp.error?.message });
+      return;
+    }
+
+    const trusted_party_id = tp.data[0].id;
+
+    let res = await supabase.from("trusted_party_members").insert({
+      trusted_party_id,
+      pending: false,
+      user_id: chatPartner.id,
+    });
+
+    if (res.error) {
+      console.error(res.error);
+      Toast.show({ type: "error", text1: res.error?.message });
+      return;
+    }
+
+    res = await supabase.from("trusted_party_rentables").insert({
+      trusted_party_id,
+      rentable_id: rentable?.id!,
+    });
+
+    return trusted_party_id;
+  }
+
+  async function grantAccess() {
+    const trustedPartyId = await getOrCreateTrustedParty();
+    if (!trustedPartyId) {
+      return;
+    }
+
+    let res = await supabase.from("trusted_party_members").insert({
+      trusted_party_id: trustedPartyId,
+      user_id: chatPartner.id,
+      pending: false,
+    });
+
+    if (res.error) {
+      console.error(res.error);
+      Toast.show({ type: "error", text1: res.error.message });
+      return;
+    }
+
+    res = await supabase
       .from("messages")
       .update({
         ...message,
@@ -52,6 +119,7 @@ export function RentableRequestMessage({
       .eq("id", message.id);
 
     if (res.error) {
+      console.error(res.error);
       Toast.show({ type: "error", text1: res.error.message });
       return;
     }
@@ -68,6 +136,7 @@ export function RentableRequestMessage({
     });
 
     if (res.error) {
+      console.error(res.error);
       Toast.show({ type: "error", text1: res.error.message });
       return;
     }
