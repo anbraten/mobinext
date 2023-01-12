@@ -266,7 +266,9 @@ export const Discover = ({ navigation }: Props) => {
                 latitude: rentable.latitude,
                 longitude: rentable.longitude,
               }}
-              pinColor={selectedRentable?.id === rentable.id ? "blue" : "red"}
+              pinColor={
+                selectedRentable?.id === rentable.id ? "#0000FF" : "red"
+              }
               onPress={(e) => {
                 setSelectedRentable(rentable);
               }}
