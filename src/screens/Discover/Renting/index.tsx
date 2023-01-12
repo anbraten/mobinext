@@ -17,6 +17,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as Location from "expo-location";
 import { Platform, StyleSheet } from "react-native";
 import dayjs from "dayjs";
+import Toast from "react-native-toast-message";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Renting">;
 
@@ -128,6 +129,19 @@ export const Renting = ({ route, navigation }: Props) => {
     console.log(error);
     console.log(data);
     console.log(status);
+
+    if (error) {
+      Toast.show({
+        type: "error",
+        text1: error.message,
+      });
+    } else {
+      navigation.navigate("Reservations");
+      Toast.show({
+        type: "success",
+        text1: "Du hast das Fahrzeug erfolgreich ausgeliehen!",
+      });
+    }
   };
 
   const onChangeStart = (event: any, selectedDate: any) => {
@@ -416,7 +430,6 @@ export const Renting = ({ route, navigation }: Props) => {
           mode="contained"
           onPress={async () => {
             await rentACar();
-            navigation.navigate("Discover");
           }}
         >
           Leihen

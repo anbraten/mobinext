@@ -26,18 +26,20 @@ export const Reservations = ({ navigation }: any) => {
           .or(`borrower.eq.${user?.id}`)
           .order("created_at", { ascending: false });
         if (data) {
+          let myReservations: Reservation[] = [];
           for await (const reservation of data) {
             const rentable = await supabase
               .from("rentables")
               .select("*")
               .or(`id.eq.${reservation.rentable}`);
             if (rentable.data) {
-              setReservations([
+              myReservations = [
                 ...reservations,
                 { ...reservation, _rentable: rentable.data[0] },
-              ]);
+              ];
             }
           }
+          setReservations(myReservations);
         }
 
         // TODO: show error
@@ -114,14 +116,15 @@ export const Reservations = ({ navigation }: any) => {
                   <Text variant="titleLarge">
                     Sitze: {reservation._rentable.seat_count}
                   </Text>
-                  <Button mode="contained" 
-                  onPress={() => {
-                    navigation.navigate("GiveBackRentedVehicle", {
-                      reservation: reservation
-                    })
-                  }}
-                  
-                  compact>
+                  <Button
+                    mode="contained"
+                    onPress={() => {
+                      navigation.navigate("GiveBackRentedVehicle", {
+                        reservation: reservation,
+                      });
+                    }}
+                    compact
+                  >
                     Abgeben
                   </Button>
                 </View>
