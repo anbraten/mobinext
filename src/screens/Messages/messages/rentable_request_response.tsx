@@ -1,19 +1,17 @@
-import { useContext, useEffect, useState } from "react";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Text } from "react-native-paper";
-import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
 import { Message, Profile, Rentable } from "~/types";
 
-export function RentableRequestGrantedMessage({
+export function RentableRequestResponseMessage({
   message,
   chatPartner,
 }: {
   message: Message;
   chatPartner: Profile;
 }) {
-  const { user } = useContext(AuthContext);
-
   const [rentable, setRentable] = useState<Rentable>();
   const rentableId = (message.context as { rentable: string })?.rentable;
 
@@ -34,7 +32,9 @@ export function RentableRequestGrantedMessage({
   return (
     <View
       style={{
-        backgroundColor: "#e0e0e0",
+        backgroundColor: "white",
+        borderColor: "#e0e0e0",
+        borderWidth: 1,
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 5,
@@ -44,6 +44,9 @@ export function RentableRequestGrantedMessage({
     >
       <Text>
         {chatPartner.full_name} hat jetzt Zugriff auf "{rentable?.model}".
+      </Text>
+      <Text style={{ marginLeft: "auto", fontSize: 10 }}>
+        {dayjs(message.created_at).format("HH:mm")}
       </Text>
     </View>
   );

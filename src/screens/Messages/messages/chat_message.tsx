@@ -1,6 +1,6 @@
 import { Message, Profile } from "~/types";
 import { RentableRequestMessage } from "./rentable_request";
-import { RentableRequestGrantedMessage } from "./rentable_request_granted";
+import { RentableRequestResponseMessage } from "./rentable_request_response";
 import { TextMessage } from "./text";
 
 export function ChatMessage({
@@ -15,9 +15,9 @@ export function ChatMessage({
       return (
         <RentableRequestMessage message={message} chatPartner={chatPartner!} />
       );
-    case "rentable_request_granted":
+    case "rentable_request_response":
       return (
-        <RentableRequestGrantedMessage
+        <RentableRequestResponseMessage
           message={message}
           chatPartner={chatPartner!}
         />

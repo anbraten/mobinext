@@ -16,7 +16,7 @@ import {
 import { SafeAreaView, useSafeAreaFrame } from "react-native-safe-area-context";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { ErrorToast } from "react-native-toast-message";
+import Toast from "react-native-toast-message";
 import { AuthContext } from "~/provider/AuthProvider";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Discover">;
@@ -38,7 +38,10 @@ export const Discover = ({ navigation }: Props) => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        ErrorToast({ text1: "Permission to access location was denied" });
+        Toast.show({
+          type: "error",
+          text1: "Permission to access location was denied",
+        });
         return;
       }
 
@@ -50,7 +53,7 @@ export const Discover = ({ navigation }: Props) => {
       const { error, data } = await supabase.from("rentables").select("*");
 
       if (error) {
-        ErrorToast({ text1: error.message });
+        Toast.show({ type: "error", text1: error.message });
       }
       if (data) {
         setRentables(data);
@@ -78,7 +81,7 @@ export const Discover = ({ navigation }: Props) => {
     });
 
     if (res.error) {
-      ErrorToast({ text1: res.error.message });
+      Toast.show({ type: "error", text1: res.error.message });
       return;
     }
 
