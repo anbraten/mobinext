@@ -1,7 +1,8 @@
+import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 import { Button, Text } from "react-native-paper";
-import { ErrorToast, SuccessToast } from "react-native-toast-message";
+import Toast from "react-native-toast-message";
 import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
 import { Message, Profile, Rentable } from "~/types";
@@ -16,7 +17,11 @@ export function RentableRequestMessage({
   const { user } = useContext(AuthContext);
 
   const [rentable, setRentable] = useState<Rentable>();
-  const rentableId = (message.context as { rentable: string })?.rentable;
+  const messageContext = message.context as {
+    rentable: string;
+    granted?: boolean;
+  };
+  const rentableId = messageContext?.rentable;
 
   useEffect(() => {
     (async () => {
@@ -34,34 +39,84 @@ export function RentableRequestMessage({
 
   async function grantAccess() {
     // TODO: add chat partner to trusted party
-    // TODO: set property of this message to hide action buttons
 
-    const res = await supabase.from("messages").insert({
+    let res = await supabase
+      .from("messages")
+      .update({
+        ...message,
+        context: {
+          ...messageContext,
+          granted: true,
+        },
+      })
+      .eq("id", message.id);
+
+    if (res.error) {
+      Toast.show({ type: "error", text1: res.error.message });
+      return;
+    }
+
+    res = await supabase.from("messages").insert({
       message: `Du hast jetzt Zugriff auf "${rentable?.model}".`,
-      type: "rentable_request_granted",
+      type: "rentable_request_response",
       context: {
         rentable: rentable?.id!,
+        granted: true,
       },
       author: user?.id!,
       target: chatPartner?.id!,
     });
 
     if (res.error) {
-      ErrorToast({ text1: res.error.message });
+      Toast.show({ type: "error", text1: res.error.message });
       return;
     }
 
-    SuccessToast({ text1: "Zugriff gewährt" });
+    Toast.show({ type: "success", text1: "Zugriff gewährt" });
   }
 
   async function denyAccess() {
-    SuccessToast({ text1: "TODO" });
+    let res = await supabase
+      .from("messages")
+      .update({
+        ...message,
+        context: {
+          ...messageContext,
+          granted: false,
+        },
+      })
+      .eq("id", message.id);
+
+    if (res.error) {
+      Toast.show({ type: "error", text1: res.error.message });
+      return;
+    }
+
+    res = await supabase.from("messages").insert({
+      message: `Der Zugriff auf "${rentable?.model}" wurde dir verwehrt.`,
+      type: "rentable_request_response",
+      context: {
+        rentable: rentable?.id!,
+        granted: false,
+      },
+      author: user?.id!,
+      target: chatPartner?.id!,
+    });
+
+    if (res.error) {
+      Toast.show({ type: "error", text1: res.error.message });
+      return;
+    }
+
+    Toast.show({ type: "success", text1: "Anfrage abgelehnt!" });
   }
 
   return message?.author === user?.id ? (
     <View
       style={{
-        backgroundColor: "red",
+        backgroundColor: "white",
+        borderColor: "#e0e0e0",
+        borderWidth: 1,
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 5,
@@ -70,12 +125,17 @@ export function RentableRequestMessage({
       }}
     >
       <Text>Du hast Zugriff auf "{rentable?.model}" angefragt.</Text>
+      <Text style={{ marginLeft: "auto", fontSize: 10 }}>
+        {dayjs(message.created_at).format("HH:mm")}
+      </Text>
     </View>
   ) : (
     <View style={{ flex: 1, alignSelf: "flex-start", maxWidth: "70%" }}>
       <View
         style={{
-          backgroundColor: "lime",
+          backgroundColor: "white",
+          borderColor: "#e0e0e0",
+          borderWidth: 1,
           padding: 10,
           borderRadius: 5,
         }}
@@ -84,18 +144,23 @@ export function RentableRequestMessage({
           {chatPartner.full_name} möchte Zugriff auf "{rentable?.model}"
           erhalten!
         </Text>
+        <Text style={{ marginLeft: "auto", fontSize: 10 }}>
+          {dayjs(message.created_at).format("HH:mm")}
+        </Text>
       </View>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-        }}
-      >
-        <Button style={{ marginRight: 5 }} onPress={grantAccess}>
-          Ok
-        </Button>
-        <Button onPress={denyAccess}>Nope!</Button>
-      </View>
+      {messageContext.granted === undefined && (
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+          }}
+        >
+          <Button style={{ marginRight: 5 }} onPress={grantAccess}>
+            Ok
+          </Button>
+          <Button onPress={denyAccess}>Nope!</Button>
+        </View>
+      )}
     </View>
   );
 }
