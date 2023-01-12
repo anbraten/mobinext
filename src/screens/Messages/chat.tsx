@@ -74,7 +74,7 @@ export const Chat = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     navigation.setOptions({
-      title: `Chat with ${chatPartner?.full_name || "..."}`,
+      title: `Unterhaltung mit ${chatPartner?.full_name || "..."}`,
     });
   }, [chatPartner]);
 
@@ -128,7 +128,7 @@ export const Chat = ({ route, navigation }: Props) => {
           style={{ flexDirection: "row", alignItems: "center", height: "10%" }}
         >
           <TextInput
-            label="Message"
+            label="Nachricht"
             mode="outlined"
             value={messageInput}
             onChangeText={setMessageInput}
