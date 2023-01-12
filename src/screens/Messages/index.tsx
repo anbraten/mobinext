@@ -11,6 +11,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import moment from "moment";
 import { useFocusEffect } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 type Chat = {
   partner: User;
@@ -105,72 +106,94 @@ export const Messages = ({ navigation }: Props) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-      <ScrollView style={{ flex: 1 }}>
-        {Array.from(chats.values()).map((chat, i) => (
-          <Card
-            style={{
-              margin: 15,
-              marginBottom: 10,
-              marginTop: i === 0 ? 15 : 0,
-            }}
-            key={i}
-            onPress={() =>
-              navigation.navigate("Chat", {
-                chatPartnerId: chat.partner.id,
-              })
-            }
-          >
-            <Card.Content
+      {Array.from(chats.values()).length === 0 ? (
+        <View
+          style={{
+            marginTop: 50,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <MaterialCommunityIcons
+            name="emoticon-sad-outline"
+            size={35}
+            color="black"
+          />
+          <Text variant="headlineSmall" style={{ textAlign: "center" }}>
+            Du hast aktuell noch keine Nachrichten
+          </Text>
+        </View>
+      ) : (
+        <ScrollView style={{ flex: 1 }}>
+          {Array.from(chats.values()).map((chat, i) => (
+            <Card
               style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
+                margin: 15,
+                marginBottom: 10,
+                marginTop: i === 0 ? 15 : 0,
               }}
+              key={i}
+              onPress={() =>
+                navigation.navigate("Chat", {
+                  chatPartnerId: chat.partner.id,
+                })
+              }
             >
-              <View
+              <Card.Content
                 style={{
                   display: "flex",
                   flexDirection: "row",
-                  alignItems: "center",
+                  justifyContent: "space-between",
                 }}
               >
-                {chat.partner?.avatar_url ? (
-                  <Avatar.Image
-                    size={65}
-                    source={{ uri: chat.partner.avatar_url }}
-                  />
-                ) : (
-                  <Avatar.Text
-                    size={65}
-                    label={chat.partner.full_name?.[0] || `U${i}`}
-                  />
-                )}
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  {chat.partner?.avatar_url ? (
+                    <Avatar.Image
+                      size={65}
+                      source={{ uri: chat.partner.avatar_url }}
+                    />
+                  ) : (
+                    <Avatar.Text
+                      size={65}
+                      label={chat.partner.full_name?.[0] || `U${i}`}
+                    />
+                  )}
 
-                <View style={{ marginLeft: 15 }}>
-                  <Title>{chat.partner.full_name}</Title>
-                  <Text
-                    variant="bodyLarge"
-                    style={{ marginTop: 5, flex: 1 }}
-                    numberOfLines={1}
-                    ellipsizeMode="middle"
-                  >
-                    {chat.lastMessage.message?.slice(0, 10)}
-                  </Text>
+                  <View style={{ marginLeft: 15 }}>
+                    <Title>{chat.partner.full_name}</Title>
+                    <Text
+                      variant="bodyLarge"
+                      style={{ marginTop: 5, flex: 1 }}
+                      numberOfLines={1}
+                      ellipsizeMode="middle"
+                    >
+                      {chat.lastMessage.message?.slice(0, 10)}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-              <Text variant="bodyLarge" style={{ flex: 1, textAlign: "right" }}>
-                {moment(chat.lastMessage.created_at).format("DD.MM.YY HH:mm")}
-              </Text>
-              <Ionicons
-                name="chevron-forward"
-                color={"black"}
-                size={24}
-                style={{ alignSelf: "center" }}
-              />
-            </Card.Content>
-          </Card>
-        ))}
-      </ScrollView>
+                <Text
+                  variant="bodyLarge"
+                  style={{ flex: 1, textAlign: "right" }}
+                >
+                  {moment(chat.lastMessage.created_at).format("DD.MM.YY HH:mm")}
+                </Text>
+                <Ionicons
+                  name="chevron-forward"
+                  color={"black"}
+                  size={24}
+                  style={{ alignSelf: "center" }}
+                />
+              </Card.Content>
+            </Card>
+          ))}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };

@@ -235,10 +235,15 @@ export const Renting = ({ route, navigation }: Props) => {
           }}
         >
           <Text variant="titleLarge">Location</Text>
+          {locationAddress && locationAddress?.[0] && (
+            <Text
+              variant="titleSmall"
+              style={{ marginTop: 5 }}
+            >{`${locationAddress[0]?.street} ${locationAddress[0]?.streetNumber}, ${locationAddress[0]?.postalCode} ${locationAddress[0]?.city}`}</Text>
+          )}
           <View
             style={{
-              height: 125,
-              width: "45%",
+              height: 150,
               borderColor: MD3Colors.neutral50,
               borderStyle: "solid",
               borderWidth: 1.5,
@@ -267,12 +272,6 @@ export const Renting = ({ route, navigation }: Props) => {
                 />
               )}
             </MapView>
-            {locationAddress && locationAddress?.[0] && (
-              <Text
-                variant="titleSmall"
-                style={{ marginLeft: 5, alignSelf: "center" }}
-              >{`${locationAddress[0]?.street} ${locationAddress[0]?.streetNumber}, ${locationAddress[0]?.postalCode} ${locationAddress[0]?.city}`}</Text>
-            )}
           </View>
         </View>
         <Divider />

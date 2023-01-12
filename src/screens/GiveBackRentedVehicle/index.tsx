@@ -28,11 +28,27 @@ type Props = NativeStackScreenProps<
 export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
   const [selectedRentable, setSelectedRentable] = useState<
     Rentable | undefined
-  >(route.params.selectedRentable);
+  >(route.params.reservation._rentable);
 
   const isIOS = Platform.OS === "ios";
   const [show, setShow] = useState(false);
   const [showErorr, setShowError] = useState(false);
+  const [ownerName, setOwnerName] = useState("");
+
+  useEffect(() => {
+    const getOwnerName = async () => {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", selectedRentable?.owner)
+        .limit(1)
+        .single();
+      if (profile?.full_name) {
+        setOwnerName(profile.full_name);
+      }
+    };
+    getOwnerName();
+  }, [selectedRentable]);
 
   const [locationAddress, setLocationAddress] =
     useState<Location.LocationGeocodedAddress[]>();
@@ -179,10 +195,15 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
           }}
         >
           <Text variant="titleLarge">Standort</Text>
+          {locationAddress && locationAddress?.[0] && (
+            <Text
+              variant="titleSmall"
+              style={{ marginTop: 5 }}
+            >{`${locationAddress[0]?.street} ${locationAddress[0]?.streetNumber}, ${locationAddress[0]?.postalCode} ${locationAddress[0]?.city}`}</Text>
+          )}
           <View
             style={{
-              height: 125,
-              width: "45%",
+              height: 150,
               borderColor: MD3Colors.neutral50,
               borderStyle: "solid",
               borderWidth: 1.5,
@@ -211,12 +232,6 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
                 />
               )}
             </MapView>
-            {locationAddress && locationAddress?.[0] && (
-              <Text
-                variant="titleSmall"
-                style={{ marginLeft: 5, alignSelf: "center" }}
-              >{`${locationAddress[0]?.street} ${locationAddress[0]?.streetNumber}, ${locationAddress[0]?.postalCode} ${locationAddress[0]?.city}`}</Text>
-            )}
           </View>
         </View>
         <Divider />
@@ -298,21 +313,16 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
             padding: 10,
           }}
         >
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-            }}
+          <Text variant="titleLarge">Fahrzeugbesitzer</Text>
+          <Button
+            mode="contained"
+            style={{ marginTop: 5 }}
+            onPress={() =>
+              navigation.push("Chat", { chatPartnerId: vehicleInfo?.owner! })
+            }
           >
-            <Button
-              mode="contained"
-              onPress={() =>
-                navigation.push("Chat", { chatPartnerId: vehicleInfo?.owner! })
-              }
-            >
-              Fahrzeugbesitzer kontaktieren
-            </Button>
-          </View>
+            {`${ownerName || "Unbekannt"} kontaktieren`}
+          </Button>
         </View>
       </ScrollView>
       <View
