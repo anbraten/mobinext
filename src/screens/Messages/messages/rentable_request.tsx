@@ -93,7 +93,7 @@ export function RentableRequestMessage({
     }
 
     res = await supabase.from("messages").insert({
-      message: `Der Zugriff auf "${rentable?.model}" wurde dir verwehrt.`,
+      message: `Der Zugriff auf "${rentable?.model}" wurde dir verweigert.`,
       type: "rentable_request_response",
       context: {
         rentable: rentable?.id!,
@@ -108,7 +108,7 @@ export function RentableRequestMessage({
       return;
     }
 
-    Toast.show({ type: "success", text1: "Anfrage abgelehnt!" });
+    Toast.show({ type: "success", text1: "Zugriff verweigert" });
   }
 
   return message?.author === user?.id ? (

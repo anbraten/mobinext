@@ -14,6 +14,10 @@ export function RentableRequestResponseMessage({
 }) {
   const [rentable, setRentable] = useState<Rentable>();
   const rentableId = (message.context as { rentable: string })?.rentable;
+  const messageContext = message.context as {
+    rentable: string;
+    granted?: boolean;
+  };
 
   useEffect(() => {
     (async () => {
@@ -29,11 +33,11 @@ export function RentableRequestResponseMessage({
     })();
   }, []);
 
-  return (
+  return message.target === chatPartner.id ? (
     <View
       style={{
         backgroundColor: "white",
-        borderColor: "#e0e0e0",
+        borderColor: messageContext.granted ? "#4caf50" : "#f44336",
         borderWidth: 1,
         paddingHorizontal: 10,
         paddingVertical: 5,
@@ -42,9 +46,39 @@ export function RentableRequestResponseMessage({
         alignSelf: "flex-start",
       }}
     >
-      <Text>
-        {chatPartner.full_name} hat jetzt Zugriff auf "{rentable?.model}".
+      {messageContext.granted ? (
+        <Text>
+          Du hast {chatPartner.full_name} Zugriff auf "{rentable?.model}"
+          gegeben.
+        </Text>
+      ) : (
+        <Text>
+          Du hast {chatPartner.full_name} den Zugriff auf "{rentable?.model}"
+          verweigert.
+        </Text>
+      )}
+      <Text style={{ marginLeft: "auto", fontSize: 10 }}>
+        {dayjs(message.created_at).format("HH:mm")}
       </Text>
+    </View>
+  ) : (
+    <View
+      style={{
+        backgroundColor: "white",
+        borderColor: messageContext.granted ? "#4caf50" : "#f44336",
+        borderWidth: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 5,
+        maxWidth: "70%",
+        alignSelf: "flex-end",
+      }}
+    >
+      {messageContext.granted ? (
+        <Text>Dir wurde Zugriff auf "{rentable?.model}" gegeben.</Text>
+      ) : (
+        <Text>Dir wurde der Zugriff auf "{rentable?.model}" verweigert.</Text>
+      )}
       <Text style={{ marginLeft: "auto", fontSize: 10 }}>
         {dayjs(message.created_at).format("HH:mm")}
       </Text>
