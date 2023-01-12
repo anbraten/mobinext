@@ -5,6 +5,7 @@ import * as Location from "expo-location";
 import { supabase } from "~/supabase";
 import { FuelTypes, Rentable } from "~/types";
 import {
+  ActivityIndicator,
   Avatar,
   Button,
   IconButton,
@@ -30,6 +31,7 @@ export const Discover = ({ navigation }: Props) => {
     Rentable | undefined
   >(undefined);
   let map: MapView;
+  const [loadingVehicles, setLoadingVehicles] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -38,6 +40,8 @@ export const Discover = ({ navigation }: Props) => {
         ErrorToast({ text1: "Permission to access location was denied" });
         return;
       }
+
+      setLoadingVehicles(true);
 
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
@@ -50,6 +54,8 @@ export const Discover = ({ navigation }: Props) => {
       if (data) {
         setRentables(data);
       }
+
+      setLoadingVehicles(false);
 
       const {
         data: { user },
@@ -214,6 +220,19 @@ export const Discover = ({ navigation }: Props) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
+      {loadingVehicles && (
+        <View
+          style={{
+            position: "absolute",
+            top: "15%",
+            alignSelf: "center",
+            zIndex: 1,
+          }}
+        >
+          <Text variant="headlineSmall">Lade Fahrzeuge...</Text>
+          <ActivityIndicator animating={loadingVehicles} size="large" />
+        </View>
+      )}
       <MapView
         style={{ height: selectedRentable ? "83%" : "100%", width: "100%" }}
         showsUserLocation
