@@ -234,7 +234,7 @@ export const Renting = ({ route, navigation }: Props) => {
             padding: 10,
           }}
         >
-          <Text variant="titleLarge">Location</Text>
+          <Text variant="titleLarge">Standort</Text>
           {locationAddress && locationAddress?.[0] && (
             <Text
               variant="titleSmall"
