@@ -1,6 +1,7 @@
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect, useContext, useCallback, useRef } from "react";
 import { View } from "react-native";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView from "react-native-map-clustering";
 import * as Location from "expo-location";
 import { supabase } from "~/supabase";
 import { FuelTypes, Rentable } from "~/types";
@@ -22,6 +23,13 @@ import { useFocusEffect } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Discover">;
 
+const INITIAL_REGION = {
+  latitude: 49.488888,
+  longitude: 8.469167,
+  latitudeDelta: 8.5,
+  longitudeDelta: 8.5,
+};
+
 export const Discover = ({ navigation }: Props) => {
   const { user } = useContext(AuthContext);
   const [location, setLocation] = useState<any>(null);
@@ -32,7 +40,7 @@ export const Discover = ({ navigation }: Props) => {
   const [selectedRentable, setSelectedRentable] = useState<
     Rentable | undefined
   >(undefined);
-  let map: MapView;
+  let mapRef: any = useRef();
   const [loadingVehicles, setLoadingVehicles] = useState(false);
 
   useEffect(() => {
@@ -103,7 +111,7 @@ export const Discover = ({ navigation }: Props) => {
   useEffect(() => {
     console.log("My location", location);
     if (location) {
-      map.animateToRegion({
+      mapRef?.current?.animateToRegion({
         latitude: location?.coords?.latitude,
         longitude: location?.coords?.longitude,
         latitudeDelta: 0.0922,
@@ -258,11 +266,9 @@ export const Discover = ({ navigation }: Props) => {
         showsUserLocation
         showsMyLocationButton
         provider={PROVIDER_GOOGLE}
-        ref={(_map) => {
-          if (_map) {
-            map = _map;
-          }
-        }}
+        ref={mapRef}
+        animationEnabled={false}
+        initialRegion={INITIAL_REGION}
       >
         {rentables.map((rentable) => {
           if (!rentable.longitude || !rentable.latitude) {
