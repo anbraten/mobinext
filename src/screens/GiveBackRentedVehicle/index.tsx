@@ -60,8 +60,8 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
         map.animateToRegion({
           latitude: vehicleInfo.latitude,
           longitude: vehicleInfo.longitude,
-          latitudeDelta: 0.002,
-          longitudeDelta: 0.002,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001,
         });
       }
     }, 500);
@@ -214,7 +214,7 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
             }}
           >
             <MapView
-              style={{ height: "100%", width: "100%" }}
+              style={{ height: "99.9%", width: "99.9%" }}
               provider={PROVIDER_GOOGLE}
               ref={(_map) => {
                 if (_map) {
