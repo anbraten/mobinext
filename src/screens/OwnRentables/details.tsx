@@ -8,6 +8,7 @@ import {
   Portal,
   Dialog,
   Chip,
+  IconButton,
 } from "react-native-paper";
 import { Rentable, Trusted_party_members } from "~/types";
 import * as Location from "expo-location";
@@ -38,6 +39,7 @@ const defaultSeats = 4;
 export const OwnRentablesDetails = ({ route, navigation }: any) => {
   const { user } = useContext(AuthContext);
   const { category, currRentable } = route.params;
+  const [showInfoDialog, setShowInfoDialog] = useState(false);
 
   // const edit = currRentable !== undefined;
   const [rentable, setRentable] = useState<Partial<Rentable>>(
@@ -125,8 +127,34 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
     }
   }, [rentable]);
 
+  const InformationDialog = () => {
+    const hideDialog = () => {
+      setShowInfoDialog(false);
+    };
+    return (
+      <Portal>
+        <Dialog visible={showInfoDialog} onDismiss={hideDialog}>
+          <Dialog.Title>Was hat das zu bedeuten?</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">
+              Dies ist eine super tolle Beschreibung, wieso man Trusted Parties
+              dem Fahrzeug hinzufügen muss!
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button mode="contained" onPress={hideDialog}>
+              Schließen
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+    );
+  };
+
   return (
     <ScrollView style={{ margin: "5%" }}>
+      <InformationDialog />
+
       <View style={{ width: "100%", marginBottom: 10 }}>
         <Text variant="titleMedium">Modell:</Text>
         <TextInput
@@ -247,7 +275,22 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
       </View>
 
       <View style={{ marginBottom: 10 }}>
-        <Text variant="titleMedium">Trusted Parties:</Text>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Text variant="titleMedium">Wähle aus deinen Trusted Parties:</Text>
+          <IconButton
+            onPress={() => setShowInfoDialog(true)}
+            style={{ marginRight: 10 }}
+            icon="information-outline"
+            mode="contained"
+            size={18}
+          />
+        </View>
         {allTrustedParties?.map((party) => (
           <Chip
             key={party.id}
@@ -337,7 +380,7 @@ const MapDialog = ({
   return (
     <Portal>
       <Dialog visible={visible} onDismiss={() => setVisible(false)}>
-        <Dialog.Title>Standort</Dialog.Title>
+        <Dialog.Title>Standort auswählen:</Dialog.Title>
         <Dialog.Content>
           {visible && (
             <MapView

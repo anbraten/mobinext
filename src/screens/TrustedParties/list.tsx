@@ -4,7 +4,14 @@ import { supabase } from "~/supabase";
 import { Trusted_parties } from "~/types";
 import { View, ScrollView } from "react-native";
 import { TrustedPartiesCard } from "~/components/trusted-parties-card";
-import { FAB } from "react-native-paper";
+import {
+  Dialog,
+  FAB,
+  IconButton,
+  Portal,
+  Text,
+  Button,
+} from "react-native-paper";
 import { AuthContext } from "~/provider/AuthProvider";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -17,6 +24,7 @@ export const TrustedParties = ({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, "TrustedParties">) => {
   const { user } = useContext(AuthContext);
+  const [showInfoDialog, setShowInfoDialog] = useState(false);
 
   const [trustedParties, setTrustedParties] = useState<
     Trusted_Party_With_Members[]
@@ -40,6 +48,18 @@ export const TrustedParties = ({
   }
 
   useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <IconButton
+          onPress={() => setShowInfoDialog(true)}
+          style={{ marginRight: 10 }}
+          icon="information-outline"
+          mode="contained"
+          size={18}
+        />
+      ),
+    });
+
     fetchTrustedParties();
 
     trustedPartiesSubscription = supabase
@@ -58,8 +78,32 @@ export const TrustedParties = ({
     };
   }, []);
 
+  const InformationDialog = () => {
+    const hideDialog = () => {
+      setShowInfoDialog(false);
+    };
+    return (
+      <Portal>
+        <Dialog visible={showInfoDialog} onDismiss={hideDialog}>
+          <Dialog.Title>Was sind Trusted Parties?</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">
+              Dies ist eine super tolle Beschreibung der Trusted Parties!
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button mode="contained" onPress={hideDialog}>
+              Schließen
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+    );
+  };
+
   return (
     <View style={{ flex: 1 }}>
+      <InformationDialog />
       <ScrollView style={{ padding: 5 }}>
         {filteredTrustedParties.map((trustedParty) => (
           <TrustedPartiesCard
