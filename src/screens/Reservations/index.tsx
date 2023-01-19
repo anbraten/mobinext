@@ -4,7 +4,7 @@ import { Avatar, Text, Card, Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "~/provider/AuthProvider";
 import { supabase } from "~/supabase";
-import { Rentable, Reservations as _Reservations } from "~/types";
+import { FuelTypes, Rentable, Reservations as _Reservations } from "~/types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -97,13 +97,16 @@ export const Reservations = ({ navigation }: any) => {
                     {reservation._rentable.model}
                   </Text>
                   <Text variant="bodyMedium">
-                    Kraftstoff: {reservation._rentable.fuel}
+                    Kraftstoff:{" "}
+                    {reservation?._rentable.fuel
+                      ? FuelTypes[reservation._rentable.fuel]
+                      : "N/A"}
                   </Text>
                   <Text variant="bodyMedium">
-                    Kosten per mile: {reservation._rentable.cost_per_km}€
+                    Kosten per km: {reservation._rentable.cost_per_km}€
                   </Text>
                   <Text variant="bodyMedium">
-                    Kosten per minute: {reservation._rentable.cost_per_minute}€
+                    Kosten per Minute: {reservation._rentable.cost_per_minute}€
                   </Text>
                 </View>
                 <View

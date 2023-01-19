@@ -211,7 +211,7 @@ export const Renting = ({ route, navigation }: Props) => {
                 Kosten per km: {selectedRentable?.cost_per_km}€
               </Text>
               <Text variant="titleSmall">
-                Kosten per minute: {selectedRentable?.cost_per_minute}€
+                Kosten per Minute: {selectedRentable?.cost_per_minute}€
               </Text>
             </View>
           </View>

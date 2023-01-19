@@ -5,10 +5,10 @@ export const Reviews = () => {
   return (
     <ScrollView style={{ flex: 1, padding: 5 }}>
       <ReviewCard
-        username="User_7"
+        username="Albert Einstein"
         rating={4.5}
-        text={"This worked really good! Thank you!"}
-        date={"2 months ago"}
+        text={"Das hat wirklich gut funktioniert! Vielen Dank dafür!"}
+        date={"vor 2 Monaten"}
         key={0}
       />
     </ScrollView>

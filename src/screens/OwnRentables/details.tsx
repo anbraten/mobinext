@@ -60,24 +60,38 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
   rentable.seat_count = rentable.seat_count || defaultSeats;
 
   // let trustedParties = rentable.trusted_parties || []
-  let [allTrustedParties, setAllTrustedParties] = useState<any[] | undefined>([]);
-  let [rentableTrustedParties, setRentableTrustedParties] = useState<number[] | undefined>([]);
+  let [allTrustedParties, setAllTrustedParties] = useState<any[] | undefined>(
+    []
+  );
+  let [rentableTrustedParties, setRentableTrustedParties] = useState<
+    number[] | undefined
+  >([]);
 
   useEffect(() => {
     (async () => {
       const { data } = await supabase
         .from("trusted_parties")
-        .select("*, trusted_party_members ( * )")
-      
-      setAllTrustedParties(data?.filter(tp => tp.owner === user?.id || (tp.trusted_party_members as Trusted_party_members[]).some(member => member.user_id === user?.id)));
+        .select("*, trusted_party_members ( * )");
+
+      setAllTrustedParties(
+        data?.filter(
+          (tp) =>
+            tp.owner === user?.id ||
+            (tp.trusted_party_members as Trusted_party_members[]).some(
+              (member) => member.user_id === user?.id
+            )
+        )
+      );
 
       if (rentable.id) {
-        const { data: rentableTmp } = await supabase
+        const { data: rentableTmp } = (await supabase
           .from("rentables")
           .select("*, trusted_party_rentables ( trusted_party_id )")
-          .eq("id", rentable.id) as any;
+          .eq("id", rentable.id)) as any;
 
-        const tpIds = rentableTmp?.[0]?.trusted_party_rentables?.map((tpr: any) => tpr.trusted_party_id);
+        const tpIds = rentableTmp?.[0]?.trusted_party_rentables?.map(
+          (tpr: any) => tpr.trusted_party_id
+        );
         setRentableTrustedParties(tpIds);
       }
     })();
@@ -174,7 +188,7 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
       />
 
       <View style={{ width: "100%", marginBottom: 10 }}>
-        <Text variant="titleMedium">Kosten pro Minute:</Text>
+        <Text variant="titleMedium">Kosten pro Minute (in €):</Text>
         <TextInput
           onChangeText={(text) => setCostMinute(text)}
           value={costMinute}
@@ -192,7 +206,7 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
       </View>
 
       <View style={{ width: "100%", marginBottom: 10 }}>
-        <Text variant="titleMedium">Kosten pro Kilometer:</Text>
+        <Text variant="titleMedium">Kosten pro Kilometer (in €):</Text>
         <TextInput
           onChangeText={(text) => setCostKm(text)}
           value={costKm}
@@ -238,7 +252,9 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
                 ]);
               }
             }}
-            mode={rentableTrustedParties?.includes(party.id) ? "flat" : "outlined"}
+            mode={
+              rentableTrustedParties?.includes(party.id) ? "flat" : "outlined"
+            }
           >
             <Text>{party.name}</Text>
           </Chip>
@@ -246,7 +262,14 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
       </View>
 
       <Button
-        onPress={() => manageRentable(rentable, navigation, currRentable ? true : false, rentableTrustedParties)}
+        onPress={() =>
+          manageRentable(
+            rentable,
+            navigation,
+            currRentable ? true : false,
+            rentableTrustedParties
+          )
+        }
         mode="contained"
       >
         {currRentable ? "Fahrzeug aktualisieren" : "Fahrzeug erstellen"}

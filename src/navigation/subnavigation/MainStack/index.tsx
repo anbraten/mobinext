@@ -39,8 +39,7 @@ export type RootStackParamList = {
   TrustedParties: undefined;
   TrustedPartiesCreate: { update?: boolean; trustedPartyId?: string };
 
-  GiveBackRentedVehicle: { selectedRentable: Rentable }
-
+  GiveBackRentedVehicle: { selectedRentable: Rentable };
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -132,7 +131,7 @@ const MainStack = () => {
       <Stack.Screen
         name="Reviews"
         component={Reviews}
-        options={{ title: "Review" }}
+        options={{ title: "Rezensionen" }}
       />
       <Stack.Screen
         name="Statistics"

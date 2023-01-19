@@ -160,7 +160,7 @@ export const Profile = ({
           onPress={() => navigation.push("TrustedParties")}
         />
         <List.Item
-          title="Reviews"
+          title="Rezensionen"
           left={(props) => <List.Icon {...props} icon="message-draw" />}
           right={(props) => <List.Icon {...props} icon="chevron-right" />}
           onPress={() => navigation.push("Reviews")}

@@ -44,12 +44,14 @@ export const TrustedPartiesCreate = ({
 
       const { data, error } = await supabase
         .from("trusted_parties")
-        .select("*, trusted_party_members(user_id, profiles(full_name)), profiles(id, full_name)")
+        .select(
+          "*, trusted_party_members(user_id, profiles(full_name)), profiles(id, full_name)"
+        )
         .eq("id", trustedPartyId);
 
       if (data) {
         console.log(data[0]);
-        
+
         setTrustedParty(data[0]);
         const memberData = data[0].trusted_party_members as {
           user_id: string;
@@ -64,9 +66,14 @@ export const TrustedPartiesCreate = ({
         });
 
         setMembers(
-          memberData.map((member: any) => {
-            return { full_name: member.profiles.full_name, id: member.user_id };
-          }).sort((a, b) => a.full_name.localeCompare(b.full_name))
+          memberData
+            .map((member: any) => {
+              return {
+                full_name: member.profiles.full_name,
+                id: member.user_id,
+              };
+            })
+            .sort((a, b) => a.full_name.localeCompare(b.full_name))
         );
       }
     })();
@@ -118,7 +125,7 @@ export const TrustedPartiesCreate = ({
     <View style={{ margin: 20, zIndex: 0 }}>
       {trustedParty.owner === user?.id && (
         <TextInput
-          label="Name"
+          label="Name der Trusted Party"
           mode="outlined"
           value={trustedParty.name || ""}
           onChangeText={(text) =>
@@ -130,13 +137,13 @@ export const TrustedPartiesCreate = ({
       {trustedParty.owner === user?.id && (
         <Searchbar
           style={{ marginTop: 10 }}
-          placeholder="Search"
+          placeholder="Füge neue Mitglieder hinzu"
           onChangeText={(query) => setSearchQuery(query)}
           value={searchQuery}
         />
       )}
 
-      {possibleMembers.length > 0 && <Title>Mögliche Mitglieder</Title>}
+      {possibleMembers.length > 0 && <Title>Suchergebnisse</Title>}
       <FlatList
         data={possibleMembers}
         renderItem={({ item }) => (
@@ -162,18 +169,21 @@ export const TrustedPartiesCreate = ({
                   setSearchQuery("");
                 }}
               >
-                +
+                Hinzufügen
               </Button>
             </View>
           </Card>
         )}
       />
 
-      <Title>Mitglieder</Title>
+      <Title>Aktuelle Mitglieder</Title>
       <FlatList
         data={members}
         renderItem={({ item }) => (
-          <Card style={{ margin: 5, padding: 10 }} mode={item.id === user?.id ? "contained" : "elevated"}>
+          <Card
+            style={{ margin: 5, padding: 10 }}
+            mode={item.id === user?.id ? "contained" : "elevated"}
+          >
             <View
               style={{
                 flexDirection: "row",
@@ -190,7 +200,7 @@ export const TrustedPartiesCreate = ({
                     );
                   }}
                 >
-                  -
+                  Entfernen
                 </Button>
               )}
             </View>

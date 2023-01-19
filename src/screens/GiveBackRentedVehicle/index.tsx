@@ -9,7 +9,7 @@ import * as Location from "expo-location";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "~/navigation/subnavigation/MainStack";
-import { Rentable } from "~/types";
+import { FuelTypes, Rentable } from "~/types";
 import {
   Button,
   Divider,
@@ -168,12 +168,15 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
           >
             <Text variant="titleLarge">{vehicleInfo.model}</Text>
             <View>
-              <Text variant="titleSmall">Kraftstoff: {vehicleInfo.fuel}</Text>
+              <Text variant="titleSmall">
+                Kraftstoff:
+                {vehicleInfo?.fuel ? FuelTypes[vehicleInfo.fuel] : "N/A"}
+              </Text>
               <Text variant="titleSmall">
                 Kosten per km: {vehicleInfo.cost_per_km}€
               </Text>
               <Text variant="titleSmall">
-                Kosten per minute: {vehicleInfo.cost_per_minute}€
+                Kosten per Minute: {vehicleInfo.cost_per_minute}€
               </Text>
             </View>
           </View>
