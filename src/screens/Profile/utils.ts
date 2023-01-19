@@ -47,8 +47,10 @@ export async function manageTrustedParty(
     Toast.show({
       type: "success",
       text1: "Trusted Party",
-      text2: "Erfolgreich erstellt 👋",
+      text2: "Erfolgreich erstellt/aktualisiert",
     });
+
+    navigation.navigate("Profile");
   }
 }
 
@@ -68,7 +70,7 @@ export async function deleteTrustedParty(trustedParty: any, navigation: any) {
   Toast.show({
     type: "success",
     text1: "Trusted Party",
-    text2: "Erfolgreich gelöscht 👋",
+    text2: "Erfolgreich gelöscht",
   });
 
   navigation.navigate("Profile");

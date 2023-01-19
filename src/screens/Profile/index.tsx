@@ -131,7 +131,7 @@ export const Profile = ({
             }
           }}
         >
-          Logout
+          Ausloggen
         </Button>
       </View>
       <Divider style={{ height: 1.5 }} />
