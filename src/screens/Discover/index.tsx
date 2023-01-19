@@ -26,6 +26,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Toast from "react-native-toast-message";
 import { AuthContext } from "~/provider/AuthProvider";
 import { useFocusEffect } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Discover">;
 
@@ -318,7 +319,13 @@ export const Discover = ({ navigation }: Props) => {
               onPress={(e) => {
                 setSelectedRentable(rentable);
               }}
-            />
+            >
+              <Ionicons
+                name="car"
+                size={30}
+                color={rentable.id === selectedRentable?.id ? "blue" : "red"}
+              />
+            </Marker>
           );
         })}
       </MapView>
