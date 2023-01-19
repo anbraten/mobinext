@@ -1,4 +1,10 @@
-import { useState, useEffect, useContext, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  useRef,
+} from "react";
 import { View } from "react-native";
 import { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import MapView from "react-native-map-clustering";
@@ -53,6 +59,10 @@ export const Discover = ({ navigation }: Props) => {
         });
         return;
       }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -65,9 +75,6 @@ export const Discover = ({ navigation }: Props) => {
     useCallback(() => {
       const fetchVehicles = async () => {
         setLoadingVehicles(true);
-
-        let location = await Location.getCurrentPositionAsync({});
-        setLocation(location);
 
         const { error, data } = await supabase.from("rentables").select("*");
 
@@ -269,6 +276,26 @@ export const Discover = ({ navigation }: Props) => {
         ref={mapRef}
         animationEnabled={false}
         initialRegion={INITIAL_REGION}
+        clusterColor={"red"}
+        customMapStyle={[
+          {
+            featureType: "poi.business",
+            stylers: [
+              {
+                visibility: "off",
+              },
+            ],
+          },
+          {
+            featureType: "poi.park",
+            elementType: "labels.text",
+            stylers: [
+              {
+                visibility: "off",
+              },
+            ],
+          },
+        ]}
       >
         {rentables.map((rentable) => {
           if (!rentable.longitude || !rentable.latitude) {
