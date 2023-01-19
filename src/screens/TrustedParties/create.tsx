@@ -1,12 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useEffect, useReducer, useState, useContext } from "react";
-import { View, Text, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 import {
   Button,
   Card,
   Chip,
   IconButton,
   Searchbar,
+  Text,
   TextInput,
   Title,
 } from "react-native-paper";
@@ -177,6 +178,12 @@ export const TrustedPartiesCreate = ({
       />
 
       <Title>Aktuelle Mitglieder</Title>
+      {members.length === 0 && (
+        <Text variant="labelMedium">
+          Aktuell sind noch keine Mitglieder in dieser Trusted Party. Suche
+          weiter oben nach vertrauenswürdigen Nutzern, um diese hinzuzufügen!
+        </Text>
+      )}
       <FlatList
         data={members}
         renderItem={({ item }) => (
@@ -214,6 +221,7 @@ export const TrustedPartiesCreate = ({
           onPress={() =>
             manageTrustedParty(trustedParty, members, navigation, update)
           }
+          style={{ marginTop: 20 }}
         >
           {update ? "Aktualisieren" : "Erstellen"}
         </Button>
