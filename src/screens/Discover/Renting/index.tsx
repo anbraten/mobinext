@@ -114,11 +114,11 @@ export const Renting = ({ route, navigation }: Props) => {
     } = await supabase.auth.getUser();
 
     const reservation = {
-      created_at: new Date().toLocaleString(),
+      created_at: new Date().toISOString(),
       rentable: selectedRentable.id,
       borrower: user?.id,
-      start: startDateTime.toLocaleString(),
-      end: endDateTime.toLocaleString(),
+      start: startDateTime.toISOString(),
+      end: endDateTime.toISOString(),
       status: "geliehen",
     };
 
@@ -308,6 +308,7 @@ export const Renting = ({ route, navigation }: Props) => {
             {isIOS ? (
               <DateTimePicker
                 mode="date"
+                minimumDate={new Date()}
                 value={startDateTime}
                 is24Hour={true}
                 onChange={onChangeStart}
@@ -330,6 +331,7 @@ export const Renting = ({ route, navigation }: Props) => {
             {isIOS ? (
               <DateTimePicker
                 mode="time"
+                minimumDate={new Date()}
                 value={startDateTime}
                 is24Hour={true}
                 onChange={onChangeStart}
@@ -352,6 +354,7 @@ export const Renting = ({ route, navigation }: Props) => {
             {isIOS ? (
               <DateTimePicker
                 mode="date"
+                minimumDate={new Date()}
                 value={endDateTime}
                 is24Hour={true}
                 onChange={onChangeEnd}
@@ -374,6 +377,7 @@ export const Renting = ({ route, navigation }: Props) => {
             {isIOS ? (
               <DateTimePicker
                 mode="time"
+                minimumDate={new Date()}
                 value={endDateTime}
                 is24Hour={true}
                 onChange={onChangeEnd}
@@ -393,6 +397,7 @@ export const Renting = ({ route, navigation }: Props) => {
           {show && (
             <DateTimePicker
               mode={mode === "time" ? "time" : "date"}
+              minimumDate={new Date()}
               value={startOrEndDate === "start" ? startDateTime : endDateTime}
               is24Hour={true}
               onChange={
