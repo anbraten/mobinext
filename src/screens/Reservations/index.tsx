@@ -117,7 +117,11 @@ export const Reservations = ({ navigation }: any) => {
                   }}
                 >
                   <Text variant="titleLarge">
-                    Sitze: {reservation._rentable.seat_count}
+                    {`Sitze: ${
+                      reservation?._rentable.seat_count
+                        ? reservation._rentable.seat_count
+                        : "N/A"
+                    }`}
                   </Text>
                   <Button
                     mode="contained"

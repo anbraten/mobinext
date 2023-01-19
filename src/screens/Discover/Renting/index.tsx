@@ -224,7 +224,11 @@ export const Renting = ({ route, navigation }: Props) => {
             }}
           >
             <Text variant="titleLarge">
-              Sitze: {selectedRentable?.seat_count}
+              {`Sitze: ${
+                selectedRentable?.seat_count
+                  ? selectedRentable.seat_count
+                  : "N/A"
+              }`}
             </Text>
           </View>
         </View>

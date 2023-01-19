@@ -188,7 +188,11 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
               marginBottom: 10,
             }}
           >
-            <Text variant="titleLarge">Sitze: {vehicleInfo.seat_count}</Text>
+            <Text variant="titleLarge">
+              {`Sitze: ${
+                vehicleInfo?.seat_count ? vehicleInfo.seat_count : "N/A"
+              }`}
+            </Text>
           </View>
         </View>
         <Divider />

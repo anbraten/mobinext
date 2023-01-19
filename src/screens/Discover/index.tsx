@@ -212,7 +212,9 @@ export const Discover = ({ navigation }: Props) => {
           }}
         >
           <Text variant="titleLarge">
-            Sitze: {selectedRentable?.seat_count}
+            {`Sitze: ${
+              selectedRentable?.seat_count ? selectedRentable.seat_count : "N/A"
+            }`}
           </Text>
 
           {selectedRentable != null &&
