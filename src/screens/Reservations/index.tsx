@@ -89,25 +89,39 @@ export const Reservations = ({ navigation }: any) => {
                   justifyContent: "space-between",
                 }}
               >
-                <View style={{ display: "flex", flexDirection: "column" }}>
-                  <Avatar.Icon size={50} icon="car" />
-                </View>
-                <View style={{ display: "flex", flexDirection: "column" }}>
-                  <Text variant="titleLarge">
-                    {reservation._rentable.model}
-                  </Text>
-                  <Text variant="bodyMedium">
-                    Kraftstoff:{" "}
-                    {reservation?._rentable.fuel
-                      ? FuelTypes[reservation._rentable.fuel]
-                      : "N/A"}
-                  </Text>
-                  <Text variant="bodyMedium">
-                    Kosten per km: {reservation._rentable.cost_per_km}€
-                  </Text>
-                  <Text variant="bodyMedium">
-                    Kosten per Minute: {reservation._rentable.cost_per_minute}€
-                  </Text>
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
+                >
+                  <View style={{ display: "flex", flexDirection: "column" }}>
+                    <Avatar.Icon size={50} icon="car" />
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      marginLeft: 15,
+                    }}
+                  >
+                    <Text variant="titleLarge">
+                      {reservation._rentable.model}
+                    </Text>
+                    <Text variant="bodyMedium">
+                      Kraftstoff:{" "}
+                      {reservation?._rentable.fuel
+                        ? FuelTypes[reservation._rentable.fuel]
+                        : "N/A"}
+                    </Text>
+                    <Text variant="bodyMedium">
+                      Kosten per km: {reservation._rentable.cost_per_km}€
+                    </Text>
+                    <Text variant="bodyMedium">
+                      Kosten per Stunde: {reservation._rentable.cost_per_minute}
+                      €
+                    </Text>
+                  </View>
                 </View>
                 <View
                   style={{

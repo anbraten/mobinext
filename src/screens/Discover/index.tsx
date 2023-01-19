@@ -193,7 +193,7 @@ export const Discover = ({ navigation }: Props) => {
                 Kosten per km: {selectedRentable?.cost_per_km}€
               </Text>
               <Text variant="titleSmall">
-                Kosten per Minute: {selectedRentable?.cost_per_minute}€
+                Kosten per Stunde: {selectedRentable?.cost_per_minute}€
               </Text>
             </View>
           ) : (

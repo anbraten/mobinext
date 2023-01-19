@@ -188,7 +188,7 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
       />
 
       <View style={{ width: "100%", marginBottom: 10 }}>
-        <Text variant="titleMedium">Kosten pro Minute (in €):</Text>
+        <Text variant="titleMedium">Kosten per Stunde (in €):</Text>
         <TextInput
           onChangeText={(text) => setCostMinute(text)}
           value={costMinute}
@@ -206,7 +206,7 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
       </View>
 
       <View style={{ width: "100%", marginBottom: 10 }}>
-        <Text variant="titleMedium">Kosten pro Kilometer (in €):</Text>
+        <Text variant="titleMedium">Kosten per Kilometer (in €):</Text>
         <TextInput
           onChangeText={(text) => setCostKm(text)}
           value={costKm}
@@ -379,9 +379,10 @@ const MapDialog = ({
               setVisible(false);
             }}
           >
-            Cancel
+            Abbrechen
           </Button>
           <Button
+            mode="contained"
             onPress={() => {
               setRentable({
                 ...rentable,
@@ -391,7 +392,7 @@ const MapDialog = ({
               setVisible(false);
             }}
           >
-            Ok
+            Anwenden
           </Button>
         </Dialog.Actions>
       </Dialog>

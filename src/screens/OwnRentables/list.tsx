@@ -81,19 +81,32 @@ export const OwnRentables = ({
                 justifyContent: "space-between",
               }}
             >
-              <View style={{ display: "flex", flexDirection: "column" }}>
-                <Avatar.Icon size={50} icon="car" />
-              </View>
-              <View style={{ display: "flex", flexDirection: "column" }}>
-                <Text variant="titleLarge">{rentable.model}</Text>
-                <Text>Sitze: {rentable.seat_count}</Text>
-                <Text>
-                  {`Kraftstoff: ${
-                    rentable?.fuel ? FuelTypes[rentable.fuel] : "N/A"
-                  }`}
-                </Text>
-                <Text>Kosten per km: {rentable.cost_per_km}€</Text>
-                <Text>Kosten per Minute: {rentable.cost_per_minute}€</Text>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <View style={{ display: "flex", flexDirection: "column" }}>
+                  <Avatar.Icon size={50} icon="car" />
+                </View>
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: 15,
+                  }}
+                >
+                  <Text variant="titleLarge">{rentable.model}</Text>
+                  <Text>Sitze: {rentable.seat_count}</Text>
+                  <Text>
+                    {`Kraftstoff: ${
+                      rentable?.fuel ? FuelTypes[rentable.fuel] : "N/A"
+                    }`}
+                  </Text>
+                  <Text>Kosten per km: {rentable.cost_per_km}€</Text>
+                  <Text>Kosten per Stunde: {rentable.cost_per_minute}€</Text>
+                </View>
               </View>
               <View
                 style={{

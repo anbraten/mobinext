@@ -137,14 +137,16 @@ export const TrustedPartiesCreate = ({
 
       {trustedParty.owner === user?.id && (
         <Searchbar
-          style={{ marginTop: 10 }}
+          style={{ marginTop: 20 }}
           placeholder="Füge neue Mitglieder hinzu"
           onChangeText={(query) => setSearchQuery(query)}
           value={searchQuery}
         />
       )}
 
-      {possibleMembers.length > 0 && <Title>Suchergebnisse</Title>}
+      {possibleMembers.length > 0 && (
+        <Title style={{ marginTop: 15 }}>Suchergebnisse:</Title>
+      )}
       <FlatList
         data={possibleMembers}
         renderItem={({ item }) => (
@@ -177,7 +179,7 @@ export const TrustedPartiesCreate = ({
         )}
       />
 
-      <Title>Aktuelle Mitglieder</Title>
+      <Title style={{ marginTop: 15 }}>Aktuelle Mitglieder:</Title>
       {members.length === 0 && (
         <Text variant="labelMedium">
           Aktuell sind noch keine Mitglieder in dieser Trusted Party. Suche
@@ -223,7 +225,7 @@ export const TrustedPartiesCreate = ({
           }
           style={{ marginTop: 20 }}
         >
-          {update ? "Aktualisieren" : "Erstellen"}
+          {update ? "Trusted Party aktualisieren" : "Trusted Party erstellen"}
         </Button>
       )}
     </View>

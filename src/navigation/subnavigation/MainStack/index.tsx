@@ -104,13 +104,13 @@ const MainStack = () => {
       <Stack.Screen
         name="Renting"
         component={Renting}
-        options={{ title: "Leihe ein Fahrzeug aus" }}
+        options={{ title: "Fahrzeug ausleihen" }}
       />
 
       <Stack.Screen
         name="OwnRentables"
         component={OwnRentables}
-        options={{ title: "Fahrzeug erstellen", headerBackTitle: "Back" }}
+        options={{ title: "Deine Fahrzeuge", headerBackTitle: "Back" }}
       />
       <Stack.Screen
         name="OwnRentablesDetails"
@@ -151,7 +151,7 @@ const MainStack = () => {
       <Stack.Screen
         name="GiveBackRentedVehicle"
         component={GiveBackRentedVehicle}
-        options={{ title: "Fahrzeug zurückgeben" }}
+        options={{ title: "Fahrzeug abgeben" }}
       />
     </Stack.Navigator>
   );

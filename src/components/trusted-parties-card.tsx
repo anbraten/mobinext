@@ -28,10 +28,18 @@ export const TrustedPartiesCard = ({
             alignItems: "center",
           }}
         >
-          <Avatar.Text size={65} label="F" />
-          <View style={{ marginLeft: 15 }}>
+          <Avatar.Icon size={50} icon="account-group" />
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              marginLeft: 15,
+              maxHeight: 65,
+            }}
+          >
             <Title>{title}</Title>
-            <Chip>{role}</Chip>
+            <Chip style={{ alignSelf: "flex-start" }}>{role}</Chip>
           </View>
         </View>
 

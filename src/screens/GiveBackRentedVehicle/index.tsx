@@ -176,7 +176,7 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
                 Kosten per km: {vehicleInfo.cost_per_km}€
               </Text>
               <Text variant="titleSmall">
-                Kosten per Minute: {vehicleInfo.cost_per_minute}€
+                Kosten per Stunde: {vehicleInfo.cost_per_minute}€
               </Text>
             </View>
           </View>
@@ -201,7 +201,7 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
             padding: 10,
           }}
         >
-          <Text variant="titleLarge">Standort</Text>
+          <Text variant="titleLarge">Fahrzeugstandort</Text>
           {locationAddress && locationAddress?.[0] && (
             <Text
               variant="titleSmall"

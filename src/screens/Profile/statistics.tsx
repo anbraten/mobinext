@@ -25,7 +25,7 @@ export const Statistics = () => {
           }}
         >
           <Text variant="displayLarge">17</Text>
-          <Text variant="headlineLarge">Geliehen Fahrzeuge</Text>
+          <Text variant="headlineLarge">Geliehene Fahrzeuge</Text>
         </Card.Content>
       </Card>
     </View>

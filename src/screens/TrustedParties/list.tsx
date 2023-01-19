@@ -64,7 +64,7 @@ export const TrustedParties = ({
         {filteredTrustedParties.map((trustedParty) => (
           <TrustedPartiesCard
             title={trustedParty.name as string}
-            role={trustedParty.owner === user?.id ? "Besitzer" : "Mitglied"}
+            role={trustedParty.owner === user?.id ? "Eigentümer" : "Mitglied"}
             key={trustedParty.id}
             callback={() => {
               navigation.push("TrustedPartiesCreate", {

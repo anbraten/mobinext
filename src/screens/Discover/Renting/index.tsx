@@ -211,7 +211,7 @@ export const Renting = ({ route, navigation }: Props) => {
                 Kosten per km: {selectedRentable?.cost_per_km}€
               </Text>
               <Text variant="titleSmall">
-                Kosten per Minute: {selectedRentable?.cost_per_minute}€
+                Kosten per Stunde: {selectedRentable?.cost_per_minute}€
               </Text>
             </View>
           </View>
@@ -238,7 +238,7 @@ export const Renting = ({ route, navigation }: Props) => {
             padding: 10,
           }}
         >
-          <Text variant="titleLarge">Standort</Text>
+          <Text variant="titleLarge">Fahrzeugstandort</Text>
           {locationAddress && locationAddress?.[0] && (
             <Text
               variant="titleSmall"
@@ -450,8 +450,7 @@ export const Renting = ({ route, navigation }: Props) => {
           <Text variant="titleSmall">
             Geschätzte Kosten (ohne Kilometerkosten):{" "}
             {selectedRentable?.cost_per_minute
-              ? Math.round(timeDiff * selectedRentable.cost_per_minute * 60) +
-                "€"
+              ? Math.round(timeDiff * selectedRentable.cost_per_minute) + "€"
               : "N/A"}
           </Text>
         </View>
