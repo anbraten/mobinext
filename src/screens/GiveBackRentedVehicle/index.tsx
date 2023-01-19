@@ -150,34 +150,42 @@ export const GiveBackRentedVehicle = ({ route, navigation }: any) => {
             padding: 10,
           }}
         >
-          <View>
-            <IconButton
-              mode="outlined"
-              icon="car"
-              iconColor={MD3Colors.neutral50}
-              size={25}
-            />
-          </View>
           <View
             style={{
               display: "flex",
-              justifyContent: "space-between",
-              marginTop: 10,
-              marginBottom: 10,
+              flexDirection: "row",
             }}
           >
-            <Text variant="titleLarge">{vehicleInfo.model}</Text>
             <View>
-              <Text variant="titleSmall">
-                Kraftstoff:
-                {vehicleInfo?.fuel ? FuelTypes[vehicleInfo.fuel] : "N/A"}
-              </Text>
-              <Text variant="titleSmall">
-                Kosten per km: {vehicleInfo.cost_per_km}€
-              </Text>
-              <Text variant="titleSmall">
-                Kosten per Stunde: {vehicleInfo.cost_per_minute}€
-              </Text>
+              <IconButton
+                mode="outlined"
+                icon="car"
+                iconColor={MD3Colors.neutral50}
+                size={25}
+              />
+            </View>
+            <View
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 10,
+                marginBottom: 10,
+                marginLeft: 15,
+              }}
+            >
+              <Text variant="titleLarge">{vehicleInfo.model}</Text>
+              <View>
+                <Text variant="titleSmall">
+                  Kraftstoff:
+                  {vehicleInfo?.fuel ? FuelTypes[vehicleInfo.fuel] : "N/A"}
+                </Text>
+                <Text variant="titleSmall">
+                  Kosten per km: {vehicleInfo.cost_per_km}€
+                </Text>
+                <Text variant="titleSmall">
+                  Kosten per Stunde: {vehicleInfo.cost_per_minute}€
+                </Text>
+              </View>
             </View>
           </View>
           <View
