@@ -79,6 +79,7 @@ export interface Database {
           owner: string | null;
           additional_information: string | null;
           picture: string | null;
+          license_plate: string | null;
         };
         Insert: {
           id?: number;
@@ -94,6 +95,7 @@ export interface Database {
           owner?: string | null;
           additional_information?: string | null;
           picture?: string | null;
+          license_plate?: string | null;
         };
         Update: {
           id?: number;
@@ -109,6 +111,7 @@ export interface Database {
           owner?: string | null;
           additional_information?: string | null;
           picture?: string | null;
+          license_plate?: string | null;
         };
       };
       reservations: {

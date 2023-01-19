@@ -73,6 +73,7 @@ export const Discover = ({ navigation }: Props) => {
 
   useFocusEffect(
     useCallback(() => {
+      setSelectedRentable(undefined);
       const fetchVehicles = async () => {
         setLoadingVehicles(true);
 

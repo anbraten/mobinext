@@ -166,7 +166,7 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
       </View>
 
       <View style={{ width: "100%", marginBottom: 10 }}>
-        <Text variant="titleMedium">Fahrzeug Standort:</Text>
+        <Text variant="titleMedium">Fahrzeugstandort:</Text>
         <Text variant="bodyMedium" style={{ marginBottom: 10 }}>
           {locationAddress && locationAddress?.[0]
             ? `${
@@ -221,7 +221,19 @@ export const OwnRentablesDetails = ({ route, navigation }: any) => {
       </View>
 
       <View style={{ width: "100%", marginBottom: 10 }}>
-        <Text variant="titleMedium">Weitere Informationen:</Text>
+        <Text variant="titleMedium">Kennzeichen:</Text>
+        <TextInput
+          mode="outlined"
+          onChangeText={(text) =>
+            setRentable({ ...rentable, license_plate: text })
+          }
+          value={rentable.license_plate || ""}
+          dense={true}
+        ></TextInput>
+      </View>
+
+      <View style={{ width: "100%", marginBottom: 10 }}>
+        <Text variant="titleMedium">Zusätzliche Informationen:</Text>
         <TextInput
           multiline
           numberOfLines={5}
@@ -292,8 +304,8 @@ const MapDialog = ({
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [marker, setMarker] = useState({
-    latitude: 49.5,
-    longitude: 8.5,
+    latitude: rentable?.latitude ? rentable?.latitude : 49.5,
+    longitude: rentable?.longitude ? rentable?.longitude : 8.5,
   } as LatLng);
 
   let map: MapView;
@@ -338,6 +350,21 @@ const MapDialog = ({
               }}
               showsMyLocationButton
               showsUserLocation
+              initialRegion={
+                rentable?.latitude && rentable?.longitude
+                  ? {
+                      latitude: rentable?.latitude,
+                      longitude: rentable?.longitude,
+                      latitudeDelta: 0.01,
+                      longitudeDelta: 0.01,
+                    }
+                  : {
+                      latitude: 49.488888,
+                      longitude: 8.469167,
+                      latitudeDelta: 2.5,
+                      longitudeDelta: 2.5,
+                    }
+              }
               onPress={(e) => {
                 setMarker(e.nativeEvent.coordinate);
               }}

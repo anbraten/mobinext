@@ -284,6 +284,27 @@ export const Renting = ({ route, navigation }: Props) => {
             padding: 10,
           }}
         >
+          <Text variant="titleLarge">Kennzeichen</Text>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+            }}
+          >
+            <Text
+              variant="titleSmall"
+              style={{ marginLeft: 10, alignSelf: "center" }}
+            >
+              {selectedRentable?.license_plate || "N/A"}
+            </Text>
+          </View>
+        </View>
+        <Divider />
+        <View
+          style={{
+            padding: 10,
+          }}
+        >
           <Text variant="titleLarge">Zusätzliche Informationen</Text>
           <View
             style={{
